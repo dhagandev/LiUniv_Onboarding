@@ -1,3 +1,4 @@
 .idea
 *.iml
 local.application.*
+hardcoded_keys.xml
