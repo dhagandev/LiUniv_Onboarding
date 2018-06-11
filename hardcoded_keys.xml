@@ -1,0 +1,5 @@
+<service>
+    <name>Twitter</name>
+    <consumerKey></consumerKey>
+    <consumerSecret></consumerSecret>
+</service>
