@@ -19,7 +19,7 @@ Should fail:
 public class InputRequests {
 
     //Prompt Strings
-    private static String validInput = "Input 'Y' or 'y' for yes, 'N' or 'n' for no. ";
+    private static String validInput = "Input 'Y' or 'y' for yes, 'N' or 'n' for no. 'E' or 'e' will exit the program. ";
     private static String unrecognizedInput = "I'm sorry, I didn't understand that. ";
     private static String postTweet = "Do you want to post a tweet? ";
     private static String getTimeline = "Do you want to see your timeline? ";
@@ -34,7 +34,7 @@ public class InputRequests {
 
     //True = Input is valid; False = Input has some error
     private static boolean validInput(String input) {
-        if (input.equals("Y") || input.equals("N")) {
+        if (input.equals("Y") || input.equals("N") || input.equals("E")) {
             return true;
         }
         return false;
@@ -71,7 +71,10 @@ public class InputRequests {
         System.out.println(getTimeline + validInput);
         String userInput = getUserInput(reader);
 
-        if (userInput.equals("Y")) {
+        if (userInput.equals("E")) {
+            System.out.println("Thank you! Goodbye.");
+        }
+        else if (userInput.equals("Y")) {
             retrieveTimeline(reader);
         }
         else {
@@ -83,7 +86,10 @@ public class InputRequests {
         System.out.println(postTweet + validInput);
         String userInput = getUserInput(reader);
 
-        if (userInput.equals("Y")) {
+        if (userInput.equals("E")) {
+            System.out.println("Thank you! Goodbye.");
+        }
+        else if (userInput.equals("Y")) {
             postingTweet(reader);
         }
         else {
