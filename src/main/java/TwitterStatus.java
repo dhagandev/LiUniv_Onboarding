@@ -24,6 +24,9 @@ public class TwitterStatus {
                 System.out.println(e.getExceptionCode());
             }
         }
+        else {
+            System.out.println("An error occurred. Unable to post your tweet [" + text + "]. Sorry!");
+        }
     }
 
     // True = No errors; False = Error occurred
@@ -37,7 +40,7 @@ public class TwitterStatus {
             statusLength -= TWITTER_URL_LEN;
         }
 
-        if (statusLength <= TWITTER_CHAR_MAX) {
+        if (statusLength > TWITTER_CHAR_MAX) {
             return false;
         }
 
