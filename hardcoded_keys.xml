@@ -1,7 +1,9 @@
-<service>
-    <name>Twitter</name>
-    <consumerKey></consumerKey>
-    <consumerSecret></consumerSecret>
-    <accessToken></accessToken>
-    <accessSecret></accessSecret>
-</service>
+<services>
+    <service>
+        <name>Twitter</name>
+        <consumerKey></consumerKey>
+        <consumerSecret></consumerSecret>
+        <accessToken></accessToken>
+        <accessSecret></accessSecret>
+    </service>
+</services>

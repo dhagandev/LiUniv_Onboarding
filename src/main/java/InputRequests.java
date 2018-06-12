@@ -12,6 +12,8 @@ public class InputRequests {
 
     public static void main(String args[]) {
         Scanner reader = new Scanner(System.in);
+        KeyHandler keyHandler = new KeyHandler();
+        keyHandler.setupKeys();
 
         promptPost(reader);
     }
