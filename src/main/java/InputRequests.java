@@ -2,6 +2,20 @@ import java.util.Scanner;
 
 //This will later be converted to a test class with proper test cases.
 //Currently set up for on-the-spot input, will be converted to definite Strings.
+
+/*
+
+Test tweets:
+
+Should pass:
+    Test tweet! Posting this from a Java program.
+
+
+Should fail:
+    This is a test tweet that is too long for twitter! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus urna eros, blandit convallis luctus ut, bibendum vel felis. Suspendisse vestibulum non nisi ac molestie. Phasellus a metus interdum, vestibulum nunc nec, egestas velit. Phasellus eu dignissim turpis, id congue mauris. Aenean mi lacus, posuere maximus rutrum quis, dictum ac nulla. In vulputate non risus et consequat. Integer eget scelerisque magna. Nullam quis facilisis justo. Integer rutrum neque eu vulputate hendrerit. Nunc tristique orci id ligula tristique, non tincidunt dolor placerat. In in tristique risus. Donec euismod pretium euismod. Ut feugiat viverra vulputate. Ut fermentum hendrerit ante ac convallis. Etiam congue nisi porttitor iaculis lobortis. Duis rutrum lectus quis iaculis fermentum. Duis turpis tortor, lacinia sed ligula eget, bibendum vestibulum metus. Proin vestibulum nibh ante, et pulvinar nunc tempus eu. In viverra elit quis ex facilisis euismod. Nunc id vulputate leo.
+
+ */
+
 public class InputRequests {
 
     //Prompt Strings
