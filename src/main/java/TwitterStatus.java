@@ -25,7 +25,7 @@ public class TwitterStatus {
             }
         }
         else {
-            System.out.println("An error occurred. Unable to post your tweet [" + text + "]. Sorry!");
+            System.out.println("\n\nAn error occurred. Unable to post your tweet [" + text + "]. Sorry!");
         }
     }
 

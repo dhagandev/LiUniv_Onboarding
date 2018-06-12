@@ -12,47 +12,51 @@ import java.io.IOException;
 
 public class KeyHandler {
     public void setupKeys() {
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         try {
             File hcKeys = new File("hardcoded_keys.xml");
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(hcKeys);
             doc.getDocumentElement().normalize();
 
             NodeList serviceList = doc.getElementsByTagName("service");
-            for (int i = 0; i <= serviceList.getLength(); i++) {
+            for (int i = 0; i < serviceList.getLength(); i++) {
                 Node service = serviceList.item(i);
                 Element element = (Element) service;
-                String name = element.getAttribute("name");
+                String serviceName = element.getAttribute("id");
 
-                if (name.equals("Twitter")) {
+                //Ideally would use switch case based on what serviceName is
+                if (serviceName.equals("Twitter")) {
+                    System.out.println("Setting up " + serviceName + " service...");
                     setupTwitter(element);
+                } else {
+                    System.out.println("Unsupported service presented. " + serviceName);
                 }
-                else {
-                    System.out.println("Unsupported service presented. " + name);
-                }
-
-                //For some reason it is not compatible with a switch case statement?
-//                switch (name) {
-//                    case "Twitter":
-//                        setupTwitter(element);
-//                        break;
-//                    default:
-//                        System.out.println("Unsupported service presented. " + name);
-//                        break;
-//                }
             }
 
         }
         catch (Exception e) {
-            System.out.println(e.toString());
+            System.out.println("Could not set up the keys. " + e.toString());
+            e.printStackTrace();
         }
     }
 
     private static void setupTwitter(Element element) {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("twitter4j.properties"));
-            writer.write("debug=true");
+            writer.write("debug=false\n");
+
+            String conKey = element.getElementsByTagName("consumerKey").item(0).getTextContent();
+            String conSec = element.getElementsByTagName("consumerSecret").item(0).getTextContent();
+            String accToken = element.getElementsByTagName("accessToken").item(0).getTextContent();
+            String accSec = element.getElementsByTagName("accessSecret").item(0).getTextContent();
+
+            writer.write("oauth.consumerKey=" + conKey + "\n");
+            writer.write("oauth.consumerSecret=" + conSec + "\n");
+            writer.write("oauth.accessToken=" + accToken + "\n");
+            writer.write("oauth.accessTokenSecret=" + accSec + "\n");
+
+            writer.close();
         }
         catch (IOException e) {
             System.out.println("Error occurred when setting up twitter4j.properties.");

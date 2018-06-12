@@ -55,6 +55,7 @@ public class InputRequests {
     private static void promptTimeline(Scanner reader) {
         System.out.println(getTimeline + validInput);
         String userInput = getUserInput(reader);
+
         if (userInput.equals("Y")) {
             retrieveTimeline(reader);
         }
