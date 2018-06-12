@@ -45,11 +45,12 @@ public class InputRequests {
         System.out.println("What do you want to tweet? Currently only text is supported.");
         String userInput = reader.nextLine();
         twitterStatusHandler.postStatus(userInput);
-//        promptTimeline(reader);
+        promptTimeline(reader);
     }
 
     private static void retrieveTimeline(Scanner reader) {
-        System.out.println("Sorry! This hasn't been implemented yet. ");
+        TwitterTimeline twitterTimelineHandler = new TwitterTimeline();
+        twitterTimelineHandler.getTimeline();
         promptPost(reader);
     }
 
