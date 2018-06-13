@@ -37,43 +37,13 @@ public class TwitterStatus {
         char[] convertedArr = text.toCharArray();
 
         //Twitter shortens URLs to TWITTER_URL_LEN characters
-        boolean containsURL = statusContainsUrl(text);
         int statusLength = convertedArr.length;
-        if (containsURL) {
-            //Handle URLs shorter than TWITTER_URL_LEN
-            int urlLen = getUrl(text).length();
-            if (urlLen < TWITTER_URL_LEN) {
-                statusLength -= urlLen;
-            }
-            else {
-                statusLength -= TWITTER_URL_LEN;
-            }
-        }
 
         if (statusLength > TWITTER_CHAR_MAX) {
             return false;
         }
 
         return true;
-    }
-
-    private static boolean statusContainsUrl(String text) {
-        //Find possible URL, check validity through isValidUrl
-        return false; //Temporary value
-    }
-
-    private static boolean isValidUrl(String url) {
-        try {
-            new URL(url).toURI();
-            return true;
-        }
-        catch (Exception e) {
-            return false;
-        }
-    }
-
-    private static String getUrl(String status) {
-        return ""; //Empty since I am not actually solving the issue of posting URLs
     }
 
 }
