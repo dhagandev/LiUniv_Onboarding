@@ -1,3 +1,5 @@
+package LiUni;
+
 import java.util.Scanner;
 
 //This will later be converted to a test class with proper test cases.
