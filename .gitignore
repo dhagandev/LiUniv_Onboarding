@@ -1,0 +1,8 @@
+.idea
+*.iml
+local.application.*
+hardcoded_keys.xml
+target
+out
+twitter4j.properties
+*.class
