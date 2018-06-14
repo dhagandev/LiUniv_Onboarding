@@ -1,8 +1,7 @@
 # Lithium University Onboarding
 
 ## Getting Started ##
-TODO: Add set up instructions. (Install Java, IntelliJ, etc)
-Include: Reminder to set Java in $PATH
+Install Java 8. We recommend installing IntelliJ to edit files, but any editor should work so long as it does not change file formats. Remember to include Java in your $PATH.
 
 ## Running the Lithium University Onboarding Program ##
 
@@ -26,5 +25,3 @@ Include: Reminder to set Java in $PATH
 If the program exits prematurely, a status code will be given. The following is a table of what the possible codes are.
 Exit code -1: Twitter Exception
 Exit code -2: Key Handler
-
-TODO: Test this README on a clean machine.
