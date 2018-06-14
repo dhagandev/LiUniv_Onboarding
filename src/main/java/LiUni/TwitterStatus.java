@@ -23,7 +23,7 @@ public class TwitterStatus {
             }
             catch (TwitterException e) {
                 System.out.println("Exception occurred. " + e.getErrorMessage());
-                System.out.println(e.getExceptionCode());
+                e.printStackTrace();
                 System.exit(-1);
             }
         }
