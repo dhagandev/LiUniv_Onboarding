@@ -12,9 +12,8 @@ Install Java 8. We recommend installing IntelliJ to edit files, but any editor s
 
 ### Create the JAR File ###
 4. Open a terminal shell and navigate to the LiUni_Onboarding project.
-5. Run ```mvn compile``` to compile the project.
-6. Run ```mvn package`` to create the jar.
-7. Move your ```hardcoded_keys.xml``` to ```target```.
+5. Run ```mvn package`` to create the jar.
+6. Move your ```hardcoded_keys.xml``` to ```target```.
 
 ### Run the JAR File ###
 7. Navigate to ```LiUni_Onboarding-1.0-SNAPSHOT-jar-with-dependencies.jar```'s location in a terminal shell window. It is likely in the ```target``` folder.
