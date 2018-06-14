@@ -6,8 +6,6 @@ import twitter4j.TwitterFactory;
 import twitter4j.StatusUpdate;
 import twitter4j.Status;
 
-import java.net.URL;
-
 
 public class TwitterStatus {
 
@@ -23,7 +21,7 @@ public class TwitterStatus {
             }
             catch (TwitterException e) {
                 System.out.println("Exception occurred. " + e.getErrorMessage());
-                System.out.println(e.getExceptionCode());
+                e.printStackTrace();
                 System.exit(-1);
             }
         }
