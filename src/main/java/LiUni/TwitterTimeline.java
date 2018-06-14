@@ -13,8 +13,11 @@ public class TwitterTimeline {
             List<Status> statuses = twitter.getHomeTimeline();
             System.out.println("Fetching your home timeline...");
             for (Status status : statuses) {
-                System.out.println(status.toString());
                 System.out.println(status.getUser().getName() + ": " + status.getText());
+                System.out.println(" MORE INFO =======================================");
+                System.out.println(status.toString());
+                System.out.println("==================================================");
+
             }
         }
         catch (Exception e) {
