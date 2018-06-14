@@ -22,9 +22,9 @@ public class InputRequests {
     }
 
     private void postingTweet(Scanner reader) {
-        TwitterStatus twitterStatusHandler = new TwitterStatus();
         System.out.println("What do you want to tweet? Currently only text is supported.");
         String userInput = reader.nextLine();
+        TwitterStatus twitterStatusHandler = new TwitterStatus();
         twitterStatusHandler.postStatus(userInput);
         promptTimeline(reader);
     }
