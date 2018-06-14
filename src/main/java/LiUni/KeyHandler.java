@@ -44,6 +44,7 @@ public class KeyHandler {
         catch (Exception e) {
             System.out.println("Could not set up the keys. " + e.toString());
             e.printStackTrace();
+            System.exit(-2);
         }
     }
 
@@ -66,6 +67,7 @@ public class KeyHandler {
         catch (IOException e) {
             System.out.println("Error occurred when setting up twitter4j.properties.");
             System.out.println(e.toString());
+            System.exit(-2);
         }
         finally {
             try {
@@ -76,6 +78,7 @@ public class KeyHandler {
             catch (IOException e) {
                 System.out.println("Error occurred when closing the Buffered writer.");
                 System.out.println(e.toString());
+                System.exit(-2);
             }
         }
     }
