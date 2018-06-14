@@ -12,7 +12,6 @@ import java.net.URL;
 public class TwitterStatus {
 
     private static final int TWITTER_CHAR_MAX = 280;
-    private static final int TWITTER_URL_LEN = 22;
     private static Twitter twitter = TwitterFactory.getSingleton();
 
     public void postStatus(String text) {
@@ -25,6 +24,7 @@ public class TwitterStatus {
             catch (TwitterException e) {
                 System.out.println("Exception occurred. " + e.getErrorMessage());
                 System.out.println(e.getExceptionCode());
+                System.exit(-1);
             }
         }
         else {

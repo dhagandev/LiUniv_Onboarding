@@ -22,6 +22,9 @@ public class InputRequests {
 
     //Prompt Strings
     private static String validInput = "Input 'Y' or 'y' for yes, 'N' or 'n' for no. 'E' or 'e' will exit the program. ";
+    private static final String YES = "Y";
+    private static final String NO = "N";
+    private static final String EXIT = "E";
     private static String unrecognizedInput = "I'm sorry, I didn't understand that. ";
     private static String postTweet = "Do you want to post a tweet? ";
     private static String getTimeline = "Do you want to see your timeline? ";
@@ -36,7 +39,7 @@ public class InputRequests {
 
     //True = Input is valid; False = Input has some error
     private static boolean validInput(String input) {
-        if (input.equals("Y") || input.equals("N") || input.equals("E")) {
+        if (input.equals(YES) || input.equals(NO) || input.equals(EXIT)) {
             return true;
         }
         return false;
@@ -73,10 +76,10 @@ public class InputRequests {
         System.out.println(getTimeline + validInput);
         String userInput = getUserInput(reader);
 
-        if (userInput.equals("E")) {
+        if (userInput.equals(EXIT)) {
             System.out.println("Thank you! Goodbye.");
         }
-        else if (userInput.equals("Y")) {
+        else if (userInput.equals(YES)) {
             retrieveTimeline(reader);
         }
         else {
@@ -88,10 +91,10 @@ public class InputRequests {
         System.out.println(postTweet + validInput);
         String userInput = getUserInput(reader);
 
-        if (userInput.equals("E")) {
+        if (userInput.equals(EXIT)) {
             System.out.println("Thank you! Goodbye.");
         }
-        else if (userInput.equals("Y")) {
+        else if (userInput.equals(YES)) {
             postingTweet(reader);
         }
         else {

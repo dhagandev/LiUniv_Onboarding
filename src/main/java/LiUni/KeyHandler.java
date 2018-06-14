@@ -14,10 +14,13 @@ import java.io.IOException;
 
 
 public class KeyHandler {
+    private static final String TWITTER = "Twitter";
+    private static final String HCKEY_FILE = "hardcoded_keys.xml";
+
     public void setupKeys() {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         try {
-            File hcKeys = new File("hardcoded_keys.xml");
+            File hcKeys = new File(HCKEY_FILE);
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(hcKeys);
             doc.getDocumentElement().normalize();
@@ -29,7 +32,7 @@ public class KeyHandler {
                 String serviceName = element.getAttribute("id");
 
                 //Ideally would use switch case based on what serviceName is
-                if (serviceName.equals("Twitter")) {
+                if (serviceName.equals(TWITTER)) {
                     System.out.println("Setting up " + serviceName + " service...");
                     setupTwitter(element);
                 } else {
@@ -41,12 +44,14 @@ public class KeyHandler {
         catch (Exception e) {
             System.out.println("Could not set up the keys. " + e.toString());
             e.printStackTrace();
+            System.exit(-2);
         }
     }
 
     private static void setupTwitter(Element element) {
+        BufferedWriter writer = null;
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("twitter4j.properties"));
+            writer = new BufferedWriter(new FileWriter("twitter4j.properties"));
             writer.write("debug=false\n");
 
             String conKey = element.getElementsByTagName("consumerKey").item(0).getTextContent();
@@ -58,12 +63,23 @@ public class KeyHandler {
             writer.write("oauth.consumerSecret=" + conSec + "\n");
             writer.write("oauth.accessToken=" + accToken + "\n");
             writer.write("oauth.accessTokenSecret=" + accSec + "\n");
-
-            writer.close();
         }
         catch (IOException e) {
             System.out.println("Error occurred when setting up twitter4j.properties.");
             System.out.println(e.toString());
+            System.exit(-2);
+        }
+        finally {
+            try {
+                if (writer != null) {
+                    writer.close();
+                }
+            }
+            catch (IOException e) {
+                System.out.println("Error occurred when closing the Buffered writer.");
+                System.out.println(e.toString());
+                System.exit(-2);
+            }
         }
     }
 }

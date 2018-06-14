@@ -22,5 +22,9 @@ Include: Reminder to set Java in $PATH
 9. Navigate to ```LiUni_Onboarding.jar```'s location in a terminal shell window.
 10. Run the file using ```java -jar LiUni_Onboarding.jar```. Follow the prompts.
 
+## Exit Codes ##
+If the program exits prematurely, a status code will be given. The following is a table of what the possible codes are.
+Exit code -1: Twitter Exception
+Exit code -2: Key Handler
 
 TODO: Test this README on a clean machine.
