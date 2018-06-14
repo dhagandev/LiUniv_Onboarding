@@ -17,7 +17,7 @@ Install Java 8. We recommend installing IntelliJ to edit files, but any editor s
 7. Move your ```hardcoded_keys.xml``` to ```target```.
 
 ### Run the JAR File ###
-7. Navigate to ```LiUni_Onboarding-1.0-SNAPSHOT.jar```'s location in a terminal shell window. It is likely in the ```target``` folder.
+7. Navigate to ```LiUni_Onboarding-1.0-SNAPSHOT-jar-with-dependencies.jar```'s location in a terminal shell window. It is likely in the ```target``` folder.
 8. Run the file using ```java -jar LiUni_Onboarding-1.0-SNAPSHOT-jar-with-dependencies.jar```. Follow the prompts.
 
 ## Exit Codes ##

@@ -6,3 +6,4 @@ target
 out
 twitter4j.properties
 *.class
+.DS_Store
