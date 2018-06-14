@@ -1,4 +1,4 @@
-package LiUni;
+package liuni;
 
 import java.util.Scanner;
 

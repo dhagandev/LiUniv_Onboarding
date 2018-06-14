@@ -1,4 +1,4 @@
-package LiUni;
+package liuni;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;

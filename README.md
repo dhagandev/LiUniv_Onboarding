@@ -13,8 +13,8 @@ Install Java 8. We recommend installing IntelliJ to edit files, but any editor s
 ### Create the JAR File ###
 4. Open a terminal shell and navigate to the LiUni_Onboarding project.
 5. Run ```cd src/main/java```.
-6. Run ```javac -cp ../../../twitter4j-core-4.0.4.jar LiUni/*.java``` to compile the project.
-7. Run ```jar cfm ../../../out/artifacts/LiUni_Onboarding_jar/LiUni_Onboarding.jar META-INF/MANIFEST.MF LiUni/*.class```
+6. Run ```javac -cp ../../../twitter4j-core-4.0.4.jar liuni/*.java``` to compile the project.
+7. Run ```jar cfm ../../../out/artifacts/LiUni_Onboarding_jar/LiUni_Onboarding.jar META-INF/MANIFEST.MF liuni/*.class```
 8. Move your ```hardcoded_keys.xml``` to ```out/artifacts/LiUni_Onboarding_jar```
 
 ### Run the JAR File ###

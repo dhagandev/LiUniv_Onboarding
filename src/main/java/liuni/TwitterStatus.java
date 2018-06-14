@@ -1,4 +1,4 @@
-package LiUni;
+package liuni;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
