@@ -10,14 +10,14 @@
     <packaging>jar</packaging>
 
     <properties>
-        <module-version>[4.0,)</module-version>
+        <twitter-version>[4.0,)</twitter-version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.twitter4j</groupId>
             <artifactId>twitter4j-core</artifactId>
-            <version>${module-version}</version>
+            <version>${twitter-version}</version>
         </dependency>
     </dependencies>
 
