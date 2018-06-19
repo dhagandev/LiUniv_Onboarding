@@ -33,10 +33,7 @@ public class TwitterStatus {
     // True = No errors; False = Error occurred
     private boolean textErrorCheck(String text) {
         char[] convertedArr = text.toCharArray();
-
-        //Twitter shortens URLs to TWITTER_URL_LEN characters
         int statusLength = convertedArr.length;
-
         if (statusLength > TWITTER_CHAR_MAX) {
             return false;
         }
