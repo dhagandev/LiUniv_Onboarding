@@ -15,9 +15,14 @@ Install Java 8. We recommend installing IntelliJ to edit files, but any editor s
 5. Run ```mvn package``` to create the jar.
 6. Move your ```hardcoded_keys.xml``` to ```target```.
 
-### Run the JAR File ###
-7. Navigate to ```LiUni_Onboarding-1.0-SNAPSHOT-jar-with-dependencies.jar```'s location in a terminal shell window. It is likely in the ```target``` folder.
-8. Run the file using ```java -jar LiUni_Onboarding-1.0-SNAPSHOT-jar-with-dependencies.jar```. Follow the prompts.
+### Run the Program ###
+#### Hitting the GET route ####
+1. Run the following command in terminal: ```java -jar target/LiUni_Onboarding-1.0-SNAPSHOT.jar server helloworld.yml```
+2. In a browser, navigate to: ```http://localhost:8080/api/1.0/twitter/timeline```
+
+#### Hitting the POST route ####
+1. Run the following command in terminal: ```java -jar target/LiUni_Onboarding-1.0-SNAPSHOT.jar server helloworld.yml```
+2. In a separate terminal, run ```curl --data "MESSAGE" http://localhost:8080/api/1.0/twitter/tweet``` where "MESSAGE" is what it is you would like to post.
 
 ## Exit Codes ##
 If the program exits prematurely, a status code will be given. The following is a table of what the possible codes are.
