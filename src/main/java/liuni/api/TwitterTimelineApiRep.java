@@ -5,17 +5,17 @@ import org.hibernate.validator.constraints.Length;
 
 import org.json.simple.JSONObject;
 
-public class LiUniRepresentation {
+public class TwitterTimelineApiRep {
     private long id;
 
     @Length(max = 3)
     private JSONObject[] timeline;
 
-    public LiUniRepresentation() {
+    public TwitterTimelineApiRep() {
         //Jackson deserialization
     }
 
-    public LiUniRepresentation(long id, JSONObject[] timeline) {
+    public TwitterTimelineApiRep(long id, JSONObject[] timeline) {
         this.id = id;
         this.timeline = timeline;
     }
@@ -29,4 +29,5 @@ public class LiUniRepresentation {
     public JSONObject[] getTimeline() {
         return timeline;
     }
+
 }

@@ -1,6 +1,5 @@
 package liuni;
 
-import liuni.core.Template;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.ImmutableMap;
 import io.dropwizard.Configuration;
@@ -12,36 +11,19 @@ import java.util.Map;
 
 public class LiUniConfiguration extends Configuration {
     @NotEmpty
-    private String template;
-
-    @NotEmpty
-    private String defaultName = "Stranger";
+    private String defaultMessage = "This is a default tweet posted from a route.";
 
     @NotNull
     private Map<String, Map<String, String>> viewRendererConfiguration = Collections.emptyMap();
 
     @JsonProperty
-    public String getTemplate() {
-        return template;
+    public String getDefaultMessage() {
+        return defaultMessage;
     }
 
     @JsonProperty
-    public void setTemplate(String template) {
-        this.template = template;
-    }
-
-    @JsonProperty
-    public String getDefaultName() {
-        return defaultName;
-    }
-
-    @JsonProperty
-    public void setDefaultName(String defaultName) {
-        this.defaultName = defaultName;
-    }
-
-    public Template buildTemplate() {
-        return new Template(template, defaultName);
+    public void setDefaultMessage(String defaultMessage) {
+        this.defaultMessage = defaultMessage;
     }
 
     @JsonProperty("viewRendererConfiguration")

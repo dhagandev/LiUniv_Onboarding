@@ -3,17 +3,17 @@ package liuni.health;
 import com.codahale.metrics.health.HealthCheck;
 
 public class LiUniHealthCheck extends HealthCheck {
-    private final String template;
+    private final String message;
 
-    public LiUniHealthCheck(String template) {
-        this.template = template;
+    public LiUniHealthCheck(String message) {
+        this.message = message;
     }
 
     @Override
     protected Result check() {
-        final String res = String.format(template, "TEST");
+        final String res = String.format(message, "TEST");
         if (!res.contains("TEST")) {
-            return Result.unhealthy("Template doesn't include a name.");
+            return Result.unhealthy("Default message is not empty.");
         }
         return Result.healthy();
     }
