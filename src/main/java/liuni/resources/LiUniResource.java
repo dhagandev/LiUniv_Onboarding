@@ -13,19 +13,13 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.concurrent.atomic.AtomicLong;
 
 
 @Path("/api/1.0/twitter")
 @Produces(MediaType.APPLICATION_JSON)
 public class LiUniResource {
-    private final AtomicLong counterTimeline;
-    private final AtomicLong counterTweet;
 
-    public LiUniResource() {
-        this.counterTimeline = new AtomicLong();
-        this.counterTweet = new AtomicLong();
-    }
+    public LiUniResource() {}
 
     @Path("/timeline")
     @GET
@@ -34,11 +28,11 @@ public class LiUniResource {
         try {
             TwitterTimeline twitterTimeline = new TwitterTimeline();
             JSONObject[] timeline = twitterTimeline.getTimelineJson();
-            return new TwitterTimelineModel(counterTimeline.incrementAndGet(), timeline);
+            return new TwitterTimelineModel(timeline);
         }
         catch (Exception e) {
             e.printStackTrace();
-            return new TwitterTimelineModel(counterTimeline.incrementAndGet(), null, e.toString());
+            return new TwitterTimelineModel(null, e.toString());
         }
     }
 
@@ -48,11 +42,11 @@ public class LiUniResource {
         try {
             TwitterStatus twitterStatus = new TwitterStatus();
             twitterStatus.postStatus(message);
-            return new TwitterTweetModel(counterTweet.incrementAndGet(), message);
+            return new TwitterTweetModel(message);
         }
         catch (Exception e) {
             e.printStackTrace();
-            return new TwitterTweetModel(counterTweet.incrementAndGet(), null, e.toString());
+            return new TwitterTweetModel(null, e.toString());
         }
     }
 
