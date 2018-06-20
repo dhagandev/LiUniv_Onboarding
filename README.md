@@ -17,7 +17,7 @@ Install Java 8. We recommend installing IntelliJ to edit files, but any editor s
 
 ### Run the Program ###
 #### Hitting the GET route ####
-1. Run the following command in terminal: ```java -jar target/LiUni_Onboarding-1.0-SNAPSHOT.jar server helloworld.yml```
+1. Run the following command in terminal: ```java -jar target/LiUni_Onboarding-1.0-SNAPSHOT.jar server local.application.sample.yml```
 2. In a browser, navigate to: ```http://localhost:8080/api/1.0/twitter/timeline```
 
 #### Hitting the POST route ####
