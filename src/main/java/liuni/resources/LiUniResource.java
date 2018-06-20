@@ -31,17 +31,29 @@ public class LiUniResource {
     @GET
     @Timed
     public TwitterTimelineModel fetchTimeline() {
-        TwitterTimeline twitterTimeline = new TwitterTimeline();
-        JSONObject[] timeline = twitterTimeline.getTimelineJson();
-        return new TwitterTimelineModel(counterTimeline.incrementAndGet(), timeline);
+        try {
+            TwitterTimeline twitterTimeline = new TwitterTimeline();
+            JSONObject[] timeline = twitterTimeline.getTimelineJson();
+            return new TwitterTimelineModel(counterTimeline.incrementAndGet(), timeline);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return new TwitterTimelineModel(counterTimeline.incrementAndGet(), null, e.toString());
+        }
     }
 
     @Path("/tweet")
     @POST
     public TwitterTweetModel postTweetPOST(@RequestParam(value="messageVal", required=false) String message) {
-        TwitterStatus twitterStatus = new TwitterStatus();
-        twitterStatus.postStatus(message);
-        return new TwitterTweetModel(counterTweet.incrementAndGet(), message);
+        try {
+            TwitterStatus twitterStatus = new TwitterStatus();
+            twitterStatus.postStatus(message);
+            return new TwitterTweetModel(counterTweet.incrementAndGet(), message);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return new TwitterTweetModel(counterTweet.incrementAndGet(), null, e.toString());
+        }
     }
 
 }

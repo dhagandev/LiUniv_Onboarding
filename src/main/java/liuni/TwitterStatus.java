@@ -11,19 +11,12 @@ public class TwitterStatus {
 
     private static final int TWITTER_CHAR_MAX = 280;
 
-    public void postStatus(String text) {
+    public void postStatus(String text) throws Exception {
         Twitter twitter = TwitterFactory.getSingleton();
         if (textErrorCheck(text)) {
             StatusUpdate newStatus = new StatusUpdate(text);
-            try {
                 Status status = twitter.updateStatus(newStatus);
                 System.out.println("Successfully updated status to [" + status.getText() + "].");
-            }
-            catch (TwitterException e) {
-                System.out.println("Exception occurred. " + e.getErrorMessage());
-                e.printStackTrace();
-                System.exit(-1);
-            }
         }
         else {
             System.out.println("\n\nAn error occurred. Unable to post your tweet [" + text + "]. Sorry!");
