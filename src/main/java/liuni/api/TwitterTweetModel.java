@@ -2,22 +2,21 @@ package liuni.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.Length;
-
 import org.json.simple.JSONObject;
 
-public class TwitterTimelineApiRep {
+public class TwitterTweetModel {
     private long id;
 
     @Length(max = 3)
-    private JSONObject[] timeline;
+    private String message;
 
-    public TwitterTimelineApiRep() {
+    public TwitterTweetModel() {
         //Jackson deserialization
     }
 
-    public TwitterTimelineApiRep(long id, JSONObject[] timeline) {
+    public TwitterTweetModel(long id, String message) {
         this.id = id;
-        this.timeline = timeline;
+        this.message = message;
     }
 
     @JsonProperty
@@ -26,8 +25,8 @@ public class TwitterTimelineApiRep {
     }
 
     @JsonProperty
-    public JSONObject[] getTimeline() {
-        return timeline;
+    public String getMessage() {
+        return message;
     }
 
 }
