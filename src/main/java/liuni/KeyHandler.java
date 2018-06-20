@@ -6,6 +6,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+import twitter4j.conf.ConfigurationBuilder;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -66,13 +70,22 @@ public class KeyHandler {
         }
         catch (IOException e) {
             System.out.println("Error occurred when setting up twitter4j.properties.");
-            System.out.println(e.toString());
+            e.printStackTrace();
             System.exit(-2);
         }
         finally {
             try {
                 if (writer != null) {
                     writer.close();
+                }
+                try {
+                    Twitter twitter = TwitterFactory.getSingleton();
+                    twitter.verifyCredentials();
+                }
+                catch (TwitterException e) {
+                    System.out.println("Error occurred; improper credentials for Twitter.");
+                    e.printStackTrace();
+                    System.exit(-1);
                 }
             }
             catch (IOException e) {
