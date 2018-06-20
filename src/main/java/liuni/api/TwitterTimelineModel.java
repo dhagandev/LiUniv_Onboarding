@@ -1,14 +1,10 @@
 package liuni.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.validator.constraints.Length;
 
 import org.json.simple.JSONObject;
 
 public class TwitterTimelineModel {
-    private long id;
-
-    @Length(max = 3)
     private JSONObject[] timeline;
 
     private String error;
@@ -17,21 +13,14 @@ public class TwitterTimelineModel {
         //Jackson deserialization
     }
 
-    public TwitterTimelineModel(long id, JSONObject[] timeline, String error) {
-        this.id = id;
+    public TwitterTimelineModel(JSONObject[] timeline, String error) {
         this.timeline = timeline;
         this.error = error;
     }
 
-    public TwitterTimelineModel(long id, JSONObject[] timeline) {
-        this.id = id;
+    public TwitterTimelineModel(JSONObject[] timeline) {
         this.timeline = timeline;
         this.error = null;
-    }
-
-    @JsonProperty
-    public long getId() {
-        return id;
     }
 
     @JsonProperty

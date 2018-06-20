@@ -11,8 +11,8 @@ public class LiUniHealthCheck extends HealthCheck {
 
     @Override
     protected Result check() {
-        final String res = String.format(message, "TEST");
-        if (!res.contains("TEST")) {
+        final String res = String.format(message, "This is a default tweet message.");
+        if (!res.contains("This is a default tweet message.")) {
             return Result.unhealthy("Default message is not empty.");
         }
         return Result.healthy();
