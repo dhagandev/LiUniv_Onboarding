@@ -42,7 +42,7 @@ public class LiUniResource {
             e.printStackTrace();
             ErrorModel error = new ErrorModel();
             responseBuilder.status(error.getErrorStatus());
-            responseBuilder.entity(error.getError());
+            responseBuilder.entity(error.getGeneralError());
         }
         return responseBuilder.build();
     }
@@ -55,15 +55,23 @@ public class LiUniResource {
         responseBuilder.type(MediaType.APPLICATION_JSON);
         try {
             TwitterStatus twitterStatus = new TwitterStatus();
-            twitterStatus.postStatus(message);
-            responseBuilder.status(Response.Status.CREATED);
-            responseBuilder.entity(new TwitterTweetModel(message).getMessage());
+            if (twitterStatus.textErrorCheck(message)) {
+                twitterStatus.postStatus(message);
+                responseBuilder.status(Response.Status.CREATED);
+                responseBuilder.entity(new TwitterTweetModel(message).getMessage());
+            }
+            else {
+                System.out.println("\n\nAn error occurred. Unable to post your tweet [" + message + "]. Sorry!");
+                ErrorModel error = new ErrorModel();
+                responseBuilder.status(error.getErrorStatus());
+                responseBuilder.entity(error.getBadTweetError());
+            }
         }
         catch (Exception e) {
             e.printStackTrace();
             ErrorModel error = new ErrorModel();
             responseBuilder.status(error.getErrorStatus());
-            responseBuilder.entity(error.getError());
+            responseBuilder.entity(error.getGeneralError());
         }
         return responseBuilder.build();
     }

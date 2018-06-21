@@ -12,18 +12,13 @@ public class TwitterStatus {
 
     public void postStatus(String text) throws Exception {
         Twitter twitter = TwitterFactory.getSingleton();
-        if (textErrorCheck(text)) {
-            StatusUpdate newStatus = new StatusUpdate(text);
-                Status status = twitter.updateStatus(newStatus);
-                System.out.println("Successfully updated status to [" + status.getText() + "].");
-        }
-        else {
-            System.out.println("\n\nAn error occurred. Unable to post your tweet [" + text + "]. Sorry!");
-        }
+        StatusUpdate newStatus = new StatusUpdate(text);
+        Status status = twitter.updateStatus(newStatus);
+        System.out.println("Successfully updated status to [" + status.getText() + "].");
     }
 
     // True = No errors; False = Error occurred
-    private boolean textErrorCheck(String text) {
+    public boolean textErrorCheck(String text) {
         char[] convertedArr = text.toCharArray();
         int statusLength = convertedArr.length;
         if (statusLength > TWITTER_CHAR_MAX || text.equals("")) {
