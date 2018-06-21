@@ -1,7 +1,6 @@
 package liuni.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.json.simple.JSONObject;
 
 public class TwitterTweetModel {
     private String message;
@@ -16,13 +15,6 @@ public class TwitterTweetModel {
     @JsonProperty
     public String getMessage() {
         return message;
-    }
-
-    @JsonProperty
-    public JSONObject toJSON() {
-        JSONObject jObj = new JSONObject();
-        jObj.put("message", message);
-        return jObj;
     }
 
 }

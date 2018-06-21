@@ -1,29 +1,24 @@
 package liuni.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.json.simple.JSONObject;
+import twitter4j.Status;
+
+import java.util.List;
 
 public class TwitterTimelineModel {
-    private JSONObject[] timeline;
+    private List<Status> timeline;
 
     public TwitterTimelineModel() {
         //Jackson deserialization
     }
 
-    public TwitterTimelineModel(JSONObject[] timeline) {
+    public TwitterTimelineModel(List<Status> timeline) {
         this.timeline = timeline;
     }
 
     @JsonProperty
-    public JSONObject[] getTimeline() {
+    public List<Status> getTimeline() {
         return timeline;
-    }
-
-    @JsonProperty
-    public JSONObject toJSON() {
-        JSONObject jObj = new JSONObject();
-        jObj.put("timeline", timeline);
-        return jObj;
     }
 
 }
