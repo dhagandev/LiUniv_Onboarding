@@ -1,13 +1,27 @@
 package liuni;
 
-import java.util.Scanner;
+import io.dropwizard.Configuration;
+import liuni.health.LiUniHealthCheck;
+import liuni.resources.LiUniResource;
+import io.dropwizard.Application;
+import io.dropwizard.setup.Environment;
 
-public class LiUniDriver {
+public class LiUniDriver extends Application<Configuration> {
     public static void main(String args[]) {
-        Scanner reader = new Scanner(System.in);
         KeyHandler keyHandler = new KeyHandler();
         keyHandler.setupKeys();
-        InputRequests iReqs = new InputRequests();
-        iReqs.promptPost(reader);
+        try {
+            new LiUniDriver().run(args);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @Override
+    public void run(Configuration config, Environment env) {
+        final LiUniResource resource = new LiUniResource();
+        final LiUniHealthCheck healthCheck = new LiUniHealthCheck();
+        env.healthChecks().register("TwitterHealth", healthCheck);
+        env.jersey().register(resource);
     }
 }
