@@ -1,20 +1,29 @@
 package liuni.health;
 
 import com.codahale.metrics.health.HealthCheck;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
 
 public class LiUniHealthCheck extends HealthCheck {
-    private final String message;
 
-    public LiUniHealthCheck(String message) {
-        this.message = message;
-    }
+    public LiUniHealthCheck() { }
 
     @Override
     protected Result check() {
-        final String res = String.format(message, "This is a default tweet message.");
-        if (!res.contains("This is a default tweet message.")) {
-            return Result.unhealthy("Default message is not empty.");
+        //If there needs to be more than verify credentials, expand this to run
+        //until either all results show healthy or return the first unhealthy result
+        return verifyCredentials();
+    }
+
+    private Result verifyCredentials() {
+        try {
+            Twitter twitter = TwitterFactory.getSingleton();
+            twitter.verifyCredentials();
+            return Result.healthy();
         }
-        return Result.healthy();
+        catch (TwitterException e) {
+            return Result.unhealthy("Error occurred; invalid credentials for Twitter.");
+        }
     }
 }

@@ -2,14 +2,11 @@ package liuni;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
-import twitter4j.TwitterException;
 import twitter4j.Status;
 import twitter4j.TwitterObjectFactory;
 import twitter4j.conf.ConfigurationBuilder;
-
 
 import java.util.List;
 
@@ -22,11 +19,11 @@ public class TwitterTimeline {
         List<Status> statuses = twitter.getHomeTimeline();
 
         JSONObject[] jsonObjects = new JSONObject[statuses.size()];
+        JSONParser parser = new JSONParser();
         for (int i = 0; i < statuses.size(); i++) {
-                String rawJsonStr = TwitterObjectFactory.getRawJSON(statuses.get(i));
-                JSONParser parser = new JSONParser();
-                JSONObject jsonObject = (JSONObject) parser.parse(rawJsonStr);
-                jsonObjects[i] = jsonObject;
+            String rawJsonStr = TwitterObjectFactory.getRawJSON(statuses.get(i));
+            JSONObject jsonObject = (JSONObject) parser.parse(rawJsonStr);
+            jsonObjects[i] = jsonObject;
         }
         return jsonObjects;
 

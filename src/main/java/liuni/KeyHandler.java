@@ -51,7 +51,7 @@ public class KeyHandler {
         }
     }
 
-    private static void setupTwitter(Element element) {
+    private void setupTwitter(Element element) {
         BufferedWriter writer = null;
         try {
             writer = new BufferedWriter(new FileWriter("twitter4j.properties"));
@@ -77,21 +77,25 @@ public class KeyHandler {
                 if (writer != null) {
                     writer.close();
                 }
-                try {
-                    Twitter twitter = TwitterFactory.getSingleton();
-                    twitter.verifyCredentials();
-                }
-                catch (TwitterException e) {
-                    System.out.println("Error occurred; improper credentials for Twitter.");
-                    e.printStackTrace();
-                    System.exit(-1);
-                }
+                twitterValidCredentials();
             }
             catch (IOException e) {
                 System.out.println("Error occurred when closing the Buffered writer.");
                 System.out.println(e.toString());
                 System.exit(-2);
             }
+        }
+    }
+
+    private void twitterValidCredentials() {
+        try {
+            Twitter twitter = TwitterFactory.getSingleton();
+            twitter.verifyCredentials();
+        }
+        catch (TwitterException e) {
+            System.out.println("Error occurred; improper credentials for Twitter.");
+            e.printStackTrace();
+            System.exit(-1);
         }
     }
 }

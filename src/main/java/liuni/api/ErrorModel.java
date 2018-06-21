@@ -3,27 +3,26 @@ package liuni.api;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.json.simple.JSONObject;
 
-public class TwitterTimelineModel {
-    private JSONObject[] timeline;
+public class ErrorModel {
+    private String error;
 
-    public TwitterTimelineModel() {
+    public ErrorModel() {
         //Jackson deserialization
     }
 
-    public TwitterTimelineModel(JSONObject[] timeline) {
-        this.timeline = timeline;
+    public ErrorModel(String error) {
+        this.error = error;
     }
 
     @JsonProperty
-    public JSONObject[] getTimeline() {
-        return timeline;
+    public String getError() {
+        return error;
     }
 
     @JsonProperty
     public JSONObject toJSON() {
         JSONObject jObj = new JSONObject();
-        jObj.put("timeline", timeline);
+        jObj.put("error", error);
         return jObj;
     }
-
 }
