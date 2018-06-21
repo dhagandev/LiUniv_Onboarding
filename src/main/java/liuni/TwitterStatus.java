@@ -10,15 +10,15 @@ public class TwitterStatus {
 
     private static final int TWITTER_CHAR_MAX = 280;
 
-    public void postStatus(String text) throws Exception {
+    public void postStatus(Object text) throws Exception {
         Twitter twitter = TwitterFactory.getSingleton();
-        if (textErrorCheck(text)) {
-            StatusUpdate newStatus = new StatusUpdate(text);
+        if (textErrorCheck(text.toString())) {
+            StatusUpdate newStatus = new StatusUpdate(text.toString());
                 Status status = twitter.updateStatus(newStatus);
                 System.out.println("Successfully updated status to [" + status.getText() + "].");
         }
         else {
-            System.out.println("\n\nAn error occurred. Unable to post your tweet [" + text + "]. Sorry!");
+            System.out.println("\n\nAn error occurred. Unable to post your tweet [" + text.toString() + "]. Sorry!");
         }
     }
 

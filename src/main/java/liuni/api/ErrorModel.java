@@ -32,6 +32,9 @@ public class ErrorModel {
         if (error.contains("Authentication credentials")) {
             return Response.Status.UNAUTHORIZED;
         }
+        else if (error.contains("Status is a duplicate")) {
+            return Response.Status.FORBIDDEN;
+        }
         else {
             return Response.Status.BAD_REQUEST;
         }
