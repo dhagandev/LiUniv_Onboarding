@@ -13,6 +13,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 
 @Path("/api/1.0/twitter")
@@ -24,30 +26,42 @@ public class LiUniResource {
     @Path("/timeline")
     @GET
     @Timed
-    public JSONObject fetchTimeline() {
+    public Response fetchTimeline() {
+        ResponseBuilder responseBuilder = Response.noContent();
+        responseBuilder.type(MediaType.APPLICATION_JSON);
         try {
             TwitterTimeline twitterTimeline = new TwitterTimeline();
             JSONObject[] timeline = twitterTimeline.getTimelineJson();
-            return new TwitterTimelineModel(timeline).toJSON();
+            responseBuilder.status(Response.Status.OK);
+            responseBuilder.entity(new TwitterTimelineModel(timeline).toJSON());
         }
         catch (Exception e) {
             e.printStackTrace();
-            return new ErrorModel(e.toString()).toJSON();
+            ErrorModel error = new ErrorModel(e.getMessage());
+            responseBuilder.status(error.getErrorStatus());
+            responseBuilder.entity(error.toJSON());
         }
+        return responseBuilder.build();
     }
 
     @Path("/tweet")
     @POST
-    public JSONObject postTweet(String message) {
+    public Response postTweet(String message) {
+        ResponseBuilder responseBuilder = Response.noContent();
+        responseBuilder.type(MediaType.APPLICATION_JSON);
         try {
             TwitterStatus twitterStatus = new TwitterStatus();
             twitterStatus.postStatus(message);
-            return new TwitterTweetModel(message).toJSON();
+            responseBuilder.status(Response.Status.CREATED);
+            responseBuilder.entity(new TwitterTweetModel(message).toJSON());
         }
         catch (Exception e) {
             e.printStackTrace();
-            return new ErrorModel(e.toString()).toJSON();
+            ErrorModel error = new ErrorModel(e.getMessage());
+            responseBuilder.status(error.getErrorStatus());
+            responseBuilder.entity(error.toJSON());
         }
+        return responseBuilder.build();
     }
 
 }
