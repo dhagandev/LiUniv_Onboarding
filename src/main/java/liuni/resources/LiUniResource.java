@@ -40,7 +40,7 @@ public class LiUniResource {
         }
         catch (Exception e) {
             e.printStackTrace();
-            ErrorModel error = new ErrorModel(e.getMessage());
+            ErrorModel error = new ErrorModel();
             responseBuilder.status(error.getErrorStatus());
             responseBuilder.entity(error.getError());
         }
@@ -61,7 +61,7 @@ public class LiUniResource {
         }
         catch (Exception e) {
             e.printStackTrace();
-            ErrorModel error = new ErrorModel(e.getMessage());
+            ErrorModel error = new ErrorModel();
             responseBuilder.status(error.getErrorStatus());
             responseBuilder.entity(error.getError());
         }

@@ -4,31 +4,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.ws.rs.core.Response;
 
 public class ErrorModel {
-    private String error;
+    private final String ERROR = "We are sorry you are experiencing trouble with our app. Contact our administration if this error continues. In the mean time, we recommend going to https://chromedino.com/";
 
     public ErrorModel() {
         //Jackson deserialization
     }
 
-    public ErrorModel(String error) {
-        this.error = error;
-    }
-
     @JsonProperty
     public String getError() {
-        return error;
+        return ERROR;
     }
 
     public Response.Status getErrorStatus() {
-        if (error.contains("Authentication credentials")) {
-            return Response.Status.UNAUTHORIZED;
-        }
-        else if (error.contains("Status is a duplicate")) {
-            return Response.Status.FORBIDDEN;
-        }
-        else {
-            return Response.Status.BAD_REQUEST;
-        }
+        return Response.Status.INTERNAL_SERVER_ERROR;
     }
 
 }
