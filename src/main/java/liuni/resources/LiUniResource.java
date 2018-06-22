@@ -34,7 +34,7 @@ public class LiUniResource {
         responseBuilder.type(MediaType.APPLICATION_JSON);
         try {
             TwitterTimeline twitterTimeline = new TwitterTimeline();
-            List<Status> timeline = twitterTimeline.getTimelineJson();
+            List<Status> timeline = twitterTimeline.getTimeline();
             responseBuilder.status(Response.Status.OK);
             responseBuilder.entity(new TwitterTimelineModel(timeline).getTimeline());
         }
@@ -55,8 +55,8 @@ public class LiUniResource {
         responseBuilder.type(MediaType.APPLICATION_JSON);
         try {
             TwitterStatus twitterStatus = new TwitterStatus();
-            if (twitterStatus.textErrorCheck(message)) {
-                twitterStatus.postStatus(message);
+            boolean successfullyPosted = twitterStatus.postStatus(message);
+            if (successfullyPosted) {
                 responseBuilder.status(Response.Status.CREATED);
                 responseBuilder.entity(new TwitterTweetModel(message).getMessage());
             }

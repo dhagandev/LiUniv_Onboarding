@@ -2,23 +2,36 @@ package liuni;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
-import twitter4j.StatusUpdate;
 import twitter4j.Status;
-
 
 public class TwitterStatus {
 
     private static final int TWITTER_CHAR_MAX = 280;
+    private static Twitter twitter;
 
-    public void postStatus(String text) throws Exception {
-        Twitter twitter = TwitterFactory.getSingleton();
-        StatusUpdate newStatus = new StatusUpdate(text);
-        Status status = twitter.updateStatus(newStatus);
-        System.out.println("Successfully updated status to [" + status.getText() + "].");
+    public TwitterStatus() {
+        twitter = TwitterFactory.getSingleton();
+    }
+
+    public boolean postStatus(String text) throws Exception {
+        boolean isOkToPost = textErrorCheck(text);
+        if (isOkToPost) {
+            Status status = twitter.updateStatus(text);
+            if (status.equals(null)) {
+                return false;
+            }
+            System.out.println("Successfully updated status to [" + status.getText() + "].");
+        }
+
+        return isOkToPost;
+    }
+
+    public void setTwitter(Twitter twitter) {
+        this.twitter = twitter;
     }
 
     // True = No errors; False = Error occurred
-    public boolean textErrorCheck(String text) {
+    private boolean textErrorCheck(String text) {
         char[] convertedArr = text.toCharArray();
         int statusLength = convertedArr.length;
         if (statusLength > TWITTER_CHAR_MAX || text.equals("")) {

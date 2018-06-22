@@ -7,10 +7,9 @@ import twitter4j.Status;
 import java.util.List;
 
 public class TwitterTimeline {
-    public List<Status> getTimelineJson() throws Exception {
+    public List<Status> getTimeline() throws Exception {
         Twitter twitter = TwitterFactory.getSingleton();
         List<Status> statuses = twitter.getHomeTimeline();
         return statuses;
-
     }
 }
