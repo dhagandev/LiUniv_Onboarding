@@ -6,6 +6,7 @@ import liuni.api.ErrorModel;
 import liuni.api.TwitterTimelineModel;
 import com.codahale.metrics.annotation.Timed;
 import liuni.api.TwitterTweetModel;
+import twitter4j.ResponseList;
 import twitter4j.Status;
 
 import javax.ws.rs.Consumes;
@@ -34,7 +35,7 @@ public class LiUniResource {
         responseBuilder.type(MediaType.APPLICATION_JSON);
         try {
             TwitterTimeline twitterTimeline = new TwitterTimeline();
-            List<Status> timeline = twitterTimeline.getTimeline();
+            ResponseList<Status> timeline = twitterTimeline.getTimeline();
             responseBuilder.status(Response.Status.OK);
             responseBuilder.entity(new TwitterTimelineModel(timeline).getTimeline());
         }
