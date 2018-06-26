@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-
 public class KeyHandler {
     private static final String TWITTER = "Twitter";
     private static final String HCKEY_FILE = "hardcoded_keys.xml";

@@ -1,6 +1,7 @@
 package liuni;
 
 import twitter4j.Twitter;
+import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.Status;
 
@@ -13,7 +14,7 @@ public class TwitterStatus {
         twitter = TwitterFactory.getSingleton();
     }
 
-    public boolean postStatus(String text) throws Exception {
+    public boolean postStatus(String text) throws TwitterException {
         boolean isOkToPost = textErrorCheck(text);
         if (isOkToPost) {
             Status status = twitter.updateStatus(text);
@@ -40,5 +41,4 @@ public class TwitterStatus {
 
         return true;
     }
-
 }
