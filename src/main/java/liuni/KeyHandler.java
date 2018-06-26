@@ -18,6 +18,15 @@ import java.io.IOException;
 public class KeyHandler {
     private static final String TWITTER = "Twitter";
     private static final String HCKEY_FILE = "hardcoded_keys.xml";
+    private Twitter twitter;
+
+    public KeyHandler() {
+        twitter = TwitterFactory.getSingleton();
+    }
+
+    public void setTwitter(Twitter twitter) {
+        this.twitter = twitter;
+    }
 
     public void setupKeys() {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -46,14 +55,14 @@ public class KeyHandler {
         catch (Exception e) {
             System.out.println("Could not set up the keys. " + e.toString());
             e.printStackTrace();
-            System.exit(-2);
+//            System.exit(-2);
         }
     }
 
     private void setupTwitter(Element element) {
         BufferedWriter writer = null;
         try {
-            writer = new BufferedWriter(new FileWriter("twitter4j.properties"));
+            writer = new BufferedWriter(new FileWriter("target/twitter4j.properties"));
             writer.write("debug=false\n");
 
             String conKey = element.getElementsByTagName("consumerKey").item(0).getTextContent();
@@ -69,7 +78,7 @@ public class KeyHandler {
         catch (IOException e) {
             System.out.println("Error occurred when setting up twitter4j.properties.");
             e.printStackTrace();
-            System.exit(-2);
+//            System.exit(-2);
         }
         finally {
             try {
@@ -81,14 +90,13 @@ public class KeyHandler {
             catch (IOException e) {
                 System.out.println("Error occurred when closing the Buffered writer.");
                 System.out.println(e.toString());
-                System.exit(-2);
+//                System.exit(-2);
             }
         }
     }
 
     private void twitterValidCredentials() {
         try {
-            Twitter twitter = TwitterFactory.getSingleton();
             twitter.verifyCredentials();
         }
         catch (TwitterException e) {

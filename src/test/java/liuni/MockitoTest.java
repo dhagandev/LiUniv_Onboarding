@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.BDDMockito;
+import org.w3c.dom.Element;
 import twitter4j.RateLimitStatus;
 import twitter4j.ResponseList;
 import twitter4j.Twitter;
@@ -15,6 +15,9 @@ import twitter4j.Status;
 import twitter4j.TwitterException;
 
 import javax.ws.rs.core.Response;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,14 +31,36 @@ public class MockitoTest {
 
     @Mock private Twitter twitter;
     @Mock private Status status;
+    @Mock private Element element;
 
     @InjectMocks TwitterStatus twitterStatus;
     @InjectMocks TwitterTimeline twitterTimeline;
     @InjectMocks LiUniResource resource;
+    @InjectMocks KeyHandler keyHandler;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+    }
+
+    /* Test KeyHandler .setupKeys() method */
+    @Test
+    public void testSetupKeys_HCKeysExist() {
+        File HCKeysFile = new File("hardcoded_keys.xml");
+        assertTrue(HCKeysFile.exists());
+    }
+
+    @Test
+    public void testSetupKeys_createTwitterProperties_Success() {
+        File twitterPropFile = new File("target/twitter4j.properties");
+        assertFalse(twitterPropFile.exists());
+
+        keyHandler = new KeyHandler();
+        keyHandler.setTwitter(twitter);
+
+        keyHandler.setupKeys();
+        assertTrue(twitterPropFile.exists());
+        twitterPropFile.delete();
     }
 
     /* Test LiUniResource .fetchTimeline() REST method */
