@@ -32,7 +32,10 @@ public class KeyHandlerTests {
 
     @Test
     public void testSetupKeys_createTwitterProperties_Success() {
-        File twitterPropFile = new File("target/twitter4j.properties");
+        File twitterPropFile = new File("twitter4j.properties");
+        if(twitterPropFile.exists()) {
+            twitterPropFile.delete();
+        }
         assertFalse(twitterPropFile.exists());
 
         keyHandler = new KeyHandler();

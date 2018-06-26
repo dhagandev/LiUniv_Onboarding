@@ -62,7 +62,7 @@ public class KeyHandler {
     private void setupTwitter(Element element) {
         BufferedWriter writer = null;
         try {
-            writer = new BufferedWriter(new FileWriter("target/twitter4j.properties"));
+            writer = new BufferedWriter(new FileWriter("twitter4j.properties"));
             writer.write("debug=false\n");
 
             String conKey = element.getElementsByTagName("consumerKey").item(0).getTextContent();
