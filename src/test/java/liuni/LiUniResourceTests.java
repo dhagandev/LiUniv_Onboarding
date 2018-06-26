@@ -17,7 +17,6 @@ import twitter4j.TwitterException;
 import javax.ws.rs.core.Response;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
@@ -27,7 +26,6 @@ public class LiUniResourceTests {
     @Mock private Status status;
 
     @InjectMocks TwitterStatus twitterStatus;
-    @InjectMocks TwitterTimeline twitterTimeline;
     @InjectMocks LiUniResource resource;
 
     @Before

@@ -9,6 +9,7 @@ import twitter4j.Twitter;
 
 import java.io.File;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -21,13 +22,15 @@ public class KeyHandlerTests {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+        keyHandler = new KeyHandler();
+        keyHandler.setTwitter(twitter);
     }
 
     /* Test KeyHandler .setupKeys() method */
     @Test
     public void testSetupKeys_HCKeysExist() {
         File HCKeysFile = new File("hardcoded_keys.xml");
-        assertTrue(HCKeysFile.exists());
+        assertEquals(HCKeysFile.exists(), true);
     }
 
     @Test
@@ -36,13 +39,10 @@ public class KeyHandlerTests {
         if(twitterPropFile.exists()) {
             twitterPropFile.delete();
         }
-        assertFalse(twitterPropFile.exists());
-
-        keyHandler = new KeyHandler();
-        keyHandler.setTwitter(twitter);
+        assertEquals(twitterPropFile.exists(), false);
 
         keyHandler.setupKeys();
-        assertTrue(twitterPropFile.exists());
+        assertEquals(twitterPropFile.exists(), true);
         twitterPropFile.delete();
     }
 }

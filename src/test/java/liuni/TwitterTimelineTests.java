@@ -1,5 +1,7 @@
 package liuni;
 
+import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -11,7 +13,7 @@ import twitter4j.Twitter;
 
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 
@@ -24,54 +26,50 @@ public class TwitterTimelineTests {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+        twitterTimeline = new TwitterTimeline();
+        twitterTimeline.setTwitter(twitter);
+    }
+
+    @After
+    public void tearDown() {
+        reset(twitter);
+        reset(status);
     }
 
     /* Test TwitterTimeline .getTimeline() method */
     @Test
     public void testTwitterTimeline_Empty() {
-        twitterTimeline = new TwitterTimeline();
-        twitterTimeline.setTwitter(twitter);
         ResponseList<Status> respList = new ResponseListImpl<Status>();
-        boolean testResult;
-        try {
-            doReturn(respList).when(twitter).getHomeTimeline();
-
-            List<Status> testList = twitterTimeline.getTimeline();
-            testResult = testList.size() == 0;
-        }
-        catch (Exception e) {
-            testResult = false;
-        }
-        assertTrue(testResult);
-        reset(twitter);
-        reset(status);
-    }
-
-    @Test
-    public void testTwitterTimeline_Update() {
-        twitterTimeline = new TwitterTimeline();
-        twitterTimeline.setTwitter(twitter);
-        ResponseList<Status> respList = new ResponseListImpl<Status>();
-        boolean testResult;
         try {
             doReturn(respList).when(twitter).getHomeTimeline();
 
             List<Status> testResultList = twitterTimeline.getTimeline();
-            testResult = testResultList.size() == 0;
-            assertTrue(testResult);
+
+            assertEquals(testResultList.size() == 0, true);
+        }
+        catch (Exception e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testTwitterTimeline_Update() {
+        ResponseList<Status> respList = new ResponseListImpl<Status>();
+        try {
+            doReturn(respList).when(twitter).getHomeTimeline();
+
+            List<Status> testResultList = twitterTimeline.getTimeline();
+            assertEquals(testResultList.size() == 0, true);
 
             respList.add(status);
             respList.size();
 
             testResultList = twitterTimeline.getTimeline();
-            testResult = testResultList.size() == 1;
+            assertEquals(testResultList.equals(respList), true);
         }
         catch (Exception e) {
-            testResult = false;
+            Assert.fail();
         }
-        assertTrue(testResult);
-        reset(twitter);
-        reset(status);
     }
 
 }
