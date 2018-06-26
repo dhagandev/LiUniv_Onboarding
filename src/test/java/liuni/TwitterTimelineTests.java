@@ -48,6 +48,7 @@ public class TwitterTimelineTests {
             assertEquals(testResultList.size() == 0, true);
         }
         catch (Exception e) {
+            System.out.println("This exception is not expected.");
             Assert.fail();
         }
     }
@@ -68,6 +69,7 @@ public class TwitterTimelineTests {
             assertEquals(testResultList.equals(respList), true);
         }
         catch (Exception e) {
+            System.out.println("This exception is not expected.");
             Assert.fail();
         }
     }

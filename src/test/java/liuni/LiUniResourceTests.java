@@ -52,9 +52,11 @@ public class LiUniResourceTests {
             boolean statusCheck = resp.getStatus() == Response.Status.OK.getStatusCode();
             boolean entityCheck = resp.hasEntity() && resp.getEntity().equals(respList);
 
-            assertEquals(statusCheck && entityCheck, true);
+            assertEquals(statusCheck, true);
+            assertEquals(entityCheck, true);
         }
         catch (Exception e) {
+            System.out.println("This exception is not expected.");
             Assert.fail();
         }
     }
@@ -75,9 +77,11 @@ public class LiUniResourceTests {
             statusCheck = resp.getStatus() == Response.Status.OK.getStatusCode();
             entityCheck = resp.hasEntity() && resp.getEntity().equals(respList);
 
-            assertEquals(statusCheck && entityCheck, true);
+            assertEquals(statusCheck, true);
+            assertEquals(entityCheck, true);
         }
         catch (Exception e) {
+            System.out.println("This exception is not expected.");
             Assert.fail();
         }
     }
@@ -94,9 +98,11 @@ public class LiUniResourceTests {
             boolean statusCheck = resp.getStatus() == Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
             boolean entityCheck = resp.getEntity().toString().equals(expectedError);
 
-            assertEquals(statusCheck && entityCheck, true);
+            assertEquals(statusCheck, true);
+            assertEquals(entityCheck, true);
         }
         catch (Exception e) {
+            System.out.println("This exception is not expected.");
             Assert.fail();
         }
     }
@@ -113,9 +119,11 @@ public class LiUniResourceTests {
             boolean statusCheck = resp.getStatus() == Response.Status.CREATED.getStatusCode();
             boolean entityCheck = resp.getEntity().toString().equals(testString);
 
-            assertEquals(statusCheck && entityCheck, true);
+            assertEquals(statusCheck, true);
+            assertEquals(entityCheck, true);
         }
         catch (Exception e) {
+            System.out.println("This exception is not expected.");
             Assert.fail();
         }
     }
@@ -132,9 +140,11 @@ public class LiUniResourceTests {
             boolean statusCheck = resp.getStatus() == Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
             boolean entityCheck = resp.getEntity().toString().equals(expectedError);
 
-            assertEquals(statusCheck && entityCheck, true);
+            assertEquals(statusCheck, true);
+            assertEquals(entityCheck, true);
         }
         catch (Exception e) {
+            System.out.println("This exception is not expected.");
             Assert.fail();
         }
     }
@@ -150,9 +160,11 @@ public class LiUniResourceTests {
             boolean statusCheck = resp.getStatus() == Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
             boolean entityCheck = resp.getEntity().toString().equals(expectedError);
 
-            assertEquals(statusCheck && entityCheck, true);
+            assertEquals(statusCheck, true);
+            assertEquals(entityCheck, true);
         }
         catch (Exception e) {
+            System.out.println("This exception is not expected.");
             Assert.fail();
         }
     }
