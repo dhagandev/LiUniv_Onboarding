@@ -23,6 +23,13 @@ Install Java 8. We recommend installing IntelliJ to edit files, but any editor s
 1. Run the following command in terminal: ```java -jar target/LiUni_Onboarding-1.0-SNAPSHOT.jar server```
 2. In a separate terminal, run ```curl --data "MESSAGE" http://localhost:8080/api/1.0/twitter/tweet``` where "MESSAGE" is what it is you would like to post.
 
+## Testing the Lithium University Onboarding Program ##
+First, navigate to the directory the project is in within terminal.
+### Running an individual set of tests ###
+Run: ```mvn test -Dtest=<Java Test Class Name>```
+### Running all tests ###
+Run: ```mvn test -Dtest="*Tests"```
+
 ## Exit Codes ##
 If the program exits prematurely, a status code will be given. The following is a table of what the possible codes are.
 Exit code -1: Twitter Exception
