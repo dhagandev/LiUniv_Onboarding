@@ -63,7 +63,6 @@ public class TwitterTimelineTests {
             assertEquals(testResultList.size(), 0);
 
             respList.add(status);
-            respList.size();
 
             testResultList = twitterTimeline.getTimeline();
             assertEquals(testResultList, respList);
