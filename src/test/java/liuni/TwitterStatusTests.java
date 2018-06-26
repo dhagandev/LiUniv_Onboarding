@@ -10,7 +10,8 @@ import org.mockito.MockitoAnnotations;
 import twitter4j.Status;
 import twitter4j.Twitter;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
@@ -41,7 +42,7 @@ public class TwitterStatusTests {
             when(twitter.updateStatus(testString)).thenReturn(status);
             when(status.getText()).thenReturn(testString);
 
-            assertEquals(twitterStatus.postStatus(testString), true);
+            assertTrue(twitterStatus.postStatus(testString));
         }
         catch (Exception e) {
             System.out.println("This exception is not expected.");
@@ -56,7 +57,7 @@ public class TwitterStatusTests {
             when(twitter.updateStatus(testString)).thenReturn(status);
             when(status.getText()).thenReturn(testString);
 
-            assertEquals(twitterStatus.postStatus(testString), false);
+            assertFalse(twitterStatus.postStatus(testString));
         }
         catch (Exception e) {
             System.out.println("This exception is not expected.");
@@ -71,7 +72,7 @@ public class TwitterStatusTests {
             when(twitter.updateStatus(testString)).thenReturn(status);
             when(status.getText()).thenReturn(testString);
 
-            assertEquals(twitterStatus.postStatus(testString), false);
+            assertFalse(twitterStatus.postStatus(testString));
         }
         catch (Exception e) {
             System.out.println("This exception is not expected.");

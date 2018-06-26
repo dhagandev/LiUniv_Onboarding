@@ -26,6 +26,7 @@ public class LiUniResourceTests {
     @Mock private Status status;
 
     @InjectMocks TwitterStatus twitterStatus;
+    @InjectMocks TwitterTimeline twitterTimeline;
     @InjectMocks LiUniResource resource;
 
     @Before
@@ -33,6 +34,8 @@ public class LiUniResourceTests {
         MockitoAnnotations.initMocks(this);
         twitterStatus.setTwitter(twitter);
         resource.setTwitterStatus(twitterStatus);
+        twitterTimeline.setTwitter(twitter);
+        resource.setTwitterTimeline(twitterTimeline);
     }
 
     @After
@@ -49,11 +52,9 @@ public class LiUniResourceTests {
             doReturn(respList).when(twitter).getHomeTimeline();
 
             Response resp = resource.fetchTimeline();
-            boolean statusCheck = resp.getStatus() == Response.Status.OK.getStatusCode();
-            boolean entityCheck = resp.hasEntity() && resp.getEntity().equals(respList);
 
-            assertEquals(statusCheck, true);
-            assertEquals(entityCheck, true);
+            assertEquals(resp.getStatus(), Response.Status.OK.getStatusCode());
+            assertEquals(resp.getEntity(), respList);
         }
         catch (Exception e) {
             System.out.println("This exception is not expected.");
@@ -65,20 +66,19 @@ public class LiUniResourceTests {
     public void testREST_fetchTimeline_updateTimeline() {
         ResponseList<Status> respList = new ResponseListImpl<Status>();
         try {
-            doReturn(respList).when(twitter).getHomeTimeline();
+            when(twitter.getHomeTimeline()).thenReturn(respList);
+//            doReturn(respList).when(twitter).getHomeTimeline();
 
             Response resp = resource.fetchTimeline();
-            boolean statusCheck = resp.getStatus() == Response.Status.OK.getStatusCode();
-            boolean entityCheck  = resp.hasEntity() && resp.getEntity().equals(respList);
-            assertEquals(statusCheck && entityCheck, true);
+
+            assertEquals(resp.getStatus(), Response.Status.OK.getStatusCode());
+            assertEquals(resp.getEntity(), respList);
 
             respList.add(status);
             resp = resource.fetchTimeline();
-            statusCheck = resp.getStatus() == Response.Status.OK.getStatusCode();
-            entityCheck = resp.hasEntity() && resp.getEntity().equals(respList);
 
-            assertEquals(statusCheck, true);
-            assertEquals(entityCheck, true);
+            assertEquals(resp.getStatus(), Response.Status.OK.getStatusCode());
+            assertEquals(resp.getEntity(), respList);
         }
         catch (Exception e) {
             System.out.println("This exception is not expected.");
@@ -95,11 +95,9 @@ public class LiUniResourceTests {
             when(twitter.getHomeTimeline()).thenThrow(new TwitterException(""));
 
             Response resp = resource.fetchTimeline();
-            boolean statusCheck = resp.getStatus() == Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
-            boolean entityCheck = resp.getEntity().toString().equals(expectedError);
 
-            assertEquals(statusCheck, true);
-            assertEquals(entityCheck, true);
+            assertEquals(resp.getStatus(), Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+            assertEquals(resp.getEntity().toString(), expectedError);
         }
         catch (Exception e) {
             System.out.println("This exception is not expected.");
@@ -116,11 +114,9 @@ public class LiUniResourceTests {
             when(status.getText()).thenReturn(testString);
 
             Response resp = resource.postTweet(testString);
-            boolean statusCheck = resp.getStatus() == Response.Status.CREATED.getStatusCode();
-            boolean entityCheck = resp.getEntity().toString().equals(testString);
 
-            assertEquals(statusCheck, true);
-            assertEquals(entityCheck, true);
+            assertEquals(resp.getStatus(), Response.Status.CREATED.getStatusCode());
+            assertEquals(resp.getEntity().toString(), testString);
         }
         catch (Exception e) {
             System.out.println("This exception is not expected.");
@@ -137,11 +133,9 @@ public class LiUniResourceTests {
             when(status.getText()).thenReturn(testString);
 
             Response resp = resource.postTweet(testString);
-            boolean statusCheck = resp.getStatus() == Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
-            boolean entityCheck = resp.getEntity().toString().equals(expectedError);
 
-            assertEquals(statusCheck, true);
-            assertEquals(entityCheck, true);
+            assertEquals(resp.getStatus(), Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+            assertEquals(resp.getEntity().toString(), expectedError);
         }
         catch (Exception e) {
             System.out.println("This exception is not expected.");
@@ -157,11 +151,9 @@ public class LiUniResourceTests {
             when(twitter.updateStatus(testString)).thenThrow(new TwitterException(""));
 
             Response resp = resource.postTweet(testString);
-            boolean statusCheck = resp.getStatus() == Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
-            boolean entityCheck = resp.getEntity().toString().equals(expectedError);
 
-            assertEquals(statusCheck, true);
-            assertEquals(entityCheck, true);
+            assertEquals(resp.getStatus(), Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+            assertEquals(resp.getEntity().toString(), expectedError);
         }
         catch (Exception e) {
             System.out.println("This exception is not expected.");

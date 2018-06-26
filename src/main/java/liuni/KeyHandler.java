@@ -12,24 +12,34 @@ import twitter4j.TwitterFactory;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 
 public class KeyHandler {
     private static final String TWITTER = "Twitter";
     private static final String HCKEY_FILE = "hardcoded_keys.xml";
     private Twitter twitter;
+    private DocumentBuilderFactory dbFactory;
+    private BufferedWriter writer;
 
     public KeyHandler() {
-        twitter = TwitterFactory.getSingleton();
+        twitter = null;
+        dbFactory = DocumentBuilderFactory.newInstance();
+        writer = null;
     }
 
     public void setTwitter(Twitter twitter) {
         this.twitter = twitter;
     }
 
+    public void setDbFactory(DocumentBuilderFactory dbFactory) {
+        this.dbFactory = dbFactory;
+    }
+
+    public void setWriter(BufferedWriter writer) {
+        this.writer = writer;
+    }
+
     public void setupKeys() {
-        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         try {
             File hcKeys = new File(HCKEY_FILE);
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -55,14 +65,11 @@ public class KeyHandler {
         catch (Exception e) {
             System.out.println("Could not set up the keys. " + e.toString());
             e.printStackTrace();
-            System.exit(-2);
         }
     }
 
     private void setupTwitter(Element element) {
-        BufferedWriter writer = null;
         try {
-            writer = new BufferedWriter(new FileWriter("twitter4j.properties"));
             writer.write("debug=false\n");
 
             String conKey = element.getElementsByTagName("consumerKey").item(0).getTextContent();
@@ -78,31 +85,27 @@ public class KeyHandler {
         catch (IOException e) {
             System.out.println("Error occurred when setting up twitter4j.properties.");
             e.printStackTrace();
-            System.exit(-2);
         }
         finally {
             try {
                 if (writer != null) {
                     writer.close();
                 }
-                twitterValidCredentials();
             }
             catch (IOException e) {
                 System.out.println("Error occurred when closing the Buffered writer.");
-                System.out.println(e.toString());
-                System.exit(-2);
+                e.printStackTrace();
             }
         }
     }
 
-    private void twitterValidCredentials() {
+    public void twitterValidCredentials() {
         try {
             twitter.verifyCredentials();
         }
         catch (TwitterException e) {
             System.out.println("Error occurred; improper credentials for Twitter.");
             e.printStackTrace();
-            System.exit(-1);
         }
     }
 }
