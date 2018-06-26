@@ -8,7 +8,6 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
 
 import java.io.BufferedWriter;
 import java.io.File;

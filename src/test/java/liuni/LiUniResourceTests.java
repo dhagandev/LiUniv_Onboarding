@@ -66,8 +66,7 @@ public class LiUniResourceTests {
     public void testREST_fetchTimeline_updateTimeline() {
         ResponseList<Status> respList = new ResponseListImpl<Status>();
         try {
-            when(twitter.getHomeTimeline()).thenReturn(respList);
-//            doReturn(respList).when(twitter).getHomeTimeline();
+            doReturn(respList).when(twitter).getHomeTimeline();
 
             Response resp = resource.fetchTimeline();
 

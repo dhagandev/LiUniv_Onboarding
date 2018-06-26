@@ -5,8 +5,6 @@ import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.Status;
 
-import java.util.List;
-
 public class TwitterTimeline {
     private static Twitter twitter;
 
