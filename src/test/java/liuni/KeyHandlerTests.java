@@ -1,13 +1,11 @@
 package liuni;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.xml.sax.SAXException;
 import twitter4j.Twitter;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -67,8 +65,7 @@ public class KeyHandlerTests {
             writer.write("</services>\n");
         }
         catch (IOException e) {
-            System.out.println("Error occurred when setting up hardcoded_keys.xml for testing.");
-            Assert.fail();
+            Assert.fail("Error occurred when setting up hardcoded_keys.xml for testing.");
         }
         finally {
             try {
@@ -77,8 +74,7 @@ public class KeyHandlerTests {
                 }
             }
             catch (IOException e) {
-                System.out.println("Error occurred when closing the Buffered writer.");
-                Assert.fail();
+                Assert.fail("Error occurred when closing the Buffered writer.");
             }
         }
     }
@@ -95,8 +91,7 @@ public class KeyHandlerTests {
             keyHandler.setWriter(new BufferedWriter(new FileWriter(twitter4jFileName)));
         }
         catch (IOException e) {
-            System.out.println("This exception is not expected.");
-            Assert.fail();
+            Assert.fail("This exception is not expected.");
         }
 
         keyHandler.setupKeys();
@@ -116,14 +111,13 @@ public class KeyHandlerTests {
         assertFalse(twitterPropFile.exists());
 
         try {
-            when(dbFactory.newDocumentBuilder()).thenThrow(new ParserConfigurationException(""));
+            when(dbFactory.newDocumentBuilder()).thenThrow(new ParserConfigurationException("This is an exception test."));
             keyHandler.setupKeys();
 
             assertFalse(twitterPropFile.exists());
         }
         catch (Exception e) {
-            System.out.println("This exception is not expected.");
-            Assert.fail();
+            Assert.fail("This exception is not expected.");
         }
     }
 
@@ -145,8 +139,7 @@ public class KeyHandlerTests {
             assertFalse(twitterPropFile.exists());
         }
         catch (Exception e) {
-            System.out.println("This exception is not expected.");
-            Assert.fail();
+            Assert.fail("This exception is not expected.");
         }
     }
 }

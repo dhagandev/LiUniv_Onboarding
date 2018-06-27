@@ -45,11 +45,10 @@ public class TwitterTimelineTests {
 
             List<Status> testResultList = twitterTimeline.getTimeline();
 
-            assertEquals(testResultList.size(), 0);
+            assertEquals(0, testResultList.size());
         }
         catch (Exception e) {
-            System.out.println("This exception is not expected.");
-            Assert.fail();
+            Assert.fail("This exception is not expected.");
         }
     }
 
@@ -60,16 +59,15 @@ public class TwitterTimelineTests {
             doReturn(respList).when(twitter).getHomeTimeline();
 
             List<Status> testResultList = twitterTimeline.getTimeline();
-            assertEquals(testResultList.size(), 0);
+            assertEquals(0, testResultList.size());
 
             respList.add(status);
 
             testResultList = twitterTimeline.getTimeline();
-            assertEquals(testResultList, respList);
+            assertEquals(respList, testResultList);
         }
         catch (Exception e) {
-            System.out.println("This exception is not expected.");
-            Assert.fail();
+            Assert.fail("This exception is not expected.");
         }
     }
 

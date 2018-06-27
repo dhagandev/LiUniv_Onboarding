@@ -45,8 +45,7 @@ public class TwitterStatusTests {
             assertTrue(twitterStatus.postStatus(testString));
         }
         catch (Exception e) {
-            System.out.println("This exception is not expected.");
-            Assert.fail();
+            Assert.fail("This exception is not expected.");
         }
     }
 
@@ -60,8 +59,7 @@ public class TwitterStatusTests {
             assertFalse(twitterStatus.postStatus(testString));
         }
         catch (Exception e) {
-            System.out.println("This exception is not expected.");
-            Assert.fail();
+            Assert.fail("This exception is not expected.");
         }
     }
 
@@ -75,8 +73,7 @@ public class TwitterStatusTests {
             assertFalse(twitterStatus.postStatus(testString));
         }
         catch (Exception e) {
-            System.out.println("This exception is not expected.");
-            Assert.fail();
+            Assert.fail("This exception is not expected.");
         }
     }
 }

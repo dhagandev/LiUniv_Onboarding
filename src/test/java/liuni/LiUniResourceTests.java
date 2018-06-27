@@ -53,12 +53,11 @@ public class LiUniResourceTests {
 
             Response resp = resource.fetchTimeline();
 
-            assertEquals(resp.getStatus(), Response.Status.OK.getStatusCode());
-            assertEquals(resp.getEntity(), respList);
+            assertEquals(Response.Status.OK.getStatusCode(), resp.getStatus());
+            assertEquals(respList, resp.getEntity());
         }
         catch (Exception e) {
-            System.out.println("This exception is not expected.");
-            Assert.fail();
+            Assert.fail("This exception is not expected.");
         }
     }
 
@@ -76,12 +75,11 @@ public class LiUniResourceTests {
             respList.add(status);
             resp = resource.fetchTimeline();
 
-            assertEquals(resp.getStatus(), Response.Status.OK.getStatusCode());
-            assertEquals(resp.getEntity(), respList);
+            assertEquals(Response.Status.OK.getStatusCode(), resp.getStatus());
+            assertEquals(respList, resp.getEntity());
         }
         catch (Exception e) {
-            System.out.println("This exception is not expected.");
-            Assert.fail();
+            Assert.fail("This exception is not expected.");
         }
     }
 
@@ -91,16 +89,15 @@ public class LiUniResourceTests {
         respList.add(status);
         String expectedError = (new ErrorModel()).getGeneralError();
         try {
-            when(twitter.getHomeTimeline()).thenThrow(new TwitterException(""));
+            when(twitter.getHomeTimeline()).thenThrow(new TwitterException("This is an exception test."));
 
             Response resp = resource.fetchTimeline();
 
-            assertEquals(resp.getStatus(), Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
-            assertEquals(resp.getEntity().toString(), expectedError);
+            assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), resp.getStatus());
+            assertEquals(expectedError, resp.getEntity().toString());
         }
         catch (Exception e) {
-            System.out.println("This exception is not expected.");
-            Assert.fail();
+            Assert.fail("This exception is not expected.");
         }
     }
 
@@ -114,18 +111,17 @@ public class LiUniResourceTests {
 
             Response resp = resource.postTweet(testString);
 
-            assertEquals(resp.getStatus(), Response.Status.CREATED.getStatusCode());
-            assertEquals(resp.getEntity().toString(), testString);
+            assertEquals(Response.Status.CREATED.getStatusCode(), resp.getStatus());
+            assertEquals(testString, resp.getEntity().toString());
         }
         catch (Exception e) {
-            System.out.println("This exception is not expected.");
-            Assert.fail();
+            Assert.fail("This exception is not expected.");
         }
     }
 
     @Test
     public void testREST_postTweet_badPost_badTweet() {
-        String testString = "";
+        String testString = "This is a bad string because it is going go to be longer than Twitter's limits. It is this long because it is Lorem Ipsum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In vehicula velit vel augue porta condimentum. Nullam ornare velit mattis, maximus sem eget, malesuada nibh. Interdum et malesuada fames ac ante ipsum primis in faucibus. Suspendisse potenti. Pellentesque a dictum lorem. Ut sit amet fringilla turpis. Sed pretium, erat tincidunt aliquam mattis, neque diam luctus mauris, sed lacinia arcu libero sit amet tortor.";
         String expectedError = (new ErrorModel()).getBadTweetError();
         try {
             when(twitter.updateStatus(testString)).thenReturn(status);
@@ -133,12 +129,11 @@ public class LiUniResourceTests {
 
             Response resp = resource.postTweet(testString);
 
-            assertEquals(resp.getStatus(), Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
-            assertEquals(resp.getEntity().toString(), expectedError);
+            assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), resp.getStatus());
+            assertEquals(expectedError, resp.getEntity().toString());
         }
         catch (Exception e) {
-            System.out.println("This exception is not expected.");
-            Assert.fail();
+            Assert.fail("This exception is not expected.");
         }
     }
 
@@ -147,16 +142,15 @@ public class LiUniResourceTests {
         String testString = "Bad Message; Exception testing.";
         String expectedError = (new ErrorModel()).getGeneralError();
         try {
-            when(twitter.updateStatus(testString)).thenThrow(new TwitterException(""));
+            when(twitter.updateStatus(testString)).thenThrow(new TwitterException("This is an exception test."));
 
             Response resp = resource.postTweet(testString);
 
-            assertEquals(resp.getStatus(), Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
-            assertEquals(resp.getEntity().toString(), expectedError);
+            assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), resp.getStatus());
+            assertEquals(expectedError, resp.getEntity().toString()) ;
         }
         catch (Exception e) {
-            System.out.println("This exception is not expected.");
-            Assert.fail();
+            Assert.fail("This exception is not expected.");
         }
     }
 
