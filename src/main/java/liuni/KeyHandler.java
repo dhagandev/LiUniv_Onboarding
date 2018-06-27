@@ -1,6 +1,5 @@
 package liuni;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -8,25 +7,61 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-
 
 public class KeyHandler {
     private static final String TWITTER = "Twitter";
     private static final String HCKEY_FILE = "hardcoded_keys.xml";
+    private Twitter twitter;
+    private DocumentBuilderFactory dbFactory;
+    private BufferedWriter writer;
+
+    private String conKey;
+    private String conSec;
+    private String accToken;
+    private String accSec;
+
+    public KeyHandler() {
+        twitter = null;
+        dbFactory = DocumentBuilderFactory.newInstance();
+        writer = null;
+    }
+
+    public void setTwitter(Twitter twitter) {
+        this.twitter = twitter;
+    }
+
+    public void setDbFactory(DocumentBuilderFactory dbFactory) {
+        this.dbFactory = dbFactory;
+    }
+
+    public void setWriter(BufferedWriter writer) {
+        this.writer = writer;
+    }
+
+    public String getConKey() {
+        return conKey;
+    }
+
+    public String getConSec() {
+        return conSec;
+    }
+
+    public String getAccToken() {
+        return accToken;
+    }
+
+    public String getAccSec() {
+        return accSec;
+    }
 
     public void setupKeys() {
-        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         try {
             File hcKeys = new File(HCKEY_FILE);
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(hcKeys);
-            doc.getDocumentElement().normalize();
+            Document doc = dbFactory.newDocumentBuilder().parse(hcKeys);
 
             NodeList serviceList = doc.getElementsByTagName("service");
             for (int i = 0; i < serviceList.getLength(); i++) {
@@ -37,7 +72,8 @@ public class KeyHandler {
                 //Ideally would use switch case based on what serviceName is
                 if (serviceName.equals(TWITTER)) {
                     System.out.println("Setting up " + serviceName + " service...");
-                    setupTwitter(element);
+                    getTwitterKeys(element);
+                    setupTwitter();
                 } else {
                     System.out.println("Unsupported service presented. " + serviceName);
                 }
@@ -47,20 +83,19 @@ public class KeyHandler {
         catch (Exception e) {
             System.out.println("Could not set up the keys. " + e.toString());
             e.printStackTrace();
-            System.exit(-2);
         }
     }
 
-    private void setupTwitter(Element element) {
-        BufferedWriter writer = null;
-        try {
-            writer = new BufferedWriter(new FileWriter("twitter4j.properties"));
-            writer.write("debug=false\n");
+    public void getTwitterKeys(Element element) {
+        conKey = element.getElementsByTagName("consumerKey").item(0).getTextContent();
+        conSec = element.getElementsByTagName("consumerSecret").item(0).getTextContent();
+        accToken = element.getElementsByTagName("accessToken").item(0).getTextContent();
+        accSec = element.getElementsByTagName("accessSecret").item(0).getTextContent();
+    }
 
-            String conKey = element.getElementsByTagName("consumerKey").item(0).getTextContent();
-            String conSec = element.getElementsByTagName("consumerSecret").item(0).getTextContent();
-            String accToken = element.getElementsByTagName("accessToken").item(0).getTextContent();
-            String accSec = element.getElementsByTagName("accessSecret").item(0).getTextContent();
+    public void setupTwitter() {
+        try {
+            writer.write("debug=false\n");
 
             writer.write("oauth.consumerKey=" + conKey + "\n");
             writer.write("oauth.consumerSecret=" + conSec + "\n");
@@ -70,32 +105,27 @@ public class KeyHandler {
         catch (IOException e) {
             System.out.println("Error occurred when setting up twitter4j.properties.");
             e.printStackTrace();
-            System.exit(-2);
         }
         finally {
             try {
                 if (writer != null) {
                     writer.close();
                 }
-                twitterValidCredentials();
             }
             catch (IOException e) {
                 System.out.println("Error occurred when closing the Buffered writer.");
-                System.out.println(e.toString());
-                System.exit(-2);
+                e.printStackTrace();
             }
         }
     }
 
-    private void twitterValidCredentials() {
+    public void twitterValidCredentials() {
         try {
-            Twitter twitter = TwitterFactory.getSingleton();
             twitter.verifyCredentials();
         }
         catch (TwitterException e) {
             System.out.println("Error occurred; improper credentials for Twitter.");
             e.printStackTrace();
-            System.exit(-1);
         }
     }
 }

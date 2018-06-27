@@ -6,7 +6,9 @@ import liuni.api.ErrorModel;
 import liuni.api.TwitterTimelineModel;
 import com.codahale.metrics.annotation.Timed;
 import liuni.api.TwitterTweetModel;
+import twitter4j.ResponseList;
 import twitter4j.Status;
+import twitter4j.TwitterException;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -16,14 +18,26 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
-import java.util.List;
 
 
 @Path("/api/1.0/twitter")
 @Produces(MediaType.APPLICATION_JSON)
 public class LiUniResource {
+    private static TwitterTimeline twitterTimeline;
+    private static TwitterStatus twitterStatus;
 
-    public LiUniResource() {}
+    public LiUniResource() {
+        twitterTimeline = new TwitterTimeline();
+        twitterStatus = new TwitterStatus();
+    }
+
+    public void setTwitterStatus(TwitterStatus twitterStatus) {
+        this.twitterStatus = twitterStatus;
+    }
+
+    public void setTwitterTimeline(TwitterTimeline twitterTimeline) {
+        this.twitterTimeline = twitterTimeline;
+    }
 
     @Path("/timeline")
     @GET
@@ -33,8 +47,7 @@ public class LiUniResource {
         ResponseBuilder responseBuilder = Response.noContent();
         responseBuilder.type(MediaType.APPLICATION_JSON);
         try {
-            TwitterTimeline twitterTimeline = new TwitterTimeline();
-            List<Status> timeline = twitterTimeline.getTimelineJson();
+            ResponseList<Status> timeline = twitterTimeline.getTimeline();
             responseBuilder.status(Response.Status.OK);
             responseBuilder.entity(new TwitterTimelineModel(timeline).getTimeline());
         }
@@ -54,9 +67,8 @@ public class LiUniResource {
         ResponseBuilder responseBuilder = Response.noContent();
         responseBuilder.type(MediaType.APPLICATION_JSON);
         try {
-            TwitterStatus twitterStatus = new TwitterStatus();
-            if (twitterStatus.textErrorCheck(message)) {
-                twitterStatus.postStatus(message);
+            boolean successfullyPosted = twitterStatus.postStatus(message);
+            if (successfullyPosted) {
                 responseBuilder.status(Response.Status.CREATED);
                 responseBuilder.entity(new TwitterTweetModel(message).getMessage());
             }
@@ -67,7 +79,7 @@ public class LiUniResource {
                 responseBuilder.entity(error.getBadTweetError());
             }
         }
-        catch (Exception e) {
+        catch (TwitterException e) {
             e.printStackTrace();
             ErrorModel error = new ErrorModel();
             responseBuilder.status(error.getErrorStatus());
