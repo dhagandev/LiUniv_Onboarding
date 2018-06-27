@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
-public class TwitterStatusTests {
+public class TwitterStatusTest {
     @Mock private Twitter twitter;
     @Mock private Status status;
 

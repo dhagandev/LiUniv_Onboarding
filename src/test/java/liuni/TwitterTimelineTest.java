@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 
-public class TwitterTimelineTests {
+public class TwitterTimelineTest {
     @Mock private Twitter twitter;
     @Mock private Status status;
 

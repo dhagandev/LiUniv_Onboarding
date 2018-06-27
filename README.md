@@ -28,7 +28,7 @@ First, navigate to the directory the project is in within terminal.
 ### Running an individual set of tests ###
 Run: ```mvn test -Dtest=<Java Test Class Name>```
 ### Running all tests ###
-Run: ```mvn test -Dtest="*Tests"```
+Run: ```mvn test```
 
 ## Exit Codes ##
 If the program exits prematurely, a status code will be given. The following is a table of what the possible codes are.
