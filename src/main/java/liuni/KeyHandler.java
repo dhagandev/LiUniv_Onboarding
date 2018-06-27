@@ -62,7 +62,6 @@ public class KeyHandler {
         try {
             File hcKeys = new File(HCKEY_FILE);
             Document doc = dbFactory.newDocumentBuilder().parse(hcKeys);
-            doc.getDocumentElement().normalize();
 
             NodeList serviceList = doc.getElementsByTagName("service");
             for (int i = 0; i < serviceList.getLength(); i++) {
@@ -94,7 +93,7 @@ public class KeyHandler {
         accSec = element.getElementsByTagName("accessSecret").item(0).getTextContent();
     }
 
-    private void setupTwitter() {
+    public void setupTwitter() {
         try {
             writer.write("debug=false\n");
 

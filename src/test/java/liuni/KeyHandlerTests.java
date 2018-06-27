@@ -2,7 +2,6 @@ package liuni;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -18,24 +17,18 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 
-import static org.junit.Assert.assertFalse;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class KeyHandlerTests {
 
-    private static String twitter4jFileName;
-
     @Mock private Twitter twitter;
 
     @Mock private KeyHandler keyHandler;
-
-    @BeforeClass
-    public static void prepareTests() {
-        twitter4jFileName = "twitter4j.properties";
-    }
 
     @Before
     public void setUp() {
@@ -50,10 +43,10 @@ public class KeyHandlerTests {
         final String fakeXmlFile = "<?xml version='1.0'?>" +
                 "<services>" +
                 "<service id='Twitter'>" +
-                "<consumerKey></consumerKey>" +
-                "<consumerSecret></consumerSecret>" +
-                "<accessToken></accessToken>" +
-                "<accessSecret></accessSecret>" +
+                "<consumerKey>TestValue</consumerKey>" +
+                "<consumerSecret>TestValue</consumerSecret>" +
+                "<accessToken>TestValue</accessToken>" +
+                "<accessSecret>TestValue</accessSecret>" +
                 "</service>" +
                 "</services>";
 
@@ -81,7 +74,9 @@ public class KeyHandlerTests {
             Document mockedDoc = getMockedDoc();
             DocumentBuilderFactory dbFactory = mock(DocumentBuilderFactory.class);
             keyHandler.setDbFactory(dbFactory);
-            when(dbFactory.newDocumentBuilder().parse("hardcoded_keys.xml")).thenReturn(mockedDoc);
+            DocumentBuilder dbuilder = mock(DocumentBuilder.class);
+            when(dbFactory.newDocumentBuilder()).thenReturn(dbuilder);
+            when(dbuilder.parse(isA(File.class))).thenReturn(mockedDoc);
             keyHandler.setupKeys();
         }
         catch (Exception e) {
@@ -97,7 +92,7 @@ public class KeyHandlerTests {
             verify(writer).write("oauth.accessTokenSecret=" + keyHandler.getAccSec() + "\n");
         }
         catch (Exception e) {
-            Assert.fail("Error occurred when closing the Buffered writer.");
+            Assert.fail("This exception is not expected.");
         }
     }
 
@@ -106,17 +101,11 @@ public class KeyHandlerTests {
         DocumentBuilderFactory dbFactory = mock(DocumentBuilderFactory.class);
         keyHandler.setDbFactory(dbFactory);
 
-        File twitterPropFile = new File(twitter4jFileName);
-        if(twitterPropFile.exists()) {
-            twitterPropFile.delete();
-        }
-        assertFalse(twitterPropFile.exists());
-
         try {
             when(dbFactory.newDocumentBuilder()).thenThrow(new ParserConfigurationException("This is an exception test."));
             keyHandler.setupKeys();
 
-            assertFalse(twitterPropFile.exists());
+            verify(mock(KeyHandler.class), never()).setupTwitter();
         }
         catch (Exception e) {
             Assert.fail("This exception is not expected.");
@@ -128,17 +117,11 @@ public class KeyHandlerTests {
         BufferedWriter writer = mock(BufferedWriter.class);
         keyHandler.setWriter(writer);
 
-        File twitterPropFile = new File(twitter4jFileName);
-        if(twitterPropFile.exists()) {
-            twitterPropFile.delete();
-        }
-        assertFalse(twitterPropFile.exists());
-
         try {
             doThrow(new IOException("")).when(writer).write("");
             keyHandler.setupKeys();
 
-            assertFalse(twitterPropFile.exists());
+            verify(mock(KeyHandler.class), never()).setupTwitter();
         }
         catch (Exception e) {
             Assert.fail("This exception is not expected.");
