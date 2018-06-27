@@ -2,101 +2,103 @@ package liuni;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 import twitter4j.Twitter;
 
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringReader;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class KeyHandlerTests {
 
-    private String twitter4jFileName;
+    private static String twitter4jFileName;
 
     @Mock private Twitter twitter;
 
-    @InjectMocks KeyHandler keyHandler;
+    @Mock private KeyHandler keyHandler;
+
+    @BeforeClass
+    public static void prepareTests() {
+        twitter4jFileName = "twitter4j.properties";
+    }
 
     @Before
     public void setUp() {
-        twitter4jFileName = "twitter4j.properties";
-
         MockitoAnnotations.initMocks(this);
+
+        keyHandler = mock(KeyHandler.class);
         keyHandler = new KeyHandler();
         keyHandler.setTwitter(twitter);
+   }
 
-        File HCKeysFile = new File("hardcoded_keys.xml");
-        if (!HCKeysFile.exists()) {
-            createHCKeysFile();
-        }
-    }
+   private Document getMockedDoc() {
+        final String fakeXmlFile = "<?xml version='1.0'?>" +
+                "<services>" +
+                "<service id='Twitter'>" +
+                "<consumerKey></consumerKey>" +
+                "<consumerSecret></consumerSecret>" +
+                "<accessToken></accessToken>" +
+                "<accessSecret></accessSecret>" +
+                "</service>" +
+                "</services>";
 
-    private void createHCKeysFile() {
-        BufferedWriter writer = null;
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder;
         try {
-            writer = new BufferedWriter(new FileWriter("hardcoded_keys.xml"));
-            writer.write("<?xml version=\"1.0\"?>\n");
-            writer.write("<services>\n");
-            writer.write("\t<service id=\"Twitter\">\n");
-
-            String conKey = "TestConsumerKey";
-            String conSec = "TestConsumerSecret";
-            String accToken = "TestAccessToken";
-            String accSec = "TestAccessSecret";
-
-            writer.write("\t\t<consumerKey>" + conKey + "</consumerKey>\n");
-            writer.write("\t\t<consumerSecret>" + conSec + "</consumerSecret>\n");
-            writer.write("\t\t<accessToken>" + accToken + "</accessToken>\n");
-            writer.write("\t\t<accessSecret>" + accSec + "</accessSecret>\n");
-
-            writer.write("\t</service>\n");
-            writer.write("</services>\n");
+           builder = factory.newDocumentBuilder();
+           StringReader strReader = new StringReader(fakeXmlFile);
+           InputSource iSource = new InputSource(strReader);
+           Document doc = builder.parse(iSource);
+           return doc;
+        } catch (Exception e) {
+           e.printStackTrace();
         }
-        catch (IOException e) {
-            Assert.fail("Error occurred when setting up hardcoded_keys.xml for testing.");
-        }
-        finally {
-            try {
-                if (writer != null) {
-                    writer.close();
-                }
-            }
-            catch (IOException e) {
-                Assert.fail("Error occurred when closing the Buffered writer.");
-            }
-        }
-    }
+        return null;
+   }
 
     /* Test KeyHandler .setupKeys() method */
     @Test
-    public void testSetupKeys_createTwitterProperties_Success() {
-        File twitterPropFile = new File(twitter4jFileName);
-        if(twitterPropFile.exists()) {
-            twitterPropFile.delete();
-        }
-        assertFalse(twitterPropFile.exists());
+    public void testSetupKeys_twitterPropertiesWrite_Success() {
+        BufferedWriter writer = mock(BufferedWriter.class);
+        keyHandler.setWriter(writer);
+
         try {
-            keyHandler.setWriter(new BufferedWriter(new FileWriter(twitter4jFileName)));
+            Document mockedDoc = getMockedDoc();
+            DocumentBuilderFactory dbFactory = mock(DocumentBuilderFactory.class);
+            keyHandler.setDbFactory(dbFactory);
+            when(dbFactory.newDocumentBuilder().parse("hardcoded_keys.xml")).thenReturn(mockedDoc);
+            keyHandler.setupKeys();
         }
-        catch (IOException e) {
+        catch (Exception e) {
             Assert.fail("This exception is not expected.");
         }
 
-        keyHandler.setupKeys();
-        assertTrue(twitterPropFile.exists());
-        twitterPropFile.delete();
+        try {
+            verify(writer).write("debug=false\n");
+
+            verify(writer).write("oauth.consumerKey=" + keyHandler.getConKey() + "\n");
+            verify(writer).write("oauth.consumerSecret=" + keyHandler.getConSec() + "\n");
+            verify(writer).write("oauth.accessToken=" + keyHandler.getAccToken() + "\n");
+            verify(writer).write("oauth.accessTokenSecret=" + keyHandler.getAccSec() + "\n");
+        }
+        catch (Exception e) {
+            Assert.fail("Error occurred when closing the Buffered writer.");
+        }
     }
 
     @Test

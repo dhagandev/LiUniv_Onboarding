@@ -1,6 +1,5 @@
 package liuni;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -20,6 +19,11 @@ public class KeyHandler {
     private DocumentBuilderFactory dbFactory;
     private BufferedWriter writer;
 
+    private String conKey;
+    private String conSec;
+    private String accToken;
+    private String accSec;
+
     public KeyHandler() {
         twitter = null;
         dbFactory = DocumentBuilderFactory.newInstance();
@@ -38,11 +42,26 @@ public class KeyHandler {
         this.writer = writer;
     }
 
+    public String getConKey() {
+        return conKey;
+    }
+
+    public String getConSec() {
+        return conSec;
+    }
+
+    public String getAccToken() {
+        return accToken;
+    }
+
+    public String getAccSec() {
+        return accSec;
+    }
+
     public void setupKeys() {
         try {
             File hcKeys = new File(HCKEY_FILE);
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(hcKeys);
+            Document doc = dbFactory.newDocumentBuilder().parse(hcKeys);
             doc.getDocumentElement().normalize();
 
             NodeList serviceList = doc.getElementsByTagName("service");
@@ -54,7 +73,8 @@ public class KeyHandler {
                 //Ideally would use switch case based on what serviceName is
                 if (serviceName.equals(TWITTER)) {
                     System.out.println("Setting up " + serviceName + " service...");
-                    setupTwitter(element);
+                    getTwitterKeys(element);
+                    setupTwitter();
                 } else {
                     System.out.println("Unsupported service presented. " + serviceName);
                 }
@@ -67,14 +87,16 @@ public class KeyHandler {
         }
     }
 
-    private void setupTwitter(Element element) {
+    public void getTwitterKeys(Element element) {
+        conKey = element.getElementsByTagName("consumerKey").item(0).getTextContent();
+        conSec = element.getElementsByTagName("consumerSecret").item(0).getTextContent();
+        accToken = element.getElementsByTagName("accessToken").item(0).getTextContent();
+        accSec = element.getElementsByTagName("accessSecret").item(0).getTextContent();
+    }
+
+    private void setupTwitter() {
         try {
             writer.write("debug=false\n");
-
-            String conKey = element.getElementsByTagName("consumerKey").item(0).getTextContent();
-            String conSec = element.getElementsByTagName("consumerSecret").item(0).getTextContent();
-            String accToken = element.getElementsByTagName("accessToken").item(0).getTextContent();
-            String accSec = element.getElementsByTagName("accessSecret").item(0).getTextContent();
 
             writer.write("oauth.consumerKey=" + conKey + "\n");
             writer.write("oauth.consumerSecret=" + conSec + "\n");
