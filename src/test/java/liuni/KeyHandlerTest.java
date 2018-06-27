@@ -118,10 +118,11 @@ public class KeyHandlerTest {
         keyHandler.setWriter(writer);
 
         try {
-            doThrow(new IOException("")).when(writer).write("");
+            IOException e = new IOException("This is an exception test");
+            doThrow(e).when(writer).write(isA(String.class));
             keyHandler.setupKeys();
 
-            verify(mock(KeyHandler.class), never()).setupTwitter();
+            verify(writer).close();
         }
         catch (Exception e) {
             Assert.fail("This exception is not expected.");
