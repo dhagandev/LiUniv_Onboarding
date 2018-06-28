@@ -28,7 +28,7 @@ First, navigate to the directory the project is in within terminal.
 ### Running an individual set of tests ###
 Run: ```mvn test -Dtest=<Java Test Class Name>```
 ### Running all tests ###
-Run: ```mvn test```
+Run: ```mvn clean test```
 ### Viewing your test coverage ###
 Run: ```mvn jacoco:report```.
 Navigate to your project in a folder directory. Find `target/site/jacoco` and run `index.html`.
