@@ -95,27 +95,31 @@ public class KeyHandler {
 
     public void setupTwitter() {
         try {
-            writer.write("debug=false\n");
+            if (writer != null) {
+                writer.write("debug=false\n");
 
-            writer.write("oauth.consumerKey=" + conKey + "\n");
-            writer.write("oauth.consumerSecret=" + conSec + "\n");
-            writer.write("oauth.accessToken=" + accToken + "\n");
-            writer.write("oauth.accessTokenSecret=" + accSec + "\n");
+                writer.write("oauth.consumerKey=" + conKey + "\n");
+                writer.write("oauth.consumerSecret=" + conSec + "\n");
+                writer.write("oauth.accessToken=" + accToken + "\n");
+                writer.write("oauth.accessTokenSecret=" + accSec + "\n");
+            }
         }
         catch (IOException e) {
             System.out.println("Error occurred when setting up twitter4j.properties.");
             e.printStackTrace();
         }
-        finally {
-            try {
-                if (writer != null) {
-                    writer.close();
-                }
+        closeWriter();
+    }
+
+    public void closeWriter() {
+        try {
+            if(writer != null) {
+                writer.close();
             }
-            catch (IOException e) {
-                System.out.println("Error occurred when closing the Buffered writer.");
-                e.printStackTrace();
-            }
+        }
+        catch (IOException e) {
+            System.out.println("Error occurred when when closing the Buffered writer.");
+            e.printStackTrace();
         }
     }
 

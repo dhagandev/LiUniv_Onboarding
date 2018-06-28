@@ -2,6 +2,7 @@ package liuni;
 
 import liuni.api.ErrorModel;
 import liuni.resources.LiUniResource;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -121,7 +122,7 @@ public class LiUniResourceTest {
 
     @Test
     public void testREST_postTweet_badPost_badTweet() {
-        String testString = "This is a bad string because it is going go to be longer than Twitter's limits. It is this long because it is Lorem Ipsum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In vehicula velit vel augue porta condimentum. Nullam ornare velit mattis, maximus sem eget, malesuada nibh. Interdum et malesuada fames ac ante ipsum primis in faucibus. Suspendisse potenti. Pellentesque a dictum lorem. Ut sit amet fringilla turpis. Sed pretium, erat tincidunt aliquam mattis, neque diam luctus mauris, sed lacinia arcu libero sit amet tortor.";
+        String testString = StringUtils.repeat("*", TwitterStatus.TWITTER_CHAR_MAX + 1);
         String expectedError = (new ErrorModel()).getBadTweetError();
         try {
             when(twitter.updateStatus(testString)).thenReturn(status);

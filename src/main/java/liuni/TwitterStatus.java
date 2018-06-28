@@ -7,7 +7,7 @@ import twitter4j.Status;
 
 public class TwitterStatus {
 
-    private static final int TWITTER_CHAR_MAX = 280;
+    public static final int TWITTER_CHAR_MAX = 280;
     private static Twitter twitter;
 
     public TwitterStatus() {
@@ -18,9 +18,6 @@ public class TwitterStatus {
         boolean isOkToPost = textErrorCheck(text);
         if (isOkToPost) {
             Status status = twitter.updateStatus(text);
-            if (status.equals(null)) {
-                return false;
-            }
             System.out.println("Successfully updated status to [" + status.getText() + "].");
         }
 

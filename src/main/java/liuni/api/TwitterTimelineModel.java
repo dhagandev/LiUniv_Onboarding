@@ -8,10 +8,6 @@ import java.util.List;
 public class TwitterTimelineModel {
     private List<Status> timeline;
 
-    public TwitterTimelineModel() {
-        //Jackson deserialization
-    }
-
     public TwitterTimelineModel(List<Status> timeline) {
         this.timeline = timeline;
     }
