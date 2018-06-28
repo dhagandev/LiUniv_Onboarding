@@ -1,5 +1,6 @@
 package liuni;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,8 +17,6 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 public class TwitterStatusTest {
-    private static final int TWITTER_CHAR_MAX = 280;
-
     @Mock private Twitter twitter;
     @Mock private Status status;
 
@@ -67,11 +66,7 @@ public class TwitterStatusTest {
 
     @Test
     public void testTweetPost_TooLongTweet() {
-        StringBuffer stringBuffer = new StringBuffer();
-        for (int i = 0; i < TWITTER_CHAR_MAX + 1; i ++){
-            stringBuffer.append("a");
-        }
-        String testString = stringBuffer.toString();
+        String testString = StringUtils.repeat("*", twitterStatus.getTwitterCharMax() + 1);
         try {
             when(twitter.updateStatus(testString)).thenReturn(status);
             when(status.getText()).thenReturn(testString);

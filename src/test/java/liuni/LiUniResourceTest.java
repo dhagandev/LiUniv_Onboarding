@@ -2,6 +2,7 @@ package liuni;
 
 import liuni.api.ErrorModel;
 import liuni.resources.LiUniResource;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,8 +23,6 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 public class LiUniResourceTest {
-    private static final int TWITTER_CHAR_MAX = 280;
-
     @Mock private Twitter twitter;
     @Mock private Status status;
 
@@ -123,11 +122,7 @@ public class LiUniResourceTest {
 
     @Test
     public void testREST_postTweet_badPost_badTweet() {
-        StringBuffer stringBuffer = new StringBuffer();
-        for (int i = 0; i < TWITTER_CHAR_MAX + 1; i ++){
-            stringBuffer.append(" ");
-        }
-        String testString = stringBuffer.toString();
+        String testString = StringUtils.repeat("*", twitterStatus.getTwitterCharMax() + 1);
         String expectedError = (new ErrorModel()).getBadTweetError();
         try {
             when(twitter.updateStatus(testString)).thenReturn(status);

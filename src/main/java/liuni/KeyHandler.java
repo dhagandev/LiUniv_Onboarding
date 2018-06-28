@@ -107,9 +107,7 @@ public class KeyHandler {
             e.printStackTrace();
         }
         try {
-            if (writer != null) {
-                writer.close();
-            }
+            writer.close();
         }
         catch (IOException e) {
             System.out.println("Error occurred when closing the Buffered writer.");

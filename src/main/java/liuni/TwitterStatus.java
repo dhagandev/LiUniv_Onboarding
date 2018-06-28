@@ -14,6 +14,10 @@ public class TwitterStatus {
         twitter = TwitterFactory.getSingleton();
     }
 
+    public int getTwitterCharMax() {
+        return TWITTER_CHAR_MAX;
+    }
+
     public boolean postStatus(String text) throws TwitterException {
         boolean isOkToPost = textErrorCheck(text);
         if (isOkToPost) {
