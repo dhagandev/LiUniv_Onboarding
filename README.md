@@ -30,7 +30,7 @@ Run: ```mvn test -Dtest=<Java Test Class Name>```
 ### Running all tests ###
 Run: ```mvn test```
 ### Viewing your test coverage ###
-Run: ```mvn jacoco:report```
+Run: ```mvn jacoco:report```.
 Navigate to your project in a folder directory. Find `target/site/jacoco` and run `index.html`.
 
 ## Exit Codes ##

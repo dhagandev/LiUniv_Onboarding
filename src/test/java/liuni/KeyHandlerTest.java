@@ -1,5 +1,6 @@
 package liuni;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +25,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -123,10 +125,9 @@ public class KeyHandlerTest {
         try {
             IOException e = mock(IOException.class);
             doThrow(e).when(writer).write(isA(String.class));
-            keyHandler.setupKeys();
+            keyHandler.setupTwitter();
 
             verify(e).printStackTrace();
-            verify(writer).close();
         }
         catch (Exception e) {
             Assert.fail("This exception is not expected.");
@@ -141,9 +142,26 @@ public class KeyHandlerTest {
         try {
             IOException e = mock(IOException.class);
             doThrow(e).when(writer).close();
-            keyHandler.setupKeys();
+            keyHandler.setupTwitter();
 
             verify(e).printStackTrace();
+        }
+        catch (Exception e) {
+            Assert.fail("This exception is not expected.");
+        }
+    }
+
+    @Test
+    public void testSetupKeys_createTwitterProperties_NullWriter() {
+        BufferedWriter writer = null;
+        keyHandler.setWriter(writer);
+
+        try {
+            IOException e = mock(IOException.class);
+            keyHandler.setupTwitter();
+
+            verify(mock(BufferedWriter.class), never()).close();
+            verify(e, never()).printStackTrace();
         }
         catch (Exception e) {
             Assert.fail("This exception is not expected.");

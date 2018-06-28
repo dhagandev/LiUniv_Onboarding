@@ -122,7 +122,7 @@ public class LiUniResourceTest {
 
     @Test
     public void testREST_postTweet_badPost_badTweet() {
-        String testString = StringUtils.repeat("*", twitterStatus.getTwitterCharMax() + 1);
+        String testString = StringUtils.repeat("*", TwitterStatus.TWITTER_CHAR_MAX + 1);
         String expectedError = (new ErrorModel()).getBadTweetError();
         try {
             when(twitter.updateStatus(testString)).thenReturn(status);

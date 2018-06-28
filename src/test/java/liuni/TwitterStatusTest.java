@@ -66,7 +66,7 @@ public class TwitterStatusTest {
 
     @Test
     public void testTweetPost_TooLongTweet() {
-        String testString = StringUtils.repeat("*", twitterStatus.getTwitterCharMax() + 1);
+        String testString = StringUtils.repeat("*", TwitterStatus.TWITTER_CHAR_MAX + 1);
         try {
             when(twitter.updateStatus(testString)).thenReturn(status);
             when(status.getText()).thenReturn(testString);

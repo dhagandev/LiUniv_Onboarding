@@ -20,7 +20,7 @@
         <javax-version>7.0</javax-version>
         <mockito-core-version>2.19.0</mockito-core-version>
         <junit-version>4.12</junit-version>
-        <jacoco-version>0.7.5.201505241946</jacoco-version>
+        <jacoco-version>0.7.8</jacoco-version>
     </properties>
 
     <dependencyManagement>

@@ -7,15 +7,11 @@ import twitter4j.Status;
 
 public class TwitterStatus {
 
-    private static final int TWITTER_CHAR_MAX = 280;
+    public static final int TWITTER_CHAR_MAX = 280;
     private static Twitter twitter;
 
     public TwitterStatus() {
         twitter = TwitterFactory.getSingleton();
-    }
-
-    public int getTwitterCharMax() {
-        return TWITTER_CHAR_MAX;
     }
 
     public boolean postStatus(String text) throws TwitterException {
