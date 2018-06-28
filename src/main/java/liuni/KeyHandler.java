@@ -106,16 +106,14 @@ public class KeyHandler {
             System.out.println("Error occurred when setting up twitter4j.properties.");
             e.printStackTrace();
         }
-        finally {
-            try {
-                if (writer != null) {
-                    writer.close();
-                }
+        try {
+            if (writer != null) {
+                writer.close();
             }
-            catch (IOException e) {
-                System.out.println("Error occurred when closing the Buffered writer.");
-                e.printStackTrace();
-            }
+        }
+        catch (IOException e) {
+            System.out.println("Error occurred when closing the Buffered writer.");
+            e.printStackTrace();
         }
     }
 
