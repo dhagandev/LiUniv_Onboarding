@@ -1,16 +1,15 @@
 package liuni;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -21,11 +20,9 @@ import java.io.IOException;
 import java.io.StringReader;
 
 import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -33,7 +30,7 @@ public class KeyHandlerTest {
 
     @Mock private Twitter twitter;
 
-    @Mock private KeyHandler keyHandler;
+    @Spy private KeyHandler keyHandler;
 
     @Before
     public void setUp() {
@@ -160,7 +157,22 @@ public class KeyHandlerTest {
             IOException e = mock(IOException.class);
             keyHandler.setupTwitter();
 
-            verify(mock(BufferedWriter.class), never()).close();
+            verify(e, never()).printStackTrace();
+        }
+        catch (Exception e) {
+            Assert.fail("This exception is not expected.");
+        }
+    }
+
+    @Test
+    public void testSetupKeys_createTwitterProperties_NullWriter_CloseWriter() {
+        BufferedWriter writer = null;
+        keyHandler.setWriter(writer);
+
+        try {
+            IOException e = mock(IOException.class);
+            keyHandler.closeWriter();
+
             verify(e, never()).printStackTrace();
         }
         catch (Exception e) {

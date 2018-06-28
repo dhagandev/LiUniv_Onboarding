@@ -94,20 +94,32 @@ public class KeyHandler {
     }
 
     public void setupTwitter() {
-        if (writer != null) {
-            try {
+        try {
+            if (writer != null) {
                 writer.write("debug=false\n");
 
                 writer.write("oauth.consumerKey=" + conKey + "\n");
                 writer.write("oauth.consumerSecret=" + conSec + "\n");
                 writer.write("oauth.accessToken=" + accToken + "\n");
                 writer.write("oauth.accessTokenSecret=" + accSec + "\n");
-
-                writer.close();
-            } catch (IOException e) {
-                System.out.println("Error occurred when handling the twitter4j.properties file.");
-                e.printStackTrace();
             }
+        }
+        catch (IOException e) {
+            System.out.println("Error occurred when setting up twitter4j.properties.");
+            e.printStackTrace();
+        }
+        closeWriter();
+    }
+
+    public void closeWriter() {
+        try {
+            if(writer != null) {
+                writer.close();
+            }
+        }
+        catch (IOException e) {
+            System.out.println("Error occurred when when closing the Buffered writer.");
+            e.printStackTrace();
         }
     }
 
