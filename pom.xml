@@ -20,6 +20,7 @@
         <javax-version>7.0</javax-version>
         <mockito-core-version>2.19.0</mockito-core-version>
         <junit-version>4.12</junit-version>
+        <jacoco-version>0.7.5.201505241946</jacoco-version>
     </properties>
 
     <dependencyManagement>
@@ -127,6 +128,25 @@
                         <id>attach-sources</id>
                         <goals>
                             <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco-version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
                         </goals>
                     </execution>
                 </executions>

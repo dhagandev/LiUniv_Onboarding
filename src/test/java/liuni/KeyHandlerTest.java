@@ -8,6 +8,8 @@ import org.mockito.MockitoAnnotations;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -18,6 +20,7 @@ import java.io.IOException;
 import java.io.StringReader;
 
 import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -39,17 +42,7 @@ public class KeyHandlerTest {
         keyHandler.setTwitter(twitter);
    }
 
-   private Document getMockedDoc() {
-        final String fakeXmlFile = "<?xml version='1.0'?>" +
-                "<services>" +
-                "<service id='Twitter'>" +
-                "<consumerKey>TestValue</consumerKey>" +
-                "<consumerSecret>TestValue</consumerSecret>" +
-                "<accessToken>TestValue</accessToken>" +
-                "<accessSecret>TestValue</accessSecret>" +
-                "</service>" +
-                "</services>";
-
+   private Document getMockedDoc(String fakeXmlFile) {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder;
         try {
@@ -70,8 +63,18 @@ public class KeyHandlerTest {
         BufferedWriter writer = mock(BufferedWriter.class);
         keyHandler.setWriter(writer);
 
+        String fakeXmlFile = "<?xml version='1.0'?>" +
+                "<services>" +
+                "<service id='Twitter'>" +
+                "<consumerKey>TestValue</consumerKey>" +
+                "<consumerSecret>TestValue</consumerSecret>" +
+                "<accessToken>TestValue</accessToken>" +
+                "<accessSecret>TestValue</accessSecret>" +
+                "</service>" +
+                "</services>";
+
         try {
-            Document mockedDoc = getMockedDoc();
+            Document mockedDoc = getMockedDoc(fakeXmlFile);
             DocumentBuilderFactory dbFactory = mock(DocumentBuilderFactory.class);
             keyHandler.setDbFactory(dbFactory);
             DocumentBuilder dbuilder = mock(DocumentBuilder.class);
@@ -124,6 +127,76 @@ public class KeyHandlerTest {
 
             verify(e).printStackTrace();
             verify(writer).close();
+        }
+        catch (Exception e) {
+            Assert.fail("This exception is not expected.");
+        }
+    }
+
+    @Test
+    public void testSetupKeys_createTwitterProperties_FailWriterClose_FileWriteException() {
+        BufferedWriter writer = mock(BufferedWriter.class);
+        keyHandler.setWriter(writer);
+
+        try {
+            IOException e = mock(IOException.class);
+            doThrow(e).when(writer).close();
+            keyHandler.setupKeys();
+
+            verify(e).printStackTrace();
+        }
+        catch (Exception e) {
+            Assert.fail("This exception is not expected.");
+        }
+    }
+
+    @Test
+    public void testSetUpKeys_otherServices() {
+        String fakeXmlFile = "<?xml version='1.0'?>" +
+                "<services>" +
+                "<service id='Other'>" +
+                "<consumerKey>TestValue</consumerKey>" +
+                "<consumerSecret>TestValue</consumerSecret>" +
+                "<accessToken>TestValue</accessToken>" +
+                "<accessSecret>TestValue</accessSecret>" +
+                "</service>" +
+                "</services>";
+
+        try {
+            Document mockedDoc = getMockedDoc(fakeXmlFile);
+            DocumentBuilderFactory dbFactory = mock(DocumentBuilderFactory.class);
+            keyHandler.setDbFactory(dbFactory);
+            DocumentBuilder dbuilder = mock(DocumentBuilder.class);
+            when(dbFactory.newDocumentBuilder()).thenReturn(dbuilder);
+            when(dbuilder.parse(isA(File.class))).thenReturn(mockedDoc);
+            keyHandler.setupKeys();
+
+            verify(mock(KeyHandler.class), never()).setupTwitter();
+        }
+        catch (Exception e) {
+            Assert.fail("This exception is not expected.");
+        }
+    }
+
+    @Test
+    public void testTwitterValidCredentials_Fail() {
+        try {
+            TwitterException e = mock(TwitterException.class);
+            when(twitter.verifyCredentials()).thenThrow(e);
+            keyHandler.twitterValidCredentials();
+            verify(e).printStackTrace();
+        }
+        catch (Exception e) {
+            Assert.fail("This exception is not expected.");
+        }
+    }
+
+    @Test
+    public void testTwitterValidCredentials_Success() {
+        try {
+            TwitterException e = mock(TwitterException.class);
+            keyHandler.twitterValidCredentials();
+            verify(e, never()).printStackTrace();
         }
         catch (Exception e) {
             Assert.fail("This exception is not expected.");

@@ -18,9 +18,6 @@ public class TwitterStatus {
         boolean isOkToPost = textErrorCheck(text);
         if (isOkToPost) {
             Status status = twitter.updateStatus(text);
-            if (status.equals(null)) {
-                return false;
-            }
             System.out.println("Successfully updated status to [" + status.getText() + "].");
         }
 

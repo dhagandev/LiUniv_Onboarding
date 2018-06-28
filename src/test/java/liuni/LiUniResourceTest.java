@@ -22,6 +22,8 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 public class LiUniResourceTest {
+    private static final int TWITTER_CHAR_MAX = 280;
+
     @Mock private Twitter twitter;
     @Mock private Status status;
 
@@ -121,7 +123,11 @@ public class LiUniResourceTest {
 
     @Test
     public void testREST_postTweet_badPost_badTweet() {
-        String testString = "This is a bad string because it is going go to be longer than Twitter's limits. It is this long because it is Lorem Ipsum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In vehicula velit vel augue porta condimentum. Nullam ornare velit mattis, maximus sem eget, malesuada nibh. Interdum et malesuada fames ac ante ipsum primis in faucibus. Suspendisse potenti. Pellentesque a dictum lorem. Ut sit amet fringilla turpis. Sed pretium, erat tincidunt aliquam mattis, neque diam luctus mauris, sed lacinia arcu libero sit amet tortor.";
+        StringBuffer stringBuffer = new StringBuffer();
+        for (int i = 0; i < TWITTER_CHAR_MAX + 1; i ++){
+            stringBuffer.append(" ");
+        }
+        String testString = stringBuffer.toString();
         String expectedError = (new ErrorModel()).getBadTweetError();
         try {
             when(twitter.updateStatus(testString)).thenReturn(status);
