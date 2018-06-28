@@ -1,13 +1,11 @@
-package liuni;
+package liuni.health;
 
 import com.codahale.metrics.health.HealthCheck;
-import liuni.health.LiUniHealthCheck;
 import org.junit.Test;
-import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 
-public class HealthCheckTest {
+public class LiUniHealthCheckTest {
 
     @Test
     public void healthCheck_Good() {
