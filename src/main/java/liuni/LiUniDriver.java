@@ -1,6 +1,5 @@
 package liuni;
 
-import io.dropwizard.setup.Bootstrap;
 import liuni.health.LiUniHealthCheck;
 import liuni.resources.LiUniResource;
 import io.dropwizard.Application;

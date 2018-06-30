@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<services>
-    <service id="Twitter">
-        <consumerKey></consumerKey>
-        <consumerSecret></consumerSecret>
-        <accessToken></accessToken>
-        <accessSecret></accessSecret>
-    </service>
-</services>
