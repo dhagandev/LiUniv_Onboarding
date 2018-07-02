@@ -2,17 +2,12 @@ package liuni;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
 import twitter4j.Status;
 
 public class TwitterStatus {
 
     public static final int TWITTER_CHAR_MAX = 280;
     private static Twitter twitter;
-
-    public TwitterStatus() {
-        twitter = TwitterFactory.getSingleton();
-    }
 
     public boolean postStatus(String text) throws TwitterException {
         boolean isOkToPost = textErrorCheck(text);
