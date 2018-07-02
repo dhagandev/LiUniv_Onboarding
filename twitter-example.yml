@@ -1,4 +1,5 @@
-consumerKey:
-consumerSecret:
-accessToken:
-accessSecret:
+twitter:
+  consumerKey:
+  consumerSecret:
+  accessToken:
+  accessSecret:

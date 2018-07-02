@@ -2,26 +2,26 @@ package liuni;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
-import twitter4j.conf.Configuration;
-import twitter4j.conf.ConfigurationBuilder;
-
-import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
 
 public class TwitterConfigTest {
 
-    @InjectMocks TwitterConfig config;
+    private TwitterConfig config;
 
     @Before
     public void setUp() {
         config = new TwitterConfig();
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("consumerKey", "key");
+        map.put("consumerSecret", "key");
+        map.put("accessToken", "key");
+        map.put("accessSecret", "key");
+        config.setTwitter(map);
     }
 
     @Test
