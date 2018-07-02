@@ -4,7 +4,12 @@ import io.dropwizard.Configuration;
 import org.hibernate.validator.constraints.NotEmpty;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+
 public class TwitterConfig extends Configuration {
+    BufferedWriter writer;
+
     @NotEmpty
     private String consumerKey;
 
@@ -16,6 +21,10 @@ public class TwitterConfig extends Configuration {
 
     @NotEmpty
     private String accessSecret;
+
+    public TwitterConfig() {
+        writer = null;
+    }
 
     @JsonProperty
     public String getConsumerKey() {
@@ -37,6 +46,10 @@ public class TwitterConfig extends Configuration {
         return accessSecret;
     }
 
+    public void setWriter(BufferedWriter writer) {
+        this.writer = writer;
+    }
+
     @JsonProperty
     public void setConsumerKey(String consumerKey) {
         this.consumerKey = consumerKey;
@@ -55,5 +68,36 @@ public class TwitterConfig extends Configuration {
     @JsonProperty
     public void setAccessSecret(String accessSecret) {
         this.accessSecret = accessSecret;
+    }
+
+    public void createTwitter4JProp() {
+        try {
+            if (writer != null) {
+                writer.write("debug=false\n");
+
+                writer.write("oauth.consumerKey=" + consumerKey + "\n");
+                writer.write("oauth.consumerSecret=" + consumerSecret + "\n");
+                writer.write("oauth.accessToken=" + accessToken + "\n");
+                writer.write("oauth.accessTokenSecret=" + accessSecret + "\n");
+            }
+        }
+        catch (IOException e) {
+            System.out.println("Error occurred when setting up twitter4j.properties.");
+            e.printStackTrace();
+        }
+
+        closeWriter();
+    }
+
+    public void closeWriter() {
+        try {
+            if(writer != null) {
+                writer.close();
+            }
+        }
+        catch (IOException e) {
+            System.out.println("Error occurred when when closing the Buffered writer.");
+            e.printStackTrace();
+        }
     }
 }
