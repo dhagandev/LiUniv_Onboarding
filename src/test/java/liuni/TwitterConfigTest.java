@@ -1,22 +1,19 @@
 package liuni;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
+import twitter4j.Twitter;
+import twitter4j.TwitterFactory;
+import twitter4j.conf.Configuration;
+import twitter4j.conf.ConfigurationBuilder;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 public class TwitterConfigTest {
 
@@ -55,4 +52,10 @@ public class TwitterConfigTest {
         assertEquals(testKey, config.getAccessSecret());
     }
 
+    @Test
+    public void test_CreateTwitterConfig() {
+        Twitter twitter = TwitterFactory.getSingleton();
+        Twitter result = config.createTwitterConfig();
+        assertEquals(twitter.getClass(), result.getClass());
+    }
 }

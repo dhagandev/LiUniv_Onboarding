@@ -1,18 +1,13 @@
 package liuni;
 
-import io.dropwizard.Configuration;
 import org.hibernate.validator.constraints.NotEmpty;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
+import twitter4j.conf.Configuration;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-
-public class TwitterConfig extends Configuration {
-    BufferedWriter writer;
-
+public class TwitterConfig extends io.dropwizard.Configuration {
     @NotEmpty
     private String consumerKey;
 
@@ -24,10 +19,6 @@ public class TwitterConfig extends Configuration {
 
     @NotEmpty
     private String accessSecret;
-
-    public TwitterConfig() {
-        writer = null;
-    }
 
     @JsonProperty
     public String getConsumerKey() {
@@ -47,10 +38,6 @@ public class TwitterConfig extends Configuration {
     @JsonProperty
     public String getAccessSecret() {
         return accessSecret;
-    }
-
-    public void setWriter(BufferedWriter writer) {
-        this.writer = writer;
     }
 
     @JsonProperty
