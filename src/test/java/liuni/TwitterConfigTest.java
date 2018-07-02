@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class TwitterConfigTest {
 
@@ -50,6 +51,14 @@ public class TwitterConfigTest {
         String testKey = "Test Value";
         config.setAccessSecret(testKey);
         assertEquals(testKey, config.getAccessSecret());
+    }
+
+    @Test
+    public void test_GetTwitter() {
+        assertTrue(config.getTwitter().containsKey("consumerKey"));
+        assertTrue(config.getTwitter().containsKey("consumerSecret"));
+        assertTrue(config.getTwitter().containsKey("accessToken"));
+        assertTrue(config.getTwitter().containsKey("accessSecret"));
     }
 
     @Test
