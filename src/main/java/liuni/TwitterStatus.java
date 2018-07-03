@@ -7,7 +7,7 @@ import twitter4j.Status;
 public class TwitterStatus {
 
     public static final int TWITTER_CHAR_MAX = 280;
-    private static Twitter twitter;
+    private Twitter twitter;
 
     public TwitterStatus(TwitterConfig config) {
         if (config != null) {

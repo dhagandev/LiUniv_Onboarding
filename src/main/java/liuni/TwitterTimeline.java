@@ -5,7 +5,7 @@ import twitter4j.Twitter;
 import twitter4j.Status;
 
 public class TwitterTimeline {
-    private static Twitter twitter;
+    private Twitter twitter;
 
     public TwitterTimeline(TwitterConfig config) {
         if (config != null) {
