@@ -9,6 +9,15 @@ public class TwitterStatus {
     public static final int TWITTER_CHAR_MAX = 280;
     private static Twitter twitter;
 
+    public TwitterStatus(TwitterConfig config) {
+        if (config != null) {
+            twitter = config.createTwitterConfig();
+        }
+        else {
+            twitter = null;
+        }
+    }
+
     public boolean postStatus(String text) throws TwitterException {
         boolean isOkToPost = textErrorCheck(text);
         if (isOkToPost) {

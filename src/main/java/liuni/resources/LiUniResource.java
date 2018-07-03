@@ -1,5 +1,6 @@
 package liuni.resources;
 
+import liuni.TwitterConfig;
 import liuni.TwitterStatus;
 import liuni.TwitterTimeline;
 import liuni.api.ErrorModel;
@@ -8,6 +9,7 @@ import com.codahale.metrics.annotation.Timed;
 import liuni.api.TwitterTweetModel;
 import twitter4j.ResponseList;
 import twitter4j.Status;
+import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 import javax.ws.rs.Consumes;
@@ -26,9 +28,9 @@ public class LiUniResource {
     private static TwitterTimeline twitterTimeline;
     private static TwitterStatus twitterStatus;
 
-    public LiUniResource() {
-        twitterTimeline = new TwitterTimeline();
-        twitterStatus = new TwitterStatus();
+    public LiUniResource(TwitterConfig config) {
+        twitterTimeline = new TwitterTimeline(config);
+        twitterStatus = new TwitterStatus(config);
     }
 
     public void setTwitterStatus(TwitterStatus twitterStatus) {

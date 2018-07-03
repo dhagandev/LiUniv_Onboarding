@@ -15,6 +15,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 
 public class TwitterTimelineTest {
@@ -26,7 +27,8 @@ public class TwitterTimelineTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        twitterTimeline = new TwitterTimeline();
+        TwitterConfig config = mock(TwitterConfig.class);
+        twitterTimeline = new TwitterTimeline(config);
         twitterTimeline.setTwitter(twitter);
     }
 

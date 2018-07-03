@@ -1,5 +1,6 @@
 package liuni;
 
+import io.dropwizard.Configuration;
 import org.hibernate.validator.constraints.NotEmpty;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -10,7 +11,7 @@ import twitter4j.conf.ConfigurationBuilder;
 
 import javax.validation.constraints.NotNull;
 
-public class TwitterConfig extends io.dropwizard.Configuration {
+public class TwitterConfig extends Configuration {
     @NotNull
     private Map<String, String> twitter;
 

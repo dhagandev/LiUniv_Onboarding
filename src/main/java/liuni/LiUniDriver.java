@@ -1,12 +1,9 @@
 package liuni;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import liuni.health.LiUniHealthCheck;
 import liuni.resources.LiUniResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
-import twitter4j.Twitter;
 
 public class LiUniDriver extends Application<TwitterConfig> {
     public static void main(String args[]) {
@@ -20,16 +17,7 @@ public class LiUniDriver extends Application<TwitterConfig> {
 
     @Override
     public void run(TwitterConfig config, Environment env) {
-        Twitter twitter = config.createTwitterConfig();
-
-        TwitterStatus twitterStatus = new TwitterStatus();
-        TwitterTimeline twitterTimeline = new TwitterTimeline();
-        twitterStatus.setTwitter(twitter);
-        twitterTimeline.setTwitter(twitter);
-
-        final LiUniResource resource = new LiUniResource();
-        resource.setTwitterStatus(twitterStatus);
-        resource.setTwitterTimeline(twitterTimeline);
+        final LiUniResource resource = new LiUniResource(config);
 
         final LiUniHealthCheck healthCheck = new LiUniHealthCheck();
         env.healthChecks().register("TwitterHealth", healthCheck);
