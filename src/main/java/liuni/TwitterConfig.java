@@ -1,80 +1,62 @@
 package liuni;
 
-import io.dropwizard.Configuration;
-import org.hibernate.validator.constraints.NotEmpty;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.Map;
+import org.hibernate.validator.constraints.NotEmpty;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
 
-import javax.validation.constraints.NotNull;
-
-public class TwitterConfig extends Configuration {
-    @NotNull
-    private Map<String, String> twitter;
+public class TwitterConfig {
+    @NotEmpty
+    private String consumerKey;
 
     @NotEmpty
-    private String consumerKey = "consumerKey";
+    private String consumerSecret;
 
     @NotEmpty
-    private String consumerSecret = "consumerSecret";
+    private String accessToken;
 
     @NotEmpty
-    private String accessToken = "accessToken";
+    private String accessSecret;
 
-    @NotEmpty
-    private String accessSecret = "accessSecret";
-
-    @JsonProperty
+    @JsonProperty("consumerKey")
     public String getConsumerKey() {
-        return twitter.get(consumerKey);
+        return consumerKey;
     }
 
-    @JsonProperty
+    @JsonProperty("consumerSecret")
     public String getConsumerSecret() {
-        return twitter.get(consumerSecret);
+        return consumerSecret;
     }
 
-    @JsonProperty
+    @JsonProperty("accessToken")
     public String getAccessToken() {
-        return twitter.get(accessToken);
+        return accessToken;
     }
 
-    @JsonProperty
+    @JsonProperty("accessSecret")
     public String getAccessSecret() {
-        return twitter.get(accessSecret);
+        return accessSecret;
     }
 
-    @JsonProperty
-    public Map<String, String> getTwitter() {
-        return twitter;
-    }
-
-    @JsonProperty
+    @JsonProperty("consumerKey")
     public void setConsumerKey(String consumerKey) {
-        twitter.replace(this.consumerKey, consumerKey);
+        this.consumerKey = consumerKey;
     }
 
-    @JsonProperty
+    @JsonProperty("consumerSecret")
     public void setConsumerSecret(String consumerSecret) {
-        twitter.replace(this.consumerSecret, consumerSecret);
+        this.consumerSecret = consumerSecret;
     }
 
-    @JsonProperty
+    @JsonProperty("accessToken")
     public void setAccessToken(String accessToken) {
-        twitter.replace(this.accessToken, accessToken);
+        this.accessToken = accessToken;
     }
 
-    @JsonProperty
+    @JsonProperty("accessSecret")
     public void setAccessSecret(String accessSecret) {
-        twitter.replace(this.accessSecret, accessSecret);
-    }
-
-    @JsonProperty
-    public void setTwitter(Map<String, String> twitter) {
-        this.twitter = twitter;
+        this.accessSecret = accessSecret;
     }
 
     public Twitter createTwitterConfig() {

@@ -5,7 +5,7 @@ import liuni.resources.LiUniResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
 
-public class LiUniDriver extends Application<TwitterConfig> {
+public class LiUniDriver extends Application<LiUniConfig> {
     public static void main(String args[]) {
         try {
             new LiUniDriver().run(args);
@@ -16,7 +16,7 @@ public class LiUniDriver extends Application<TwitterConfig> {
     }
 
     @Override
-    public void run(TwitterConfig config, Environment env) {
+    public void run(LiUniConfig config, Environment env) {
         final LiUniResource resource = new LiUniResource(config);
 
         final LiUniHealthCheck healthCheck = new LiUniHealthCheck();

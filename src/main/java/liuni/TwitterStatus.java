@@ -24,7 +24,6 @@ public class TwitterStatus {
             Status status = twitter.updateStatus(text);
             System.out.println("Successfully updated status to [" + status.getText() + "].");
         }
-
         return isOkToPost;
     }
 

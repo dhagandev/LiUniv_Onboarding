@@ -4,61 +4,42 @@ import org.junit.Before;
 import org.junit.Test;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class TwitterConfigTest {
-
     private TwitterConfig config;
 
     @Before
     public void setUp() {
         config = new TwitterConfig();
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("consumerKey", "key");
-        map.put("consumerSecret", "key");
-        map.put("accessToken", "key");
-        map.put("accessSecret", "key");
-        config.setTwitter(map);
     }
 
     @Test
-    public void test_SetConKey() {
+    public void test_SetConsumerKey() {
         String testKey = "Test Value";
         config.setConsumerKey(testKey);
         assertEquals(testKey, config.getConsumerKey());
     }
 
     @Test
-    public void test_SetConSec() {
+    public void test_SetConsumerSecret() {
         String testKey = "Test Value";
         config.setConsumerSecret(testKey);
         assertEquals(testKey, config.getConsumerSecret());
     }
 
     @Test
-    public void test_SetAccToken() {
+    public void test_SetAccessToken() {
         String testKey = "Test Value";
         config.setAccessToken(testKey);
         assertEquals(testKey, config.getAccessToken());
     }
 
     @Test
-    public void test_SetAccSecret() {
+    public void test_SetAccessSecret() {
         String testKey = "Test Value";
         config.setAccessSecret(testKey);
         assertEquals(testKey, config.getAccessSecret());
-    }
-
-    @Test
-    public void test_GetTwitter() {
-        assertTrue(config.getTwitter().containsKey("consumerKey"));
-        assertTrue(config.getTwitter().containsKey("consumerSecret"));
-        assertTrue(config.getTwitter().containsKey("accessToken"));
-        assertTrue(config.getTwitter().containsKey("accessSecret"));
     }
 
     @Test
