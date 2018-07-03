@@ -13,6 +13,7 @@ import twitter4j.Twitter;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
@@ -25,7 +26,8 @@ public class TwitterStatusTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        twitterStatus = new TwitterStatus();
+        TwitterConfig config = mock(TwitterConfig.class);
+        twitterStatus = new TwitterStatus(config);
         twitterStatus.setTwitter(twitter);
     }
 

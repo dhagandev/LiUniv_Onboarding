@@ -19,6 +19,7 @@ import javax.ws.rs.core.Response;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
@@ -26,16 +27,23 @@ public class LiUniResourceTest {
     @Mock private Twitter twitter;
     @Mock private Status status;
 
-    @InjectMocks TwitterStatus twitterStatus;
-    @InjectMocks TwitterTimeline twitterTimeline;
     @InjectMocks LiUniResource resource;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+
+        LiUniConfig config = mock(LiUniConfig.class);
+        TwitterConfig twitterConfig = mock(TwitterConfig.class);
+        when(config.getTwitter()).thenReturn(twitterConfig);
+        twitter = mock(Twitter.class);
+
+        resource = new LiUniResource(config);
+        TwitterStatus twitterStatus = resource.getTwitterStatus();
+        TwitterTimeline twitterTimeline = resource.getTwitterTimeline();
         twitterStatus.setTwitter(twitter);
-        resource.setTwitterStatus(twitterStatus);
         twitterTimeline.setTwitter(twitter);
+        resource.setTwitterStatus(twitterStatus);
         resource.setTwitterTimeline(twitterTimeline);
     }
 

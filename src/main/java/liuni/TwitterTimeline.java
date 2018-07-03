@@ -2,14 +2,18 @@ package liuni;
 
 import twitter4j.ResponseList;
 import twitter4j.Twitter;
-import twitter4j.TwitterFactory;
 import twitter4j.Status;
 
 public class TwitterTimeline {
-    private static Twitter twitter;
+    private Twitter twitter;
 
-    public TwitterTimeline() {
-        twitter = TwitterFactory.getSingleton();
+    public TwitterTimeline(TwitterConfig config) {
+        if (config != null) {
+            twitter = config.createTwitterConfig();
+        }
+        else {
+            twitter = null;
+        }
     }
 
     public ResponseList<Status> getTimeline() throws Exception {

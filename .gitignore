@@ -1,9 +1,9 @@
 .idea
 *.iml
-hardcoded_keys.xml
 target
 out
 twitter4j.properties
 *.class
 .DS_Store
 dependency-reduced-pom.xml
+twitter.yml

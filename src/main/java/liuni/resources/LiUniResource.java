@@ -1,5 +1,6 @@
 package liuni.resources;
 
+import liuni.LiUniConfig;
 import liuni.TwitterStatus;
 import liuni.TwitterTimeline;
 import liuni.api.ErrorModel;
@@ -26,9 +27,23 @@ public class LiUniResource {
     private static TwitterTimeline twitterTimeline;
     private static TwitterStatus twitterStatus;
 
-    public LiUniResource() {
-        twitterTimeline = new TwitterTimeline();
-        twitterStatus = new TwitterStatus();
+    public LiUniResource(LiUniConfig config) {
+        if (config != null) {
+            twitterTimeline = new TwitterTimeline(config.getTwitter());
+            twitterStatus = new TwitterStatus(config.getTwitter());
+        }
+        else {
+            twitterTimeline = null;
+            twitterStatus = null;
+        }
+    }
+
+    public TwitterStatus getTwitterStatus() {
+        return twitterStatus;
+    }
+
+    public TwitterTimeline getTwitterTimeline() {
+        return twitterTimeline;
     }
 
     public void setTwitterStatus(TwitterStatus twitterStatus) {
