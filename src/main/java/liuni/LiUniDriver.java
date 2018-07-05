@@ -4,17 +4,15 @@ import liuni.health.LiUniHealthCheck;
 import liuni.resources.LiUniResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class LiUniDriver extends Application<LiUniConfig> {
-    private static Logger logger = LoggerFactory.getLogger(LiUniDriver.class);
     public static void main(String args[]) {
         try {
             new LiUniDriver().run(args);
         }
         catch (Exception e) {
-            logger.info(e.getStackTrace().toString());
+            LoggerFactory.getLogger(LiUniDriver.class).error("An error occurred.\n", e);
         }
     }
 

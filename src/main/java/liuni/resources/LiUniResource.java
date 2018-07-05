@@ -73,7 +73,7 @@ public class LiUniResource {
             ErrorModel error = new ErrorModel();
             responseBuilder.status(error.getErrorStatus());
             responseBuilder.entity(error.getGeneralError());
-            logger.error(e.getStackTrace().toString() + "\n\nProduced an error with a " + error.getErrorStatus() + " code.");
+            logger.error("\n\nProduced an error with a " + error.getErrorStatus() + " code.\n", e);
         }
         return responseBuilder.build();
     }
@@ -94,14 +94,14 @@ public class LiUniResource {
                 ErrorModel error = new ErrorModel();
                 responseBuilder.status(error.getErrorStatus());
                 responseBuilder.entity(error.getBadTweetError());
-                logger.error("\\n\\nAn error occurred. Unable to post your tweet [\" + message + \"]. Sorry!\n\nProduced an error with a " + error.getErrorStatus() + " code.");
+                logger.error("\n\nAn error occurred. Unable to post your tweet [" + message + "]. Sorry!\n\nProduced an error with a " + error.getErrorStatus() + " code.");
             }
         }
         catch (TwitterException e) {
             ErrorModel error = new ErrorModel();
             responseBuilder.status(error.getErrorStatus());
             responseBuilder.entity(error.getGeneralError());
-            logger.error(e.getStackTrace().toString() + "\n\nProduced an error with a " + error.getErrorStatus() + " code.");
+            logger.error("\n\nProduced an error with a " + error.getErrorStatus() + " code.\n", e);
         }
         return responseBuilder.build();
     }
