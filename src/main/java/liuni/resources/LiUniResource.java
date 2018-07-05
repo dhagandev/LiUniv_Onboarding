@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 public class LiUniResource {
     private TwitterTimeline twitterTimeline;
     private TwitterStatus twitterStatus;
-    private Logger logger = LoggerFactory.getLogger(LiUniResource.class);
+    private static Logger logger = LoggerFactory.getLogger(LiUniResource.class);
 
     public LiUniResource(LiUniConfig config) {
         if (config != null) {
@@ -73,7 +73,7 @@ public class LiUniResource {
             ErrorModel error = new ErrorModel();
             responseBuilder.status(error.getErrorStatus());
             responseBuilder.entity(error.getGeneralError());
-            logger.error("\n\nProduced an error with a " + error.getErrorStatus() + " code.\n", e);
+            logger.error("Produced an error with a " + error.getErrorStatus() + " code.", e);
         }
         return responseBuilder.build();
     }
@@ -94,14 +94,14 @@ public class LiUniResource {
                 ErrorModel error = new ErrorModel();
                 responseBuilder.status(error.getErrorStatus());
                 responseBuilder.entity(error.getBadTweetError());
-                logger.error("\n\nAn error occurred. Unable to post your tweet [" + message + "]. Sorry!\n\nProduced an error with a " + error.getErrorStatus() + " code.");
+                logger.error("An error occurred. Unable to post your tweet [" + message + "]. Sorry! This may be due to the message being too long or being empty. Produced an error with a " + error.getErrorStatus() + " code.");
             }
         }
         catch (TwitterException e) {
             ErrorModel error = new ErrorModel();
             responseBuilder.status(error.getErrorStatus());
             responseBuilder.entity(error.getGeneralError());
-            logger.error("\n\nProduced an error with a " + error.getErrorStatus() + " code.\n", e);
+            logger.error("Produced an error with a " + error.getErrorStatus() + " code.", e);
         }
         return responseBuilder.build();
     }
