@@ -1,5 +1,7 @@
 package liuni;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.Status;
@@ -9,7 +11,10 @@ public class TwitterStatus {
     public static final int TWITTER_CHAR_MAX = 280;
     private Twitter twitter;
 
+    Logger logger;
+
     public TwitterStatus(TwitterConfig config) {
+        logger = LoggerFactory.getLogger(TwitterStatus.class);
         if (config != null) {
             twitter = config.createTwitterConfig();
         }
@@ -22,7 +27,7 @@ public class TwitterStatus {
         boolean isOkToPost = textErrorCheck(text);
         if (isOkToPost) {
             Status status = twitter.updateStatus(text);
-            System.out.println("Successfully updated status to [" + status.getText() + "].");
+            logger.info("Successfully updated status to [" + status.getText() + "].");
         }
         return isOkToPost;
     }

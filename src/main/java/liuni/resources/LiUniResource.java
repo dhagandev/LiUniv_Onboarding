@@ -20,14 +20,18 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Path("/api/1.0/twitter")
 @Produces(MediaType.APPLICATION_JSON)
 public class LiUniResource {
-    private static TwitterTimeline twitterTimeline;
-    private static TwitterStatus twitterStatus;
+    private TwitterTimeline twitterTimeline;
+    private TwitterStatus twitterStatus;
+    private Logger logger;
 
     public LiUniResource(LiUniConfig config) {
+        logger = LoggerFactory.getLogger(LiUniResource.class);
         if (config != null) {
             twitterTimeline = new TwitterTimeline(config.getTwitter());
             twitterStatus = new TwitterStatus(config.getTwitter());
@@ -67,10 +71,11 @@ public class LiUniResource {
             responseBuilder.entity(new TwitterTimelineModel(timeline).getTimeline());
         }
         catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getStackTrace().toString());
             ErrorModel error = new ErrorModel();
             responseBuilder.status(error.getErrorStatus());
             responseBuilder.entity(error.getGeneralError());
+            logger.error("\n\nProduced an error with a " + error.getErrorStatus() + " code.");
         }
         return responseBuilder.build();
     }
@@ -88,17 +93,19 @@ public class LiUniResource {
                 responseBuilder.entity(new TwitterTweetModel(message).getMessage());
             }
             else {
-                System.out.println("\n\nAn error occurred. Unable to post your tweet [" + message + "]. Sorry!");
+                logger.error("\n\nAn error occurred. Unable to post your tweet [" + message + "]. Sorry!");
                 ErrorModel error = new ErrorModel();
                 responseBuilder.status(error.getErrorStatus());
                 responseBuilder.entity(error.getBadTweetError());
+                logger.error("\n\nProduced an error with a " + error.getErrorStatus() + " code.");
             }
         }
         catch (TwitterException e) {
-            e.printStackTrace();
+            logger.error(e.getStackTrace().toString());
             ErrorModel error = new ErrorModel();
             responseBuilder.status(error.getErrorStatus());
             responseBuilder.entity(error.getGeneralError());
+            logger.error("\n\nProduced an error with a " + error.getErrorStatus() + " code.");
         }
         return responseBuilder.build();
     }
