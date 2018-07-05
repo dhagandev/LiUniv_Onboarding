@@ -11,10 +11,9 @@ public class TwitterStatus {
     public static final int TWITTER_CHAR_MAX = 280;
     private Twitter twitter;
 
-    Logger logger;
+    Logger logger = LoggerFactory.getLogger(TwitterStatus.class);
 
     public TwitterStatus(TwitterConfig config) {
-        logger = LoggerFactory.getLogger(TwitterStatus.class);
         if (config != null) {
             twitter = config.createTwitterConfig();
         }

@@ -28,10 +28,9 @@ import org.slf4j.LoggerFactory;
 public class LiUniResource {
     private TwitterTimeline twitterTimeline;
     private TwitterStatus twitterStatus;
-    private Logger logger;
+    private Logger logger = LoggerFactory.getLogger(LiUniResource.class);
 
     public LiUniResource(LiUniConfig config) {
-        logger = LoggerFactory.getLogger(LiUniResource.class);
         if (config != null) {
             twitterTimeline = new TwitterTimeline(config.getTwitter());
             twitterStatus = new TwitterStatus(config.getTwitter());
@@ -71,11 +70,10 @@ public class LiUniResource {
             responseBuilder.entity(new TwitterTimelineModel(timeline).getTimeline());
         }
         catch (Exception e) {
-            logger.error(e.getStackTrace().toString());
             ErrorModel error = new ErrorModel();
             responseBuilder.status(error.getErrorStatus());
             responseBuilder.entity(error.getGeneralError());
-            logger.error("\n\nProduced an error with a " + error.getErrorStatus() + " code.");
+            logger.error(e.getStackTrace().toString() + "\n\nProduced an error with a " + error.getErrorStatus() + " code.");
         }
         return responseBuilder.build();
     }
@@ -93,19 +91,17 @@ public class LiUniResource {
                 responseBuilder.entity(new TwitterTweetModel(message).getMessage());
             }
             else {
-                logger.error("\n\nAn error occurred. Unable to post your tweet [" + message + "]. Sorry!");
                 ErrorModel error = new ErrorModel();
                 responseBuilder.status(error.getErrorStatus());
                 responseBuilder.entity(error.getBadTweetError());
-                logger.error("\n\nProduced an error with a " + error.getErrorStatus() + " code.");
+                logger.error("\\n\\nAn error occurred. Unable to post your tweet [\" + message + \"]. Sorry!\n\nProduced an error with a " + error.getErrorStatus() + " code.");
             }
         }
         catch (TwitterException e) {
-            logger.error(e.getStackTrace().toString());
             ErrorModel error = new ErrorModel();
             responseBuilder.status(error.getErrorStatus());
             responseBuilder.entity(error.getGeneralError());
-            logger.error("\n\nProduced an error with a " + error.getErrorStatus() + " code.");
+            logger.error(e.getStackTrace().toString() + "\n\nProduced an error with a " + error.getErrorStatus() + " code.");
         }
         return responseBuilder.build();
     }
