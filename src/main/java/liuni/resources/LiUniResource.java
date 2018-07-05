@@ -94,7 +94,7 @@ public class LiUniResource {
                 ErrorModel error = new ErrorModel();
                 responseBuilder.status(error.getErrorStatus());
                 responseBuilder.entity(error.getBadTweetError());
-                logger.error("An error occurred. Unable to post your tweet [" + message + "]. Sorry! This may be due to the message being too long or being empty. Produced an error with a " + error.getErrorStatus() + " code.");
+                logger.warn("An error occurred. Unable to post your tweet [" + message + "]. Sorry! This may be due to the message being too long or being empty. Produced an error with a " + error.getErrorStatus() + " code.");
             }
         }
         catch (TwitterException e) {
