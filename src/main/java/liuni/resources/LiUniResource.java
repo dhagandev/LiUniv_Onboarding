@@ -26,18 +26,30 @@ import org.slf4j.LoggerFactory;
 @Path("/api/1.0/twitter")
 @Produces(MediaType.APPLICATION_JSON)
 public class LiUniResource {
+    private static Logger logger = LoggerFactory.getLogger(LiUniResource.class);
     private TwitterTimeline twitterTimeline;
     private TwitterStatus twitterStatus;
-    private static Logger logger = LoggerFactory.getLogger(LiUniResource.class);
+    private LiUniConfig config;
 
-    public LiUniResource(LiUniConfig config) {
-        if (config != null) {
-            twitterTimeline = new TwitterTimeline(config.getTwitter());
-            twitterStatus = new TwitterStatus(config.getTwitter());
-        }
-        else {
-            twitterTimeline = null;
-            twitterStatus = null;
+    public LiUniResource() {
+        config = null;
+        twitterTimeline = null;
+        twitterStatus = null;
+    }
+
+    public LiUniResource(LiUniConfig config, int index) {
+        this.config = config;
+        twitterTimeline = null;
+        twitterStatus = null;
+        
+        boolean configNotNull = this.config != null;
+        if (configNotNull) {
+            boolean configListNotEmpty = this.config.getTwitter().size() > 0;
+            boolean indexInBounds = index >= 0 && index < this.config.getTwitter().size();
+            if (configListNotEmpty && indexInBounds) {
+                twitterTimeline = new TwitterTimeline(this.config.getTwitter().get(index));
+                twitterStatus = new TwitterStatus(this.config.getTwitter().get(index));
+            }
         }
     }
 
@@ -49,12 +61,21 @@ public class LiUniResource {
         return twitterTimeline;
     }
 
+    public LiUniConfig getConfig() {
+        return config;
+    }
+
     public void setTwitterStatus(TwitterStatus twitterStatus) {
         this.twitterStatus = twitterStatus;
     }
 
     public void setTwitterTimeline(TwitterTimeline twitterTimeline) {
         this.twitterTimeline = twitterTimeline;
+    }
+
+    public void setTwitterConfig(int index) {
+        twitterStatus = new TwitterStatus(config.getTwitter().get(index));
+        twitterTimeline = new TwitterTimeline(config.getTwitter().get(index));
     }
 
     @Path("/timeline")

@@ -7,6 +7,8 @@ import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
 
 public class TwitterConfig {
+    private String userName;
+
     @NotEmpty
     private String consumerKey;
 
@@ -18,6 +20,11 @@ public class TwitterConfig {
 
     @NotEmpty
     private String accessSecret;
+
+    @JsonProperty("userName")
+    public String getUserName() {
+        return userName;
+    }
 
     @JsonProperty("consumerKey")
     public String getConsumerKey() {
@@ -37,6 +44,11 @@ public class TwitterConfig {
     @JsonProperty("accessSecret")
     public String getAccessSecret() {
         return accessSecret;
+    }
+
+    @JsonProperty("userName")
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     @JsonProperty("consumerKey")

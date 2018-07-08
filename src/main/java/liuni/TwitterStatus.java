@@ -13,14 +13,20 @@ public class TwitterStatus {
     private static Logger logger = LoggerFactory.getLogger(TwitterStatus.class);
 
     private Twitter twitter;
+    private TwitterConfig config;
 
     public TwitterStatus(TwitterConfig config) {
-        if (config != null) {
-            twitter = config.createTwitterConfig();
+        this.config = config;
+        if (this.config != null) {
+            twitter = this.config.createTwitterConfig();
         }
         else {
             twitter = null;
         }
+    }
+
+    public TwitterConfig getConfig() {
+        return config;
     }
 
     public boolean postStatus(String text) throws TwitterException {

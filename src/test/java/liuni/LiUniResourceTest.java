@@ -17,7 +17,12 @@ import twitter4j.TwitterException;
 
 import javax.ws.rs.core.Response;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
@@ -34,11 +39,20 @@ public class LiUniResourceTest {
         MockitoAnnotations.initMocks(this);
 
         LiUniConfig config = mock(LiUniConfig.class);
-        TwitterConfig twitterConfig = mock(TwitterConfig.class);
-        when(config.getTwitter()).thenReturn(twitterConfig);
+        List<TwitterConfig> twitterConfigList = new ArrayList<TwitterConfig>();
+        TwitterConfig twitterConfig1 = mock(TwitterConfig.class);
+        TwitterConfig twitterConfig2 = mock(TwitterConfig.class);
+
+        when(twitterConfig1.getUserName()).thenReturn("Dev1");
+        when(twitterConfig2.getUserName()).thenReturn("Dev2");
+
+        twitterConfigList.add(twitterConfig1);
+        twitterConfigList.add(twitterConfig2);
+
+        when(config.getTwitter()).thenReturn(twitterConfigList);
         twitter = mock(Twitter.class);
 
-        resource = new LiUniResource(config);
+        resource = new LiUniResource(config, 0);
         TwitterStatus twitterStatus = resource.getTwitterStatus();
         TwitterTimeline twitterTimeline = resource.getTwitterTimeline();
         twitterStatus.setTwitter(twitter);
@@ -161,6 +175,59 @@ public class LiUniResourceTest {
         catch (Exception e) {
             Assert.fail("This exception is not expected.");
         }
+    }
+
+    @Test
+    public void testREST_postTweet_postDifferentUsers() {
+        LiUniConfig luConfig = resource.getConfig();
+        assertTrue(luConfig.getTwitter().size() > 1);
+
+        String userName1 = resource.getTwitterStatus().getConfig().getUserName();
+        String userName2 = resource.getTwitterTimeline().getConfig().getUserName();
+        assertEquals(userName1, userName2);
+
+        resource.setTwitterConfig(1);
+        String userName3 = resource.getTwitterStatus().getConfig().getUserName();
+        String userName4 = resource.getTwitterTimeline().getConfig().getUserName();
+        assertEquals(userName3, userName4);
+        assertNotEquals(userName1, userName3);
+        assertNotEquals(userName2, userName4);
+    }
+
+    @Test
+    public void testREST_twitterVal_configSize() {
+        LiUniConfig config = mock(LiUniConfig.class);
+        List<TwitterConfig> twitterConfigList = new ArrayList<TwitterConfig>();
+        when(config.getTwitter()).thenReturn(twitterConfigList);
+        assertEquals(0, twitterConfigList.size());
+
+        resource = new LiUniResource(config, 0);
+        assertEquals(null, resource.getTwitterStatus());
+        assertEquals(null, resource.getTwitterTimeline());
+        assertNotEquals(null, resource.getConfig());
+    }
+
+    @Test
+    public void testREST_twitterVal_indexOutOfBounds() {
+        LiUniConfig config = mock(LiUniConfig.class);
+        TwitterConfig twitterConfig = mock(TwitterConfig.class);
+        List<TwitterConfig> twitterConfigList = new ArrayList<TwitterConfig>();
+        twitterConfigList.add(twitterConfig);
+        when(config.getTwitter()).thenReturn(twitterConfigList);
+        int index = -1;
+
+        resource = new LiUniResource(config, index);
+        assertEquals(null, resource.getTwitterStatus());
+        assertEquals(null, resource.getTwitterTimeline());
+        assertNotEquals(null, resource.getConfig());
+    }
+
+    @Test
+    public void testREST_twitterVal_configNull() {
+        resource = new LiUniResource(null, 0);
+        assertEquals(null, resource.getTwitterStatus());
+        assertEquals(null, resource.getTwitterTimeline());
+        assertEquals(null, resource.getConfig());
     }
 
 }

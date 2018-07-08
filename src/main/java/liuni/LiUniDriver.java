@@ -20,7 +20,7 @@ public class LiUniDriver extends Application<LiUniConfig> {
 
     @Override
     public void run(LiUniConfig config, Environment env) {
-        final LiUniResource resource = new LiUniResource(config);
+        final LiUniResource resource = new LiUniResource(config, 0);
 
         final LiUniHealthCheck healthCheck = new LiUniHealthCheck();
         env.healthChecks().register("TwitterHealth", healthCheck);
