@@ -41,7 +41,7 @@ public class LiUniResource {
         this.config = config;
         twitterTimeline = null;
         twitterStatus = null;
-        
+
         boolean configNotNull = this.config != null;
         if (configNotNull) {
             boolean configListNotEmpty = this.config.getTwitter().size() > 0;

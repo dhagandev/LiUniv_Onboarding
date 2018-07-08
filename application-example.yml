@@ -1,8 +1,10 @@
 twitter:
-  consumerKey:
-  consumerSecret:
-  accessToken:
-  accessSecret:
+  - userName:
+    consumerKey:
+    consumerSecret:
+    accessToken:
+    accessSecret:
+
 logging:
   level: INFO
   appenders:
