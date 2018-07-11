@@ -12,6 +12,7 @@ import twitter4j.Status;
 import twitter4j.TwitterException;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -102,7 +103,8 @@ public class LiUniResource {
     @Path("/tweet")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public Response postTweet(String message) {
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response postTweet(@FormParam("message") String message) {
         ResponseBuilder responseBuilder = Response.noContent();
         responseBuilder.type(MediaType.APPLICATION_JSON);
         try {

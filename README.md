@@ -21,7 +21,8 @@ Install Java 8. We recommend installing IntelliJ to edit files, but any editor s
 
 #### Hitting the POST route ####
 1. Run the following command in terminal: ```java -jar target/LiUni_Onboarding-1.0-SNAPSHOT.jar server application.yml```
-2. In a separate terminal, run ```curl --data "MESSAGE" http://localhost:8080/api/1.0/twitter/tweet``` where "MESSAGE" is what it is you would like to post.
+2. Open Postman and create a POST route with ```http://localhost:8080/api/1.0/twitter/tweet``` as your route.
+3. Under "Body", select "x-www-form-urlencoded", and add at least one parameter with the key "message" and the value being the message you want to tweet.
 
 ## Testing the Lithium University Onboarding Program ##
 First, navigate to the directory the project is in within terminal.
