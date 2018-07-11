@@ -2,8 +2,7 @@
 *.iml
 target
 out
-twitter4j.properties
 *.class
 .DS_Store
 dependency-reduced-pom.xml
-twitter.yml
+*.yml

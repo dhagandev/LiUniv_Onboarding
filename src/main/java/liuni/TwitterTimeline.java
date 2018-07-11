@@ -6,14 +6,20 @@ import twitter4j.Status;
 
 public class TwitterTimeline {
     private Twitter twitter;
+    private TwitterConfig config;
 
     public TwitterTimeline(TwitterConfig config) {
-        if (config != null) {
-            twitter = config.createTwitterConfig();
+        this.config = config;
+        if (this.config != null) {
+            twitter = this.config.createTwitterConfig();
         }
         else {
             twitter = null;
         }
+    }
+
+    public TwitterConfig getConfig() {
+        return config;
     }
 
     public ResponseList<Status> getTimeline() throws Exception {

@@ -12,6 +12,7 @@ import twitter4j.Status;
 import twitter4j.TwitterException;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -20,21 +21,36 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Path("/api/1.0/twitter")
 @Produces(MediaType.APPLICATION_JSON)
 public class LiUniResource {
-    private static TwitterTimeline twitterTimeline;
-    private static TwitterStatus twitterStatus;
+    private static Logger logger = LoggerFactory.getLogger(LiUniResource.class);
+    private TwitterTimeline twitterTimeline;
+    private TwitterStatus twitterStatus;
+    private LiUniConfig config;
 
-    public LiUniResource(LiUniConfig config) {
-        if (config != null) {
-            twitterTimeline = new TwitterTimeline(config.getTwitter());
-            twitterStatus = new TwitterStatus(config.getTwitter());
-        }
-        else {
-            twitterTimeline = null;
-            twitterStatus = null;
+    public LiUniResource() {
+        config = null;
+        twitterTimeline = null;
+        twitterStatus = null;
+    }
+
+    public LiUniResource(LiUniConfig config, int index) {
+        this.config = config;
+        twitterTimeline = null;
+        twitterStatus = null;
+
+        boolean configNotNull = this.config != null;
+        if (configNotNull) {
+            boolean configListNotEmpty = this.config.getTwitter().size() > 0;
+            boolean indexInBounds = index >= 0 && index < this.config.getTwitter().size();
+            if (configListNotEmpty && indexInBounds) {
+                twitterTimeline = new TwitterTimeline(this.config.getTwitter().get(index));
+                twitterStatus = new TwitterStatus(this.config.getTwitter().get(index));
+            }
         }
     }
 
@@ -46,12 +62,21 @@ public class LiUniResource {
         return twitterTimeline;
     }
 
+    public LiUniConfig getConfig() {
+        return config;
+    }
+
     public void setTwitterStatus(TwitterStatus twitterStatus) {
         this.twitterStatus = twitterStatus;
     }
 
     public void setTwitterTimeline(TwitterTimeline twitterTimeline) {
         this.twitterTimeline = twitterTimeline;
+    }
+
+    public void setTwitterConfig(int index) {
+        twitterStatus = new TwitterStatus(config.getTwitter().get(index));
+        twitterTimeline = new TwitterTimeline(config.getTwitter().get(index));
     }
 
     @Path("/timeline")
@@ -67,10 +92,10 @@ public class LiUniResource {
             responseBuilder.entity(new TwitterTimelineModel(timeline).getTimeline());
         }
         catch (Exception e) {
-            e.printStackTrace();
             ErrorModel error = new ErrorModel();
             responseBuilder.status(error.getErrorStatus());
             responseBuilder.entity(error.getGeneralError());
+            logger.error("Produced an error with a " + error.getErrorStatus() + " code.", e);
         }
         return responseBuilder.build();
     }
@@ -78,7 +103,8 @@ public class LiUniResource {
     @Path("/tweet")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public Response postTweet(String message) {
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response postTweet(@FormParam("message") String message) {
         ResponseBuilder responseBuilder = Response.noContent();
         responseBuilder.type(MediaType.APPLICATION_JSON);
         try {
@@ -88,17 +114,17 @@ public class LiUniResource {
                 responseBuilder.entity(new TwitterTweetModel(message).getMessage());
             }
             else {
-                System.out.println("\n\nAn error occurred. Unable to post your tweet [" + message + "]. Sorry!");
                 ErrorModel error = new ErrorModel();
                 responseBuilder.status(error.getErrorStatus());
                 responseBuilder.entity(error.getBadTweetError());
+                logger.warn("An error occurred. Unable to post your tweet [" + message + "]. Sorry! This may be due to the message being too long or being empty. Produced an error with a " + error.getErrorStatus() + " code.");
             }
         }
         catch (TwitterException e) {
-            e.printStackTrace();
             ErrorModel error = new ErrorModel();
             responseBuilder.status(error.getErrorStatus());
             responseBuilder.entity(error.getGeneralError());
+            logger.error("Produced an error with a " + error.getErrorStatus() + " code.", e);
         }
         return responseBuilder.build();
     }
