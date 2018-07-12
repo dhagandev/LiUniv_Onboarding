@@ -57,13 +57,14 @@ public final class TwitterService {
         return statuses;
     }
 
-    public boolean postStatus(String text) throws TwitterException {
+    public Status postStatus(String text) throws TwitterException {
         boolean isOkToPost = textErrorCheck(text);
         if (isOkToPost) {
             Status status = twitter.updateStatus(text);
             logger.info("Successfully updated status to [" + status.getText() + "].");
+            return status;
         }
-        return isOkToPost;
+        return null;
     }
 
     // True = No errors; False = Error occurred

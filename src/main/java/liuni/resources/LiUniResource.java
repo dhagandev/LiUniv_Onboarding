@@ -96,8 +96,8 @@ public class LiUniResource {
         ResponseBuilder responseBuilder = Response.noContent();
         responseBuilder.type(MediaType.APPLICATION_JSON);
         try {
-            boolean successfullyPosted = twitterService.postStatus(message);
-            if (successfullyPosted) {
+            Status status = twitterService.postStatus(message);
+            if (status != null) {
                 responseBuilder.status(Response.Status.CREATED);
                 responseBuilder.entity(new TwitterTweetModel(message).getMessage());
             }
