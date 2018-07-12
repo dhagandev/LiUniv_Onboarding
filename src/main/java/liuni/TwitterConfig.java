@@ -2,9 +2,6 @@ package liuni;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
-import twitter4j.Twitter;
-import twitter4j.TwitterFactory;
-import twitter4j.conf.ConfigurationBuilder;
 
 public class TwitterConfig {
     private String userName;
@@ -71,16 +68,4 @@ public class TwitterConfig {
         this.accessSecret = accessSecret;
     }
 
-    public Twitter createTwitterConfig() {
-        ConfigurationBuilder cb = new ConfigurationBuilder();
-        cb.setDebugEnabled(false);
-        cb.setOAuthConsumerKey(getConsumerKey());
-        cb.setOAuthConsumerSecret(getConsumerSecret());
-        cb.setOAuthAccessToken(getAccessToken());
-        cb.setOAuthAccessTokenSecret(getAccessSecret());
-        TwitterFactory twitterFactory = new TwitterFactory(cb.build());
-        Twitter twitterObj = twitterFactory.getInstance();
-
-        return twitterObj;
-    }
 }

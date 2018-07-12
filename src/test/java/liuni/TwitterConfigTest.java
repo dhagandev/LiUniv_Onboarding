@@ -2,8 +2,6 @@ package liuni;
 
 import org.junit.Before;
 import org.junit.Test;
-import twitter4j.Twitter;
-import twitter4j.TwitterFactory;
 import static org.junit.Assert.assertEquals;
 
 public class TwitterConfigTest {
@@ -49,10 +47,4 @@ public class TwitterConfigTest {
         assertEquals(testKey, config.getAccessSecret());
     }
 
-    @Test
-    public void test_CreateTwitterConfig() {
-        Twitter twitter = TwitterFactory.getSingleton();
-        Twitter result = config.createTwitterConfig();
-        assertEquals(twitter.getClass(), result.getClass());
-    }
 }
