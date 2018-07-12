@@ -1,12 +1,11 @@
 package liuni.resources;
 
 import liuni.LiUniConfig;
-import liuni.TwitterStatus;
-import liuni.TwitterTimeline;
 import liuni.api.ErrorModel;
 import liuni.api.TwitterTimelineModel;
 import com.codahale.metrics.annotation.Timed;
 import liuni.api.TwitterTweetModel;
+import liuni.services.TwitterService;
 import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.TwitterException;
@@ -28,55 +27,44 @@ import org.slf4j.LoggerFactory;
 @Produces(MediaType.APPLICATION_JSON)
 public class LiUniResource {
     private static Logger logger = LoggerFactory.getLogger(LiUniResource.class);
-    private TwitterTimeline twitterTimeline;
-    private TwitterStatus twitterStatus;
     private LiUniConfig config;
+    private TwitterService twitterService;
 
     public LiUniResource() {
         config = null;
-        twitterTimeline = null;
-        twitterStatus = null;
+        twitterService = TwitterService.getInstance();
     }
 
     public LiUniResource(LiUniConfig config, int index) {
         this.config = config;
-        twitterTimeline = null;
-        twitterStatus = null;
+        twitterService = TwitterService.getInstance();
 
         boolean configNotNull = this.config != null;
         if (configNotNull) {
-            boolean configListNotEmpty = this.config.getTwitter().size() > 0;
-            boolean indexInBounds = index >= 0 && index < this.config.getTwitter().size();
+            int size = this.config.getTwitter().size();
+            boolean configListNotEmpty = size > 0;
+            boolean indexInBounds = index >= 0 && index < size;
             if (configListNotEmpty && indexInBounds) {
-                twitterTimeline = new TwitterTimeline(this.config.getTwitter().get(index));
-                twitterStatus = new TwitterStatus(this.config.getTwitter().get(index));
+                twitterService.setTwitterConfig(this.config.getTwitter().get(index));
+                twitterService.createTwitter();
             }
         }
-    }
-
-    public TwitterStatus getTwitterStatus() {
-        return twitterStatus;
-    }
-
-    public TwitterTimeline getTwitterTimeline() {
-        return twitterTimeline;
     }
 
     public LiUniConfig getConfig() {
         return config;
     }
 
-    public void setTwitterStatus(TwitterStatus twitterStatus) {
-        this.twitterStatus = twitterStatus;
-    }
-
-    public void setTwitterTimeline(TwitterTimeline twitterTimeline) {
-        this.twitterTimeline = twitterTimeline;
+    public TwitterService getTwitterService() {
+        return twitterService;
     }
 
     public void setTwitterConfig(int index) {
-        twitterStatus = new TwitterStatus(config.getTwitter().get(index));
-        twitterTimeline = new TwitterTimeline(config.getTwitter().get(index));
+        twitterService.setTwitterConfig(config.getTwitter().get(index));
+    }
+
+    public void setTwitterService(TwitterService service) {
+        twitterService = service;
     }
 
     @Path("/timeline")
@@ -87,11 +75,11 @@ public class LiUniResource {
         ResponseBuilder responseBuilder = Response.noContent();
         responseBuilder.type(MediaType.APPLICATION_JSON);
         try {
-            ResponseList<Status> timeline = twitterTimeline.getTimeline();
+            ResponseList<Status> timeline = twitterService.getTimeline();
             responseBuilder.status(Response.Status.OK);
             responseBuilder.entity(new TwitterTimelineModel(timeline).getTimeline());
         }
-        catch (Exception e) {
+        catch (TwitterException e) {
             ErrorModel error = new ErrorModel();
             responseBuilder.status(error.getErrorStatus());
             responseBuilder.entity(error.getGeneralError());
@@ -108,7 +96,7 @@ public class LiUniResource {
         ResponseBuilder responseBuilder = Response.noContent();
         responseBuilder.type(MediaType.APPLICATION_JSON);
         try {
-            boolean successfullyPosted = twitterStatus.postStatus(message);
+            boolean successfullyPosted = twitterService.postStatus(message);
             if (successfullyPosted) {
                 responseBuilder.status(Response.Status.CREATED);
                 responseBuilder.entity(new TwitterTweetModel(message).getMessage());
