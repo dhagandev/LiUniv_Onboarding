@@ -10,7 +10,7 @@ Install Java 8. We recommend installing IntelliJ to edit files, but any editor s
 2. Copy and paste this file into your home directory; rename it ```application.yml```
 3. Fill in the fields for the consumerKey, consumerSecret, accessToken, and accessSecret within ```application.yml```.
 
-For future use: the first user listed is indexed as 0, the next is indexed as 1, and so on. 
+For future use: the first user listed is indexed as 0, the next is indexed as 1, and so on.
 
 ### Create the JAR File ###
 4. Open a terminal shell and navigate to the LiUni_Onboarding project.
