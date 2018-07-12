@@ -43,10 +43,6 @@ public final class TwitterService {
         return twitterConfig;
     }
 
-    public Twitter getTwitter() {
-        return twitter;
-    }
-
     public void setTwitter(Twitter twitter) {
         this.twitter = twitter;
     }

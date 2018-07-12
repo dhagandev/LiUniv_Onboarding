@@ -2,6 +2,7 @@ package liuni;
 
 import liuni.api.ErrorModel;
 import liuni.resources.LiUniResource;
+import liuni.services.TwitterService;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -25,7 +26,10 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockingDetails;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class LiUniResourceTest {
@@ -53,12 +57,7 @@ public class LiUniResourceTest {
         twitter = mock(Twitter.class);
 
         resource = new LiUniResource(config, 0);
-        TwitterStatus twitterStatus = resource.getTwitterStatus();
-        TwitterTimeline twitterTimeline = resource.getTwitterTimeline();
-        twitterStatus.setTwitter(twitter);
-        twitterTimeline.setTwitter(twitter);
-        resource.setTwitterStatus(twitterStatus);
-        resource.setTwitterTimeline(twitterTimeline);
+        resource.getTwitterService().setTwitter(twitter);
     }
 
     @After
@@ -144,7 +143,25 @@ public class LiUniResourceTest {
 
     @Test
     public void testREST_postTweet_badPost_badTweet() {
-        String testString = StringUtils.repeat("*", TwitterStatus.TWITTER_CHAR_MAX + 1);
+        String testString = StringUtils.repeat("*", TwitterService.TWITTER_CHAR_MAX + 1);
+        String expectedError = (new ErrorModel()).getBadTweetError();
+        try {
+            when(twitter.updateStatus(testString)).thenReturn(status);
+            when(status.getText()).thenReturn(testString);
+
+            Response resp = resource.postTweet(testString);
+
+            assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), resp.getStatus());
+            assertEquals(expectedError, resp.getEntity().toString());
+        }
+        catch (Exception e) {
+            Assert.fail("This exception is not expected.");
+        }
+    }
+
+    @Test
+    public void testREST_postTweet_badPost_emptyTweet() {
+        String testString = "";
         String expectedError = (new ErrorModel()).getBadTweetError();
         try {
             when(twitter.updateStatus(testString)).thenReturn(status);
@@ -182,16 +199,11 @@ public class LiUniResourceTest {
         LiUniConfig luConfig = resource.getConfig();
         assertTrue(luConfig.getTwitter().size() > 1);
 
-        String userName1 = resource.getTwitterStatus().getConfig().getUserName();
-        String userName2 = resource.getTwitterTimeline().getConfig().getUserName();
-        assertEquals(userName1, userName2);
+        String userName1 = resource.getTwitterService().getConfig().getUserName();
 
         resource.setTwitterConfig(1);
-        String userName3 = resource.getTwitterStatus().getConfig().getUserName();
-        String userName4 = resource.getTwitterTimeline().getConfig().getUserName();
-        assertEquals(userName3, userName4);
-        assertNotEquals(userName1, userName3);
-        assertNotEquals(userName2, userName4);
+        String userName2 = resource.getTwitterService().getConfig().getUserName();
+        assertNotEquals(userName1, userName2);
     }
 
     @Test
@@ -202,8 +214,10 @@ public class LiUniResourceTest {
         assertEquals(0, twitterConfigList.size());
 
         resource = new LiUniResource(config, 0);
-        assertEquals(null, resource.getTwitterStatus());
-        assertEquals(null, resource.getTwitterTimeline());
+        TwitterService service = mock(TwitterService.class);
+        resource.setTwitterService(service);
+        TwitterService res = resource.getTwitterService();
+        verify(res, never()).createTwitter();
         assertNotEquals(null, resource.getConfig());
     }
 
@@ -217,16 +231,20 @@ public class LiUniResourceTest {
         int index = -1;
 
         resource = new LiUniResource(config, index);
-        assertEquals(null, resource.getTwitterStatus());
-        assertEquals(null, resource.getTwitterTimeline());
+        TwitterService service = mock(TwitterService.class);
+        resource.setTwitterService(service);
+        TwitterService res = resource.getTwitterService();
+        verify(res, never()).createTwitter();
         assertNotEquals(null, resource.getConfig());
     }
 
     @Test
     public void testREST_twitterVal_configNull() {
         resource = new LiUniResource(null, 0);
-        assertEquals(null, resource.getTwitterStatus());
-        assertEquals(null, resource.getTwitterTimeline());
+        TwitterService service = mock(TwitterService.class);
+        resource.setTwitterService(service);
+        TwitterService res = resource.getTwitterService();
+        verify(res, never()).createTwitter();
         assertEquals(null, resource.getConfig());
     }
 
