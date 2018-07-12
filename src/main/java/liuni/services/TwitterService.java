@@ -11,13 +11,12 @@ import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
 
 public final class TwitterService {
+    public final static int TWITTER_CHAR_MAX = 280;
     private final static TwitterService INSTANCE = new TwitterService();
-    private static Logger logger = LoggerFactory.getLogger(TwitterService.class);
+    private final static Logger logger = LoggerFactory.getLogger(TwitterService.class);
 
     private TwitterConfig twitterConfig;
     private Twitter twitter;
-
-    public static final int TWITTER_CHAR_MAX = 280;
 
     private TwitterService() {
         twitterConfig = null;
@@ -69,8 +68,7 @@ public final class TwitterService {
 
     // True = No errors; False = Error occurred
     private boolean textErrorCheck(String text) {
-        char[] convertedArr = text.toCharArray();
-        int statusLength = convertedArr.length;
+        int statusLength = text.length();
         if (statusLength > TWITTER_CHAR_MAX || text.equals("")) {
             return false;
         }

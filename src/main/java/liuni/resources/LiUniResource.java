@@ -30,11 +30,6 @@ public class LiUniResource {
     private LiUniConfig config;
     private TwitterService twitterService;
 
-    public LiUniResource() {
-        config = null;
-        twitterService = TwitterService.getInstance();
-    }
-
     public LiUniResource(LiUniConfig config, int index) {
         this.config = config;
         twitterService = TwitterService.getInstance();
