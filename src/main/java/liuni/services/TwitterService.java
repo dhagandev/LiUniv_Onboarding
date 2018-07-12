@@ -13,7 +13,7 @@ import twitter4j.conf.ConfigurationBuilder;
 public final class TwitterService {
     public final static int TWITTER_CHAR_MAX = 280;
     private final static Logger logger = LoggerFactory.getLogger(TwitterService.class);
-    private static volatile TwitterService INSTANCE = null;
+    private static TwitterService INSTANCE = null;
 
     private TwitterConfig twitterConfig;
     private Twitter twitter;
@@ -25,11 +25,7 @@ public final class TwitterService {
 
     public static TwitterService getInstance() {
         if (INSTANCE == null) {
-            synchronized (TwitterService.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new TwitterService();
-                }
-            }
+            INSTANCE = new TwitterService();
         }
         return INSTANCE;
     }
