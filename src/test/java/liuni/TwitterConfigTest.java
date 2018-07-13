@@ -1,15 +1,16 @@
 package liuni;
 
+import liuni.configs.TwitterUserConfig;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class TwitterConfigTest {
-    private TwitterConfig config;
+    private TwitterUserConfig config;
 
     @Before
     public void setUp() {
-        config = new TwitterConfig();
+        config = new TwitterUserConfig();
     }
 
     @Test

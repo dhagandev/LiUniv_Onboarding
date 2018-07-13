@@ -1,9 +1,11 @@
 twitter:
-  - userName:
-    consumerKey:
-    consumerSecret:
-    accessToken:
-    accessSecret:
+  defaultuser: 0
+  users:
+    - userName:
+      consumerKey:
+      consumerSecret:
+      accessToken:
+      accessSecret:
 
 logging:
   level: INFO

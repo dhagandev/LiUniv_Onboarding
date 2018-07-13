@@ -1,6 +1,8 @@
 package liuni;
 
 import liuni.api.ErrorModel;
+import liuni.configs.TwitterConfig;
+import liuni.configs.TwitterUserConfig;
 import liuni.resources.LiUniResource;
 import liuni.services.TwitterService;
 import org.apache.commons.lang3.StringUtils;
@@ -8,7 +10,6 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import twitter4j.ResponseList;
@@ -41,21 +42,18 @@ public class LiUniResourceTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        LiUniConfig config = mock(LiUniConfig.class);
-        List<TwitterConfig> twitterConfigList = new ArrayList<TwitterConfig>();
-        TwitterConfig twitterConfig1 = mock(TwitterConfig.class);
-        TwitterConfig twitterConfig2 = mock(TwitterConfig.class);
-
-        when(twitterConfig1.getUserName()).thenReturn("Dev1");
-        when(twitterConfig2.getUserName()).thenReturn("Dev2");
-
-        twitterConfigList.add(twitterConfig1);
-        twitterConfigList.add(twitterConfig2);
-
-        when(config.getTwitter()).thenReturn(twitterConfigList);
+        TwitterConfig twitterConfig = mock(TwitterConfig.class);
+        List<TwitterUserConfig> list = new ArrayList<TwitterUserConfig>();
+        TwitterUserConfig twitterUserConfig1 = mock(TwitterUserConfig.class);
+        TwitterUserConfig twitterUserConfig2 = mock(TwitterUserConfig.class);
+        when(twitterUserConfig1.getUserName()).thenReturn("TestUser1");
+        when(twitterUserConfig2.getUserName()).thenReturn("TestUser2");
+        list.add(twitterUserConfig1);
+        list.add(twitterUserConfig2);
+        when(twitterConfig.getTwitterUsers()).thenReturn(list);
         twitter = mock(Twitter.class);
 
-        resource = new LiUniResource(config, 0);
+        resource = new LiUniResource(twitterConfig);
         resource.getTwitterService().setTwitter(twitter);
     }
 
@@ -195,24 +193,24 @@ public class LiUniResourceTest {
 
     @Test
     public void testREST_postTweet_postDifferentUsers() {
-        LiUniConfig luConfig = resource.getConfig();
-        assertTrue(luConfig.getTwitter().size() > 1);
+        TwitterConfig twitterConfig = resource.getConfig();
+        assertTrue(twitterConfig.getTwitterUsers().size() > 1);
 
         String userName1 = resource.getTwitterService().getConfig().getUserName();
 
-        resource.setTwitterConfig(1);
+        resource.setConfigIndex(1);
         String userName2 = resource.getTwitterService().getConfig().getUserName();
         assertNotEquals(userName1, userName2);
     }
 
     @Test
     public void testREST_twitterVal_configSize() {
-        LiUniConfig config = mock(LiUniConfig.class);
-        List<TwitterConfig> twitterConfigList = new ArrayList<TwitterConfig>();
-        when(config.getTwitter()).thenReturn(twitterConfigList);
+        TwitterConfig config = mock(TwitterConfig.class);
+        List<TwitterUserConfig> twitterConfigList = new ArrayList<TwitterUserConfig>();
+        when(config.getTwitterUsers()).thenReturn(twitterConfigList);
         assertEquals(0, twitterConfigList.size());
 
-        resource = new LiUniResource(config, 0);
+        resource = new LiUniResource(config);
         TwitterService service = mock(TwitterService.class);
         resource.setTwitterService(service);
         TwitterService res = resource.getTwitterService();
@@ -222,14 +220,14 @@ public class LiUniResourceTest {
 
     @Test
     public void testREST_twitterVal_indexOutOfBounds() {
-        LiUniConfig config = mock(LiUniConfig.class);
-        TwitterConfig twitterConfig = mock(TwitterConfig.class);
-        List<TwitterConfig> twitterConfigList = new ArrayList<TwitterConfig>();
+        TwitterConfig config = mock(TwitterConfig.class);
+        TwitterUserConfig twitterConfig = mock(TwitterUserConfig.class);
+        List<TwitterUserConfig> twitterConfigList = new ArrayList<TwitterUserConfig>();
         twitterConfigList.add(twitterConfig);
-        when(config.getTwitter()).thenReturn(twitterConfigList);
+        when(config.getTwitterUsers()).thenReturn(twitterConfigList);
         int index = -1;
 
-        resource = new LiUniResource(config, index);
+        resource = new LiUniResource(config);
         TwitterService service = mock(TwitterService.class);
         resource.setTwitterService(service);
         TwitterService res = resource.getTwitterService();
@@ -239,7 +237,7 @@ public class LiUniResourceTest {
 
     @Test
     public void testREST_twitterVal_configNull() {
-        resource = new LiUniResource(null, 0);
+        resource = new LiUniResource(null);
         TwitterService service = mock(TwitterService.class);
         resource.setTwitterService(service);
         TwitterService res = resource.getTwitterService();
@@ -247,4 +245,9 @@ public class LiUniResourceTest {
         assertEquals(null, resource.getConfig());
     }
 
+//    @Test
+//    public void test_SetConfig() {
+//        TwitterConfig twitterConfig1 = resource.getConfig();
+//        TwitterConfig mock = resource.
+//    }
 }

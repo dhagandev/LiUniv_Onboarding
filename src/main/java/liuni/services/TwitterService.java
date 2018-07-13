@@ -1,6 +1,6 @@
 package liuni.services;
 
-import liuni.TwitterConfig;
+import liuni.configs.TwitterUserConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import twitter4j.ResponseList;
@@ -15,11 +15,11 @@ public final class TwitterService {
     private final static Logger logger = LoggerFactory.getLogger(TwitterService.class);
     private static TwitterService INSTANCE = null;
 
-    private TwitterConfig twitterConfig;
+    private TwitterUserConfig twitterUserConfig;
     private Twitter twitter;
 
     private TwitterService() {
-        twitterConfig = null;
+        twitterUserConfig = null;
         twitter = null;
     }
 
@@ -33,24 +33,24 @@ public final class TwitterService {
     public void createTwitter() {
         ConfigurationBuilder cb = new ConfigurationBuilder();
         cb.setDebugEnabled(false);
-        cb.setOAuthConsumerKey(twitterConfig.getConsumerKey());
-        cb.setOAuthConsumerSecret(twitterConfig.getConsumerSecret());
-        cb.setOAuthAccessToken(twitterConfig.getAccessToken());
-        cb.setOAuthAccessTokenSecret(twitterConfig.getAccessSecret());
+        cb.setOAuthConsumerKey(twitterUserConfig.getConsumerKey());
+        cb.setOAuthConsumerSecret(twitterUserConfig.getConsumerSecret());
+        cb.setOAuthAccessToken(twitterUserConfig.getAccessToken());
+        cb.setOAuthAccessTokenSecret(twitterUserConfig.getAccessSecret());
         TwitterFactory twitterFactory = new TwitterFactory(cb.build());
         twitter = twitterFactory.getInstance();
     }
 
-    public TwitterConfig getConfig() {
-        return twitterConfig;
+    public TwitterUserConfig getConfig() {
+        return twitterUserConfig;
     }
 
     public void setTwitter(Twitter twitter) {
         this.twitter = twitter;
     }
 
-    public void setTwitterConfig(TwitterConfig config) {
-        this.twitterConfig = config;
+    public void setTwitterUserConfig(TwitterUserConfig config) {
+        this.twitterUserConfig = config;
         createTwitter();
     }
 

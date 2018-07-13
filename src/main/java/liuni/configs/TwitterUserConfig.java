@@ -1,9 +1,9 @@
-package liuni;
+package liuni.configs;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 
-public class TwitterConfig {
+public class TwitterUserConfig {
     private String userName;
 
     @NotEmpty

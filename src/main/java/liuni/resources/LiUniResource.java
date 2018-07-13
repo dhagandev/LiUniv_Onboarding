@@ -1,13 +1,16 @@
 package liuni.resources;
 
-import liuni.LiUniConfig;
+import liuni.configs.LiUniConfig;
 import liuni.api.ErrorModel;
 import liuni.api.TwitterTimelineModel;
 import com.codahale.metrics.annotation.Timed;
 import liuni.api.TwitterTweetModel;
+import liuni.configs.TwitterConfig;
+import liuni.configs.TwitterUserConfig;
 import liuni.services.TwitterService;
 import twitter4j.ResponseList;
 import twitter4j.Status;
+import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 import javax.ws.rs.Consumes;
@@ -27,35 +30,41 @@ import org.slf4j.LoggerFactory;
 @Produces(MediaType.APPLICATION_JSON)
 public class LiUniResource {
     private static Logger logger = LoggerFactory.getLogger(LiUniResource.class);
-    private LiUniConfig config;
+    private TwitterConfig config;
     private TwitterService twitterService;
+    private int defaultUserIndex;
 
-    public LiUniResource(LiUniConfig config, int index) {
+    public LiUniResource(TwitterConfig config) {
         this.config = config;
         twitterService = TwitterService.getInstance();
 
         boolean configNotNull = this.config != null;
         if (configNotNull) {
-            int size = this.config.getTwitter().size();
+            this.defaultUserIndex = config.getDefaultUser();
+            int size = this.config.getTwitterUsers().size();
             boolean configListNotEmpty = size > 0;
-            boolean indexInBounds = index >= 0 && index < size;
+            boolean indexInBounds = defaultUserIndex >= 0 && defaultUserIndex < size;
             if (configListNotEmpty && indexInBounds) {
-                twitterService.setTwitterConfig(this.config.getTwitter().get(index));
+                twitterService.setTwitterUserConfig(this.config.getTwitterUsers().get(defaultUserIndex));
                 twitterService.createTwitter();
             }
         }
     }
 
-    public LiUniConfig getConfig() {
+    public TwitterConfig getConfig() {
         return config;
+    }
+
+    public void setConfig(TwitterConfig config) {
+        this.config = config;
     }
 
     public TwitterService getTwitterService() {
         return twitterService;
     }
 
-    public void setTwitterConfig(int index) {
-        twitterService.setTwitterConfig(config.getTwitter().get(index));
+    public void setConfigIndex(int index) {
+        twitterService.setTwitterUserConfig(this.config.getTwitterUsers().get(index));
     }
 
     public void setTwitterService(TwitterService service) {
