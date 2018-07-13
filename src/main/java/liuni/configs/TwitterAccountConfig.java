@@ -1,14 +1,9 @@
-package liuni;
+package liuni.configs;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
-import twitter4j.Twitter;
-import twitter4j.TwitterFactory;
-import twitter4j.conf.ConfigurationBuilder;
 
-public class TwitterConfig {
-    private String userName;
-
+public class TwitterAccountConfig {
     @NotEmpty
     private String consumerKey;
 
@@ -20,11 +15,6 @@ public class TwitterConfig {
 
     @NotEmpty
     private String accessSecret;
-
-    @JsonProperty("userName")
-    public String getUserName() {
-        return userName;
-    }
 
     @JsonProperty("consumerKey")
     public String getConsumerKey() {
@@ -44,11 +34,6 @@ public class TwitterConfig {
     @JsonProperty("accessSecret")
     public String getAccessSecret() {
         return accessSecret;
-    }
-
-    @JsonProperty("userName")
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     @JsonProperty("consumerKey")
@@ -71,16 +56,4 @@ public class TwitterConfig {
         this.accessSecret = accessSecret;
     }
 
-    public Twitter createTwitterConfig() {
-        ConfigurationBuilder cb = new ConfigurationBuilder();
-        cb.setDebugEnabled(false);
-        cb.setOAuthConsumerKey(getConsumerKey());
-        cb.setOAuthConsumerSecret(getConsumerSecret());
-        cb.setOAuthAccessToken(getAccessToken());
-        cb.setOAuthAccessTokenSecret(getAccessSecret());
-        TwitterFactory twitterFactory = new TwitterFactory(cb.build());
-        Twitter twitterObj = twitterFactory.getInstance();
-
-        return twitterObj;
-    }
 }

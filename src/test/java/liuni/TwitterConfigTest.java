@@ -1,58 +1,36 @@
 package liuni;
 
+import liuni.configs.TwitterConfig;
+import liuni.configs.TwitterAccountConfig;
 import org.junit.Before;
 import org.junit.Test;
-import twitter4j.Twitter;
-import twitter4j.TwitterFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 public class TwitterConfigTest {
-    private TwitterConfig config;
+    TwitterConfig twitterConfig;
 
     @Before
     public void setUp() {
-        config = new TwitterConfig();
+        twitterConfig = new TwitterConfig();
     }
 
     @Test
-    public void test_SetUserName() {
-        String testKey = "Test Value";
-        config.setUserName(testKey);
-        assertEquals(testKey, config.getUserName());
+    public void test_SetDefaultUser() {
+        int test = 3;
+        twitterConfig.setDefaultAccountIndex(test);
+        assertEquals(test, twitterConfig.getDefaultAccountIndex());
     }
 
     @Test
-    public void test_SetConsumerKey() {
-        String testKey = "Test Value";
-        config.setConsumerKey(testKey);
-        assertEquals(testKey, config.getConsumerKey());
-    }
-
-    @Test
-    public void test_SetConsumerSecret() {
-        String testKey = "Test Value";
-        config.setConsumerSecret(testKey);
-        assertEquals(testKey, config.getConsumerSecret());
-    }
-
-    @Test
-    public void test_SetAccessToken() {
-        String testKey = "Test Value";
-        config.setAccessToken(testKey);
-        assertEquals(testKey, config.getAccessToken());
-    }
-
-    @Test
-    public void test_SetAccessSecret() {
-        String testKey = "Test Value";
-        config.setAccessSecret(testKey);
-        assertEquals(testKey, config.getAccessSecret());
-    }
-
-    @Test
-    public void test_CreateTwitterConfig() {
-        Twitter twitter = TwitterFactory.getSingleton();
-        Twitter result = config.createTwitterConfig();
-        assertEquals(twitter.getClass(), result.getClass());
+    public void test_SetTwitterUsers() {
+        List<TwitterAccountConfig> test = new ArrayList<TwitterAccountConfig>();
+        test.add(mock(TwitterAccountConfig.class));
+        twitterConfig.setTwitterAccounts(test);
+        assertEquals(test, twitterConfig.getTwitterAccounts());
     }
 }
