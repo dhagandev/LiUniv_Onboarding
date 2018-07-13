@@ -46,8 +46,8 @@ public class LiUniResourceTest {
         List<TwitterUserConfig> list = new ArrayList<TwitterUserConfig>();
         TwitterUserConfig twitterUserConfig1 = mock(TwitterUserConfig.class);
         TwitterUserConfig twitterUserConfig2 = mock(TwitterUserConfig.class);
-        when(twitterUserConfig1.getUserName()).thenReturn("TestUser1");
-        when(twitterUserConfig2.getUserName()).thenReturn("TestUser2");
+        when(twitterUserConfig1.getConsumerKey()).thenReturn("TestKey1");
+        when(twitterUserConfig2.getConsumerKey()).thenReturn("TestKey2");
         list.add(twitterUserConfig1);
         list.add(twitterUserConfig2);
         when(twitterConfig.getTwitterUsers()).thenReturn(list);
@@ -196,11 +196,11 @@ public class LiUniResourceTest {
         TwitterConfig twitterConfig = resource.getConfig();
         assertTrue(twitterConfig.getTwitterUsers().size() > 1);
 
-        String userName1 = resource.getTwitterService().getConfig().getUserName();
+        String conKey1 = resource.getTwitterService().getConfig().getConsumerKey();
 
         resource.setConfigIndex(1);
-        String userName2 = resource.getTwitterService().getConfig().getUserName();
-        assertNotEquals(userName1, userName2);
+        String conKey2 = resource.getTwitterService().getConfig().getConsumerKey();
+        assertNotEquals(conKey1, conKey2);
     }
 
     @Test

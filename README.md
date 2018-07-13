@@ -40,5 +40,5 @@ Navigate to your project in a folder directory. Find `target/site/jacoco` and ru
 Navigate to ```target/log/debug.log``` to see the log messages produced.
 
 ## Adding Users ##
-In the ```application.yml``` file, under the twitter tag copy the template from the ```- username:``` down to the ```accessSecret:``` and paste as many as you need users. Fill in the fields as necessary.
+In the ```application.yml``` file, under the twitter tag copy the template from the ```- consumerKey:``` down to the ```accessSecret:``` and paste as many as you need users. Fill in the fields as necessary.
 Currently the only way to switch between users is by indicating which user to use in the code itself.

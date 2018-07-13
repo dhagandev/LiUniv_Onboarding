@@ -14,13 +14,6 @@ public class TwitterUserConfigTest {
     }
 
     @Test
-    public void test_SetUserName() {
-        String testKey = "Test Value";
-        config.setUserName(testKey);
-        assertEquals(testKey, config.getUserName());
-    }
-
-    @Test
     public void test_SetConsumerKey() {
         String testKey = "Test Value";
         config.setConsumerKey(testKey);

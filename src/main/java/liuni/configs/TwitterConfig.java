@@ -8,12 +8,12 @@ public class TwitterConfig {
     private int defaultUser;
     private List<TwitterUserConfig> twitterUsers;
 
-    @JsonProperty("defaultuser")
+    @JsonProperty("defaultUserIndex")
     public int getDefaultUser() {
         return defaultUser;
     }
 
-    @JsonProperty("defaultuser")
+    @JsonProperty("defaultUserIndex")
     public void setDefaultUser(int defaultUser) {
         this.defaultUser = defaultUser;
     }

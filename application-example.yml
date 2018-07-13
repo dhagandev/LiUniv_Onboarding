@@ -1,8 +1,7 @@
 twitter:
-  defaultuser: 0
+  defaultUserIndex: 0
   users:
-    - userName:
-      consumerKey:
+    - consumerKey:
       consumerSecret:
       accessToken:
       accessSecret:

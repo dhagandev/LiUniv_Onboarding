@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 
 public class TwitterUserConfig {
-    private String userName;
-
     @NotEmpty
     private String consumerKey;
 
@@ -17,11 +15,6 @@ public class TwitterUserConfig {
 
     @NotEmpty
     private String accessSecret;
-
-    @JsonProperty("userName")
-    public String getUserName() {
-        return userName;
-    }
 
     @JsonProperty("consumerKey")
     public String getConsumerKey() {
@@ -41,11 +34,6 @@ public class TwitterUserConfig {
     @JsonProperty("accessSecret")
     public String getAccessSecret() {
         return accessSecret;
-    }
-
-    @JsonProperty("userName")
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     @JsonProperty("consumerKey")
