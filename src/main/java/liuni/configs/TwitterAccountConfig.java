@@ -3,7 +3,7 @@ package liuni.configs;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 
-public class TwitterUserConfig {
+public class TwitterAccountConfig {
     @NotEmpty
     private String consumerKey;
 

@@ -1,7 +1,7 @@
 package liuni;
 
 import liuni.configs.TwitterConfig;
-import liuni.configs.TwitterUserConfig;
+import liuni.configs.TwitterAccountConfig;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,15 +22,15 @@ public class TwitterConfigTest {
     @Test
     public void test_SetDefaultUser() {
         int test = 3;
-        twitterConfig.setDefaultUser(test);
-        assertEquals(test, twitterConfig.getDefaultUser());
+        twitterConfig.setDefaultAccountIndex(test);
+        assertEquals(test, twitterConfig.getDefaultAccountIndex());
     }
 
     @Test
     public void test_SetTwitterUsers() {
-        List<TwitterUserConfig> test = new ArrayList<TwitterUserConfig>();
-        test.add(mock(TwitterUserConfig.class));
-        twitterConfig.setTwitterUsers(test);
-        assertEquals(test, twitterConfig.getTwitterUsers());
+        List<TwitterAccountConfig> test = new ArrayList<TwitterAccountConfig>();
+        test.add(mock(TwitterAccountConfig.class));
+        twitterConfig.setTwitterAccounts(test);
+        assertEquals(test, twitterConfig.getTwitterAccounts());
     }
 }

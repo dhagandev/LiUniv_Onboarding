@@ -1,6 +1,6 @@
 twitter:
-  defaultUserIndex: 0
-  users:
+  defaultAccountIndex: 0
+  accounts:
     - consumerKey:
       consumerSecret:
       accessToken:

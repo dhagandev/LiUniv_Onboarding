@@ -5,26 +5,26 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 public class TwitterConfig {
-    private int defaultUser;
-    private List<TwitterUserConfig> twitterUsers;
+    private int defaultAccountIndex;
+    private List<TwitterAccountConfig> twitterAccounts;
 
-    @JsonProperty("defaultUserIndex")
-    public int getDefaultUser() {
-        return defaultUser;
+    @JsonProperty("defaultAccountIndex")
+    public int getDefaultAccountIndex() {
+        return defaultAccountIndex;
     }
 
-    @JsonProperty("defaultUserIndex")
-    public void setDefaultUser(int defaultUser) {
-        this.defaultUser = defaultUser;
+    @JsonProperty("defaultAccountIndex")
+    public void setDefaultAccountIndex(int defaultAccountIndex) {
+        this.defaultAccountIndex = defaultAccountIndex;
     }
 
-    @JsonProperty("users")
-    public List<TwitterUserConfig> getTwitterUsers() {
-        return twitterUsers;
+    @JsonProperty("accounts")
+    public List<TwitterAccountConfig> getTwitterAccounts() {
+        return twitterAccounts;
     }
 
-    @JsonProperty("users")
-    public void setTwitterUsers(List<TwitterUserConfig> twitterUsers) {
-        this.twitterUsers = twitterUsers;
+    @JsonProperty("accounts")
+    public void setTwitterAccounts(List<TwitterAccountConfig> twitterAccounts) {
+        this.twitterAccounts = twitterAccounts;
     }
 }

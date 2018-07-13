@@ -1,6 +1,6 @@
 package liuni.services;
 
-import liuni.configs.TwitterUserConfig;
+import liuni.configs.TwitterAccountConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import twitter4j.ResponseList;
@@ -15,11 +15,11 @@ public final class TwitterService {
     private final static Logger logger = LoggerFactory.getLogger(TwitterService.class);
     private static TwitterService INSTANCE = null;
 
-    private TwitterUserConfig twitterUserConfig;
+    private TwitterAccountConfig twitterAccountConfig;
     private Twitter twitter;
 
     private TwitterService() {
-        twitterUserConfig = null;
+        twitterAccountConfig = null;
         twitter = null;
     }
 
@@ -33,24 +33,24 @@ public final class TwitterService {
     public void createTwitter() {
         ConfigurationBuilder cb = new ConfigurationBuilder();
         cb.setDebugEnabled(false);
-        cb.setOAuthConsumerKey(twitterUserConfig.getConsumerKey());
-        cb.setOAuthConsumerSecret(twitterUserConfig.getConsumerSecret());
-        cb.setOAuthAccessToken(twitterUserConfig.getAccessToken());
-        cb.setOAuthAccessTokenSecret(twitterUserConfig.getAccessSecret());
+        cb.setOAuthConsumerKey(twitterAccountConfig.getConsumerKey());
+        cb.setOAuthConsumerSecret(twitterAccountConfig.getConsumerSecret());
+        cb.setOAuthAccessToken(twitterAccountConfig.getAccessToken());
+        cb.setOAuthAccessTokenSecret(twitterAccountConfig.getAccessSecret());
         TwitterFactory twitterFactory = new TwitterFactory(cb.build());
         twitter = twitterFactory.getInstance();
     }
 
-    public TwitterUserConfig getConfig() {
-        return twitterUserConfig;
+    public TwitterAccountConfig getConfig() {
+        return twitterAccountConfig;
     }
 
     public void setTwitter(Twitter twitter) {
         this.twitter = twitter;
     }
 
-    public void setTwitterUserConfig(TwitterUserConfig config) {
-        this.twitterUserConfig = config;
+    public void setTwitterAccountConfig(TwitterAccountConfig config) {
+        this.twitterAccountConfig = config;
         createTwitter();
     }
 

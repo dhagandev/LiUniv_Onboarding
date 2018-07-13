@@ -1,16 +1,13 @@
 package liuni.resources;
 
-import liuni.configs.LiUniConfig;
 import liuni.api.ErrorModel;
 import liuni.api.TwitterTimelineModel;
 import com.codahale.metrics.annotation.Timed;
 import liuni.api.TwitterTweetModel;
 import liuni.configs.TwitterConfig;
-import liuni.configs.TwitterUserConfig;
 import liuni.services.TwitterService;
 import twitter4j.ResponseList;
 import twitter4j.Status;
-import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 import javax.ws.rs.Consumes;
@@ -32,7 +29,7 @@ public class LiUniResource {
     private static Logger logger = LoggerFactory.getLogger(LiUniResource.class);
     private TwitterConfig config;
     private TwitterService twitterService;
-    private int defaultUserIndex;
+    private int defaultAccountIndex;
 
     public LiUniResource(TwitterConfig config) {
         this.config = config;
@@ -40,12 +37,12 @@ public class LiUniResource {
 
         boolean configNotNull = this.config != null;
         if (configNotNull) {
-            this.defaultUserIndex = config.getDefaultUser();
-            int size = this.config.getTwitterUsers().size();
+            this.defaultAccountIndex = config.getDefaultAccountIndex();
+            int size = this.config.getTwitterAccounts().size();
             boolean configListNotEmpty = size > 0;
-            boolean indexInBounds = defaultUserIndex >= 0 && defaultUserIndex < size;
+            boolean indexInBounds = defaultAccountIndex >= 0 && defaultAccountIndex < size;
             if (configListNotEmpty && indexInBounds) {
-                twitterService.setTwitterUserConfig(this.config.getTwitterUsers().get(defaultUserIndex));
+                twitterService.setTwitterAccountConfig(this.config.getTwitterAccounts().get(defaultAccountIndex));
                 twitterService.createTwitter();
             }
         }
@@ -64,7 +61,16 @@ public class LiUniResource {
     }
 
     public void setConfigIndex(int index) {
-        twitterService.setTwitterUserConfig(this.config.getTwitterUsers().get(index));
+        int size = this.config.getTwitterAccounts().size();
+        boolean indexInBounds = index >= 0 && index < size;
+        if (indexInBounds) {
+            defaultAccountIndex = index;
+            twitterService.setTwitterAccountConfig(this.config.getTwitterAccounts().get(index));
+        }
+    }
+
+    public int getDefaultAccountIndex() {
+        return defaultAccountIndex;
     }
 
     public void setTwitterService(TwitterService service) {
