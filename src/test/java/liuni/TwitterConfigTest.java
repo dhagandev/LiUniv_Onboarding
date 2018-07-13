@@ -1,51 +1,36 @@
 package liuni;
 
+import liuni.configs.TwitterConfig;
 import liuni.configs.TwitterUserConfig;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 public class TwitterConfigTest {
-    private TwitterUserConfig config;
+    TwitterConfig twitterConfig;
 
     @Before
     public void setUp() {
-        config = new TwitterUserConfig();
+        twitterConfig = new TwitterConfig();
     }
 
     @Test
-    public void test_SetUserName() {
-        String testKey = "Test Value";
-        config.setUserName(testKey);
-        assertEquals(testKey, config.getUserName());
+    public void test_SetDefaultUser() {
+        int test = 3;
+        twitterConfig.setDefaultUser(test);
+        assertEquals(test, twitterConfig.getDefaultUser());
     }
 
     @Test
-    public void test_SetConsumerKey() {
-        String testKey = "Test Value";
-        config.setConsumerKey(testKey);
-        assertEquals(testKey, config.getConsumerKey());
+    public void test_SetTwitterUsers() {
+        List<TwitterUserConfig> test = new ArrayList<TwitterUserConfig>();
+        test.add(mock(TwitterUserConfig.class));
+        twitterConfig.setTwitterUsers(test);
+        assertEquals(test, twitterConfig.getTwitterUsers());
     }
-
-    @Test
-    public void test_SetConsumerSecret() {
-        String testKey = "Test Value";
-        config.setConsumerSecret(testKey);
-        assertEquals(testKey, config.getConsumerSecret());
-    }
-
-    @Test
-    public void test_SetAccessToken() {
-        String testKey = "Test Value";
-        config.setAccessToken(testKey);
-        assertEquals(testKey, config.getAccessToken());
-    }
-
-    @Test
-    public void test_SetAccessSecret() {
-        String testKey = "Test Value";
-        config.setAccessSecret(testKey);
-        assertEquals(testKey, config.getAccessSecret());
-    }
-
 }

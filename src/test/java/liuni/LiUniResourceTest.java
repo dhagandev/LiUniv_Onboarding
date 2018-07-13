@@ -225,12 +225,19 @@ public class LiUniResourceTest {
         List<TwitterUserConfig> twitterConfigList = new ArrayList<TwitterUserConfig>();
         twitterConfigList.add(twitterConfig);
         when(config.getTwitterUsers()).thenReturn(twitterConfigList);
-        int index = -1;
+        when(config.getDefaultUser()).thenReturn(-1);
 
         resource = new LiUniResource(config);
         TwitterService service = mock(TwitterService.class);
         resource.setTwitterService(service);
         TwitterService res = resource.getTwitterService();
+        verify(res, never()).createTwitter();
+        assertNotEquals(null, resource.getConfig());
+
+        when(config.getDefaultUser()).thenReturn(twitterConfigList.size()+1);
+        resource = new LiUniResource(config);
+        resource.setTwitterService(service);
+        res = resource.getTwitterService();
         verify(res, never()).createTwitter();
         assertNotEquals(null, resource.getConfig());
     }
@@ -245,9 +252,10 @@ public class LiUniResourceTest {
         assertEquals(null, resource.getConfig());
     }
 
-//    @Test
-//    public void test_SetConfig() {
-//        TwitterConfig twitterConfig1 = resource.getConfig();
-//        TwitterConfig mock = resource.
-//    }
+    @Test
+    public void test_SetConfig() {
+        TwitterConfig mock = resource.getConfig();
+        resource.setConfig(mock);
+        assertEquals(mock, resource.getConfig());
+    }
 }
