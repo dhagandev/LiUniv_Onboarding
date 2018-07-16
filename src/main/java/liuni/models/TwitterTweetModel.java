@@ -12,10 +12,6 @@ public class TwitterTweetModel {
 
     }
 
-    public TwitterTweetModel(String message) {
-        this.message = message;
-    }
-
     @JsonProperty
     public String getMessage() {
         return message;

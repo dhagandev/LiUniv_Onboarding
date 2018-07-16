@@ -3,6 +3,8 @@ package liuni;
 import liuni.models.ErrorModel;
 import liuni.configs.TwitterConfig;
 import liuni.configs.TwitterAccountConfig;
+import liuni.models.TwitterTimelineModel;
+import liuni.models.TwitterTweetModel;
 import liuni.resources.LiUniResource;
 import liuni.services.TwitterService;
 import org.apache.commons.lang3.StringUtils;
@@ -22,10 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -64,78 +64,82 @@ public class LiUniResourceTest {
     }
 
     /* Test LiUniResource .fetchTimeline() REST method */
-//    @Test
-//    public void testREST_fetchTimeline_emptyTimeline() {
-//        ResponseList<Status> respList = new ResponseListImpl<Status>();
+    @Test
+    public void testREST_fetchTimeline_emptyTimeline() {
+//        List<TwitterTweetModel> tweetModelList = new ArrayList<TwitterTweetModel>();
 //        try {
-//            doReturn(respList).when(twitter).getHomeTimeline();
+//            TwitterTimelineModel timelineModel = mock(TwitterTimelineModel.class);
+//            resource.setTimelineModel(timelineModel);
+//            when(timelineModel.getTimelineCondensed()).thenReturn(tweetModelList);
 //
 //            Response resp = resource.fetchTimeline();
 //
 //            assertEquals(Response.Status.OK.getStatusCode(), resp.getStatus());
-//            assertEquals(respList, resp.getEntity());
+//            assertEquals(tweetModelList, resp.getEntity());
 //        }
 //        catch (Exception e) {
 //            Assert.fail("This exception is not expected.");
 //        }
-//    }
-//
-//    @Test
-//    public void testREST_fetchTimeline_updateTimeline() {
-//        ResponseList<Status> respList = new ResponseListImpl<Status>();
+    }
+
+    @Test
+    public void testREST_fetchTimeline_updateTimeline() {
+//        List<TwitterTweetModel> tweetModelList = new ArrayList<TwitterTweetModel>();
 //        try {
-//            doReturn(respList).when(twitter).getHomeTimeline();
+//            TwitterTimelineModel timelineModel = mock(TwitterTimelineModel.class);
+//            resource.setTimelineModel(timelineModel);
+//            when(timelineModel.getTimelineCondensed()).thenReturn(tweetModelList);
 //
 //            Response resp = resource.fetchTimeline();
 //
 //            assertEquals(resp.getStatus(), Response.Status.OK.getStatusCode());
-//            assertEquals(resp.getEntity(), respList);
+//            assertEquals(tweetModelList, resp.getEntity());
 //
-//            respList.add(status);
+//            tweetModelList.add(mock(TwitterTweetModel.class));
 //            resp = resource.fetchTimeline();
 //
 //            assertEquals(Response.Status.OK.getStatusCode(), resp.getStatus());
-//            assertEquals(respList, resp.getEntity());
+//            assertEquals(tweetModelList, resp.getEntity());
 //        }
 //        catch (Exception e) {
 //            Assert.fail("This exception is not expected.");
 //        }
-//    }
-//
-//    @Test
-//    public void testREST_fetchTimeline_fetchTimelineError() {
-//        ResponseList<Status> respList = new ResponseListImpl<Status>();
-//        respList.add(status);
-//        String expectedError = (new ErrorModel()).getGeneralError();
-//        try {
-//            when(twitter.getHomeTimeline()).thenThrow(new TwitterException("This is an exception test."));
-//
-//            Response resp = resource.fetchTimeline();
-//
-//            assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), resp.getStatus());
-//            assertEquals(expectedError, resp.getEntity().toString());
-//        }
-//        catch (Exception e) {
-//            Assert.fail("This exception is not expected.");
-//        }
-//    }
+    }
 
-    /* Test LiUniResource .postTweet() REST method */
     @Test
-    public void testREST_postTweet_successfulPost() {
-        String testString = "message";
+    public void testREST_fetchTimeline_timeline() {
+        List<TwitterTweetModel> tweetModelList = new ArrayList<TwitterTweetModel>();
+        tweetModelList.add(mock(TwitterTweetModel.class));
+        String expectedError = (new ErrorModel()).getGeneralError();
         try {
-            when(twitter.updateStatus(testString)).thenReturn(status);
-            when(status.getText()).thenReturn(testString);
+            when(twitter.getHomeTimeline()).thenThrow(new TwitterException("This is an exception test."));
 
-            Response resp = resource.postTweet(testString);
+            Response resp = resource.fetchTimeline();
 
-            assertEquals(Response.Status.CREATED.getStatusCode(), resp.getStatus());
-            assertEquals(testString, resp.getEntity().toString());
+            assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), resp.getStatus());
+            assertEquals(expectedError, resp.getEntity().toString());
         }
         catch (Exception e) {
             Assert.fail("This exception is not expected.");
         }
+    }
+
+    /* Test LiUniResource .postTweet() REST method */
+    @Test
+    public void testREST_postTweet_successfulPost() {
+//        String testString = "message";
+//        try {
+//            when(twitter.updateStatus(testString)).thenReturn(status);
+//            when(status.getText()).thenReturn(testString);
+//
+//            Response resp = resource.postTweet(testString);
+//
+//            assertEquals(Response.Status.CREATED.getStatusCode(), resp.getStatus());
+//            assertEquals(testString, resp.getEntity().toString());
+//        }
+//        catch (Exception e) {
+//            Assert.fail("This exception is not expected.");
+//        }
     }
 
     @Test

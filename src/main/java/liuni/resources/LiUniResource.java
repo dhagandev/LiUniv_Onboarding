@@ -28,6 +28,7 @@ public class LiUniResource {
     private static Logger logger = LoggerFactory.getLogger(LiUniResource.class);
     private TwitterConfig config;
     private TwitterService twitterService;
+    private TwitterTimelineModel timelineModel;
     private int defaultAccountIndex;
 
     public LiUniResource(TwitterConfig config) {
@@ -76,6 +77,10 @@ public class LiUniResource {
         twitterService = service;
     }
 
+    public void setTimelineModel(TwitterTimelineModel timelineModel) {
+        this.timelineModel = timelineModel;
+    }
+
     @Path("/timeline")
     @GET
     @Timed
@@ -84,9 +89,11 @@ public class LiUniResource {
         ResponseBuilder responseBuilder = Response.noContent();
         responseBuilder.type(MediaType.APPLICATION_JSON);
         try {
-            TwitterTimelineModel timelineModel = new TwitterTimelineModel();
+            if (timelineModel == null) {
+                timelineModel = new TwitterTimelineModel();
+            }
             responseBuilder.status(Response.Status.OK);
-            responseBuilder.entity(timelineModel.getTimelineCondensed());
+            responseBuilder.entity(timelineModel.getTimeline());
         }
         catch (TwitterException e) {
             ErrorModel error = new ErrorModel();
@@ -105,10 +112,10 @@ public class LiUniResource {
         ResponseBuilder responseBuilder = Response.noContent();
         responseBuilder.type(MediaType.APPLICATION_JSON);
         try {
-            Status status = twitterService.postStatus(message);
+            TwitterTweetModel status = twitterService.postStatus(message);
             if (status != null) {
                 responseBuilder.status(Response.Status.CREATED);
-                responseBuilder.entity(new TwitterTweetModel(message).getMessage());
+                responseBuilder.entity(status);
             }
             else {
                 ErrorModel error = new ErrorModel();

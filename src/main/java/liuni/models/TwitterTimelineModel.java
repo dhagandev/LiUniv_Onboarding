@@ -15,47 +15,15 @@ import java.util.List;
 
 public class TwitterTimelineModel {
     private static Logger logger = LoggerFactory.getLogger(TwitterTimelineModel.class);
-    private List<Status> timelineFull;
-    private List<TwitterTweetModel> timelineCondensed;
 
-    public TwitterTimelineModel() throws TwitterException {
-        timelineFull = TwitterService.getInstance().getTimeline();
+    public TwitterTimelineModel() {
+
     }
 
-    public List<Status> getTimelineFull() {
-        return timelineFull;
+    public List<TwitterTweetModel> getTimeline() throws TwitterException {
+        return TwitterService.getInstance().getTimeline();
     }
 
-    @JsonProperty
-    public List<TwitterTweetModel> getTimelineCondensed() {
-        timelineCondensed = convertTimeline();
-        return timelineCondensed;
-    }
 
-    private List<TwitterTweetModel> convertTimeline() {
-        List<TwitterTweetModel> list = new ArrayList<TwitterTweetModel>();
-        for (Status status:timelineFull) {
-            TwitterTweetModel tweet = new TwitterTweetModel();
-            UserModel user = new UserModel();
-            User twitterUser = status.getUser();
 
-            user.setName(twitterUser.getScreenName());
-            user.setTwitterHandle(twitterUser.getName());
-            URL url = null;
-            try {
-                url = new URL(twitterUser.getProfileImageURL());
-            }
-            catch (MalformedURLException e) {
-                logger.error("Improper URL:", e);
-            }
-            user.setProfileImageUrl(url);
-
-            tweet.setMessage(status.getText());
-            tweet.setUser(user);
-            tweet.setCreatedAt(status.getCreatedAt());
-
-            list.add(tweet);
-        }
-        return list;
-    }
 }
