@@ -1,4 +1,4 @@
-package liuni.api;
+package liuni.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.ws.rs.core.Response;

@@ -1,12 +1,11 @@
 package liuni.resources;
 
-import liuni.api.ErrorModel;
-import liuni.api.TwitterTimelineModel;
+import liuni.models.ErrorModel;
+import liuni.models.TwitterTimelineModel;
 import com.codahale.metrics.annotation.Timed;
-import liuni.api.TwitterTweetModel;
+import liuni.models.TwitterTweetModel;
 import liuni.configs.TwitterConfig;
 import liuni.services.TwitterService;
-import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.TwitterException;
 
@@ -85,9 +84,9 @@ public class LiUniResource {
         ResponseBuilder responseBuilder = Response.noContent();
         responseBuilder.type(MediaType.APPLICATION_JSON);
         try {
-            ResponseList<Status> timeline = twitterService.getTimeline();
+            TwitterTimelineModel timelineModel = new TwitterTimelineModel();
             responseBuilder.status(Response.Status.OK);
-            responseBuilder.entity(new TwitterTimelineModel(timeline).getTimeline());
+            responseBuilder.entity(timelineModel.getTimelineCondensed());
         }
         catch (TwitterException e) {
             ErrorModel error = new ErrorModel();
