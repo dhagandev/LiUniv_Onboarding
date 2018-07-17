@@ -41,4 +41,16 @@ public class TwitterTweetModel {
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj.getClass() == this.getClass()) {
+            TwitterTweetModel object = (TwitterTweetModel) obj;
+            boolean isCreatedAtSame = object.getCreatedAt().equals(this.createdAt);
+            boolean isMessageSame = object.getMessage().equals(this.message);
+            boolean isUserSame = object.getUser().equals(this.user);
+            return isCreatedAtSame && isMessageSame && isUserSame;
+        }
+        return false;
+    }
 }

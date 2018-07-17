@@ -20,7 +20,9 @@ import twitter4j.User;
 
 import javax.ws.rs.core.Response;
 
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -74,8 +76,10 @@ public class LiUniResourceTest {
 
             Response resp = resource.fetchTimeline();
 
+            List<TwitterTweetModel> result = (List<TwitterTweetModel>) resp.getEntity();
+
             assertEquals(Response.Status.OK.getStatusCode(), resp.getStatus());
-            assertEquals(tweetModelList, resp.getEntity());
+            assertEquals(tweetModelList, result);
         }
         catch (Exception e) {
             Assert.fail("This exception is not expected.");
@@ -98,8 +102,10 @@ public class LiUniResourceTest {
             tweetModelList.add(mock(TwitterTweetModel.class));
             resp = resource.fetchTimeline();
 
+            List<TwitterTweetModel> result = (List<TwitterTweetModel>) resp.getEntity();
+
             assertEquals(Response.Status.OK.getStatusCode(), resp.getStatus());
-            assertEquals(tweetModelList, resp.getEntity());
+            assertEquals(tweetModelList, result);
         }
         catch (Exception e) {
             Assert.fail("This exception is not expected.");
@@ -110,14 +116,16 @@ public class LiUniResourceTest {
     public void testRestFetchTimelineTimelineException() {
         List<TwitterTweetModel> tweetModelList = new ArrayList<TwitterTweetModel>();
         tweetModelList.add(mock(TwitterTweetModel.class));
-        String expectedError = (new ErrorModel()).getGeneralError();
+        ErrorModel errorModel = new ErrorModel();
+        errorModel.setError("GENERAL_ERROR");
         try {
             when(twitter.getHomeTimeline()).thenThrow(new TwitterException("This is an exception test."));
 
             Response resp = resource.fetchTimeline();
 
-            assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), resp.getStatus());
-            assertEquals(expectedError, resp.getEntity().toString());
+            ErrorModel resultError = (ErrorModel) resp.getEntity();
+
+            assertEquals(errorModel, resultError);
         }
         catch (Exception e) {
             Assert.fail("This exception is not expected.");
@@ -131,7 +139,9 @@ public class LiUniResourceTest {
         String testName = "MockedUserName";
         String testScreenName = "MockedUserScreenName";
         String testURL = "http://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png";
+        Date date = new Date(2323223232L);
         try {
+            URL testAsURL = new URL(testURL);
             when(twitter.updateStatus(testMessage)).thenReturn(status);
             User mockedUser = mock(User.class);
             when(mockedUser.getName()).thenReturn(testName);
@@ -139,11 +149,18 @@ public class LiUniResourceTest {
             when(mockedUser.getProfileImageURL()).thenReturn(testURL);
             when(status.getUser()).thenReturn(mockedUser);
             when(status.getText()).thenReturn(testMessage);
+            when(status.getCreatedAt()).thenReturn(date);
 
             Response resp = resource.postTweet(testMessage);
 
+            TwitterTweetModel result = (TwitterTweetModel) resp.getEntity();
+
             assertEquals(Response.Status.CREATED.getStatusCode(), resp.getStatus());
-            assertTrue(resp.hasEntity());
+            assertEquals(testMessage, result.getMessage());
+            assertEquals(date, result.getCreatedAt());
+            assertEquals(testName, result.getUser().getName());
+            assertEquals(testScreenName, result.getUser().getTwitterHandle());
+            assertEquals(testAsURL, result.getUser().getProfileImageUrl());
         }
         catch (Exception e) {
             Assert.fail("This exception is not expected.");
@@ -156,7 +173,9 @@ public class LiUniResourceTest {
         String testName = "MockedUserName";
         String testScreenName = "MockedUserScreenName";
         String testURL = "MockedURL";
+        Date date = new Date(2323223232L);
         try {
+            URL testAsURL = null;
             when(twitter.updateStatus(testMessage)).thenReturn(status);
             User mockedUser = mock(User.class);
             when(mockedUser.getName()).thenReturn(testName);
@@ -164,11 +183,18 @@ public class LiUniResourceTest {
             when(mockedUser.getProfileImageURL()).thenReturn(testURL);
             when(status.getUser()).thenReturn(mockedUser);
             when(status.getText()).thenReturn(testMessage);
+            when(status.getCreatedAt()).thenReturn(date);
 
             Response resp = resource.postTweet(testMessage);
 
+            TwitterTweetModel result = (TwitterTweetModel) resp.getEntity();
+
             assertEquals(Response.Status.CREATED.getStatusCode(), resp.getStatus());
-            assertTrue(resp.hasEntity());
+            assertEquals(testMessage, result.getMessage());
+            assertEquals(date, result.getCreatedAt());
+            assertEquals(testName, result.getUser().getName());
+            assertEquals(testScreenName, result.getUser().getTwitterHandle());
+            assertEquals(testAsURL, result.getUser().getProfileImageUrl());
         }
         catch (Exception e) {
             Assert.fail("This exception is not expected.");
@@ -181,11 +207,14 @@ public class LiUniResourceTest {
         try {
             when(twitter.updateStatus(testString)).thenReturn(status);
             when(status.getText()).thenReturn(testString);
+            ErrorModel expected = new ErrorModel();
+            expected.setError("BAD_TWEET");
 
             Response resp = resource.postTweet(testString);
 
-            assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), resp.getStatus());
-            assertTrue(resp.hasEntity());
+            ErrorModel result = (ErrorModel) resp.getEntity();
+
+            assertEquals(expected, result);
         }
         catch (Exception e) {
             Assert.fail("This exception is not expected.");
@@ -198,11 +227,14 @@ public class LiUniResourceTest {
         try {
             when(twitter.updateStatus(testString)).thenReturn(status);
             when(status.getText()).thenReturn(testString);
+            ErrorModel expected = new ErrorModel();
+            expected.setError("BAD_TWEET");
 
             Response resp = resource.postTweet(testString);
 
-            assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), resp.getStatus());
-            assertTrue(resp.hasEntity());
+            ErrorModel result = (ErrorModel) resp.getEntity();
+
+            assertEquals(expected, result);
         }
         catch (Exception e) {
             Assert.fail("This exception is not expected.");
@@ -214,11 +246,14 @@ public class LiUniResourceTest {
         String testString = "Bad Message; Exception testing.";
         try {
             when(twitter.updateStatus(testString)).thenThrow(new TwitterException("This is an exception test."));
+            ErrorModel expected = new ErrorModel();
+            expected.setError("GENERAL_ERROR");
 
             Response resp = resource.postTweet(testString);
 
-            assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), resp.getStatus());
-            assertTrue(resp.hasEntity());
+            ErrorModel result = (ErrorModel) resp.getEntity();
+
+            assertEquals(expected, result);
         }
         catch (Exception e) {
             Assert.fail("This exception is not expected.");

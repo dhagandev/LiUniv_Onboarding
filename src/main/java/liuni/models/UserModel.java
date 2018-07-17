@@ -33,8 +33,21 @@ public class UserModel {
     public void setTwitterHandle(String twitterHandle) {
         this.twitterHandle = twitterHandle;
     }
+
     @JsonProperty
     public void setProfileImageUrl(URL profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj.getClass() == this.getClass()) {
+            UserModel object = (UserModel) obj;
+            boolean isNameSame = object.getName().equals(this.name);
+            boolean isTwitterHandleSame = object.getTwitterHandle().equals(this.twitterHandle);
+            boolean isProfileImageUrlSame = object.getProfileImageUrl().equals(this.profileImageUrl);
+            return isNameSame && isTwitterHandleSame && isProfileImageUrlSame;
+        }
+        return false;
     }
 }

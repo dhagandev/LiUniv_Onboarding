@@ -90,8 +90,9 @@ public class LiUniResource {
         }
         catch (TwitterException e) {
             ErrorModel error = new ErrorModel();
+            error.setError("GENERAL_ERROR");
             responseBuilder.status(error.getErrorStatus());
-            responseBuilder.entity(error.getGeneralError());
+            responseBuilder.entity(error);
             logger.error("Produced an error with a " + error.getErrorStatus() + " code.", e);
         }
         return responseBuilder.build();
@@ -113,15 +114,17 @@ public class LiUniResource {
             }
             else {
                 ErrorModel error = new ErrorModel();
+                error.setError("BAD_TWEET");
                 responseBuilder.status(error.getErrorStatus());
-                responseBuilder.entity(error.getBadTweetError());
+                responseBuilder.entity(error);
                 logger.warn("An error occurred. Unable to post your tweet [" + message + "]. Sorry! This may be due to the message being too long or being empty. Produced an error with a " + error.getErrorStatus() + " code.");
             }
         }
         catch (TwitterException e) {
             ErrorModel error = new ErrorModel();
+            error.setError("GENERAL_ERROR");
             responseBuilder.status(error.getErrorStatus());
-            responseBuilder.entity(error.getGeneralError());
+            responseBuilder.entity(error);
             logger.error("Produced an error with a " + error.getErrorStatus() + " code.", e);
         }
         return responseBuilder.build();
