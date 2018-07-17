@@ -62,42 +62,12 @@ public final class TwitterService {
         createTwitter();
     }
 
-    public ResponseList<Status> getTwitterTimeline() throws TwitterException {
-        ResponseList<Status> statuses = twitter.getHomeTimeline();
-        return statuses;
-    }
-
-    public Status postTwitterStatus(String text) throws TwitterException {
+    public TwitterTweetModel postStatus(String text) throws TwitterException {
         boolean isOkToPost = textErrorCheck(text);
         if (isOkToPost) {
             Status status = twitter.updateStatus(text);
             logger.info("Successfully updated status to [" + status.getText() + "].");
-            return status;
-        }
-        return null;
-    }
-
-    public TwitterTweetModel postStatus(String text) throws TwitterException {
-        Status status = postTwitterStatus(text);
-        if (status != null) {
-            TwitterTweetModel tweet = new TwitterTweetModel();
-            UserModel user = new UserModel();
-            User twitterUser = status.getUser();
-
-            user.setName(twitterUser.getName());
-            user.setTwitterHandle(twitterUser.getScreenName());
-            URL url = null;
-            try {
-                url = new URL(twitterUser.getProfileImageURL());
-            }
-            catch (MalformedURLException e) {
-                logger.error("Improper URL:", e);
-            }
-            user.setProfileImageUrl(url);
-
-            tweet.setMessage(status.getText());
-            tweet.setUser(user);
-            tweet.setCreatedAt(status.getCreatedAt());
+            TwitterTweetModel tweet = getTweet(status);
             return tweet;
         }
         return null;
@@ -105,9 +75,9 @@ public final class TwitterService {
 
     public List<TwitterTweetModel> getTimeline() throws TwitterException {
         List<TwitterTweetModel> list = new ArrayList<TwitterTweetModel>();
-        for (Status status:getTwitterTimeline()) {
+        ResponseList<Status> statuses = twitter.getHomeTimeline();
+        for (Status status:statuses) {
             TwitterTweetModel tweet = getTweet(status);
-
             list.add(tweet);
         }
         return list;

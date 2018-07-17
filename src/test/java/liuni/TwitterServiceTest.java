@@ -39,19 +39,6 @@ public class TwitterServiceTest {
         twitterService.setTwitter(twitter);
     }
 
-    @Test
-    public void testGetTwitterTimeline() {
-        ResponseList<Status> responseList = new ResponseListImpl<Status>();
-        try {
-            when(twitter.getHomeTimeline()).thenReturn(responseList);
-            ResponseList<Status> result = twitterService.getTwitterTimeline();
-            assertEquals(responseList, result);
-        }
-        catch (Exception e) {
-            Assert.fail("This exception is not expected.");
-        }
-    }
-
     private void setUpUserBadURL() {
         testUserName = "TestUserName";
         testUserScreenName = "TestUserScreenName";
