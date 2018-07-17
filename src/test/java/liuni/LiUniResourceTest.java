@@ -65,7 +65,7 @@ public class LiUniResourceTest {
 
     /* Test LiUniResource .fetchTimeline() REST method */
     @Test
-    public void testREST_fetchTimeline_emptyTimeline() {
+    public void testRestFetchTimelineEmptyTimeline() {
         List<TwitterTweetModel> tweetModelList = new ArrayList<TwitterTweetModel>();
         try {
             TwitterService twitterService = mock(TwitterService.class);
@@ -83,7 +83,7 @@ public class LiUniResourceTest {
     }
 
     @Test
-    public void testREST_fetchTimeline_updateTimeline() {
+    public void testRestFetchTimelineUpdateTimeline() {
         List<TwitterTweetModel> tweetModelList = new ArrayList<TwitterTweetModel>();
         try {
             TwitterService twitterService = mock(TwitterService.class);
@@ -107,7 +107,7 @@ public class LiUniResourceTest {
     }
 
     @Test
-    public void testREST_fetchTimeline_timeline() {
+    public void testRestFetchTimelineTimelineException() {
         List<TwitterTweetModel> tweetModelList = new ArrayList<TwitterTweetModel>();
         tweetModelList.add(mock(TwitterTweetModel.class));
         String expectedError = (new ErrorModel()).getGeneralError();
@@ -126,7 +126,7 @@ public class LiUniResourceTest {
 
     /* Test LiUniResource .postTweet() REST method */
     @Test
-    public void testREST_postTweet_successfulPost_GoodURL() {
+    public void testRestPostTweetSuccessfulPostGoodURL() {
         String testMessage = "message";
         String testName = "MockedUserName";
         String testScreenName = "MockedUserScreenName";
@@ -151,7 +151,7 @@ public class LiUniResourceTest {
     }
 
     @Test
-    public void testREST_postTweet_successfulPost_BadURL() {
+    public void testRestPostTweetSuccessfulPostBadURL() {
         String testMessage = "message";
         String testName = "MockedUserName";
         String testScreenName = "MockedUserScreenName";
@@ -176,7 +176,7 @@ public class LiUniResourceTest {
     }
 
     @Test
-    public void testREST_postTweet_badPost_badTweet() {
+    public void testRestPostTweetBadPostBadTweet() {
         String testString = StringUtils.repeat("*", TwitterService.TWITTER_CHAR_MAX + 1);
         try {
             when(twitter.updateStatus(testString)).thenReturn(status);
@@ -193,7 +193,7 @@ public class LiUniResourceTest {
     }
 
     @Test
-    public void testREST_postTweet_badPost_emptyTweet() {
+    public void testRestPostTweetBadPostEmptyTweet() {
         String testString = "";
         try {
             when(twitter.updateStatus(testString)).thenReturn(status);
@@ -210,7 +210,7 @@ public class LiUniResourceTest {
     }
 
     @Test
-    public void testREST_postTweet_badPost_generalError() {
+    public void testRestPostTweetBadPostGeneralError() {
         String testString = "Bad Message; Exception testing.";
         try {
             when(twitter.updateStatus(testString)).thenThrow(new TwitterException("This is an exception test."));
@@ -226,7 +226,7 @@ public class LiUniResourceTest {
     }
 
     @Test
-    public void testREST_postTweet_postDifferentUsers() {
+    public void testRestPostTweetPostDifferentUsers() {
         TwitterConfig twitterConfig = resource.getConfig();
         assertTrue(twitterConfig.getTwitterAccounts().size() > 1);
 
@@ -238,7 +238,7 @@ public class LiUniResourceTest {
     }
 
     @Test
-    public void testREST_twitterVal_configSize() {
+    public void testRestTwitterValConfigSize() {
         TwitterConfig config = mock(TwitterConfig.class);
         List<TwitterAccountConfig> twitterConfigList = new ArrayList<TwitterAccountConfig>();
         when(config.getTwitterAccounts()).thenReturn(twitterConfigList);
@@ -253,7 +253,7 @@ public class LiUniResourceTest {
     }
 
     @Test
-    public void testREST_twitterVal_indexOutOfBounds() {
+    public void testRestTwitterValIndexOutOfBounds() {
         TwitterConfig config = mock(TwitterConfig.class);
         TwitterAccountConfig twitterConfig = mock(TwitterAccountConfig.class);
         List<TwitterAccountConfig> twitterConfigList = new ArrayList<TwitterAccountConfig>();
@@ -277,7 +277,7 @@ public class LiUniResourceTest {
     }
 
     @Test
-    public void testREST_twitterVal_configNull() {
+    public void testRestTwitterValConfigNull() {
         resource = new LiUniResource(null);
         TwitterService service = mock(TwitterService.class);
         resource.setTwitterService(service);
@@ -287,14 +287,14 @@ public class LiUniResourceTest {
     }
 
     @Test
-    public void test_SetConfig_Success() {
+    public void testSetConfigSuccess() {
         TwitterConfig mock = resource.getConfig();
         resource.setConfig(mock);
         assertEquals(mock, resource.getConfig());
     }
 
     @Test
-    public void test_SetConfigIndex_FailIndexLow() {
+    public void testSetConfigIndexFailIndexLow() {
         TwitterConfig twitterService = resource.getConfig();
         List<TwitterAccountConfig> list = new ArrayList<TwitterAccountConfig>();
         when(twitterService.getTwitterAccounts()).thenReturn(list);
@@ -304,7 +304,7 @@ public class LiUniResourceTest {
     }
 
     @Test
-    public void test_SetConfigIndex_FailIndexHigh() {
+    public void testSetConfigIndexFailIndexHigh() {
         TwitterConfig twitterService = resource.getConfig();
         List<TwitterAccountConfig> list = new ArrayList<TwitterAccountConfig>();
         when(twitterService.getTwitterAccounts()).thenReturn(list);

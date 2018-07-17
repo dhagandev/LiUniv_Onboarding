@@ -40,7 +40,7 @@ public class TwitterServiceTest {
     }
 
     @Test
-    public void test_GetTwitterTimeline() {
+    public void testGetTwitterTimeline() {
         ResponseList<Status> responseList = new ResponseListImpl<Status>();
         try {
             when(twitter.getHomeTimeline()).thenReturn(responseList);
@@ -52,7 +52,7 @@ public class TwitterServiceTest {
         }
     }
 
-    private void setUp_User_BadURL() {
+    private void setUpUserBadURL() {
         testUserName = "TestUserName";
         testUserScreenName = "TestUserScreenName";
         testUserProfileURL = "BadURL";
@@ -65,7 +65,7 @@ public class TwitterServiceTest {
         when(status.getUser()).thenReturn(user);
     }
 
-    private void setUp_User_GoodURL() {
+    private void setUpUserGoodURL() {
         testUserName = "TestUserName";
         testUserScreenName = "TestUserScreenName";
         testUserProfileURL = "http://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png";
@@ -89,8 +89,8 @@ public class TwitterServiceTest {
     }
 
     @Test
-    public void test_getUser_BadURL() {
-        setUp_User_BadURL();
+    public void testGetUserBadURL() {
+        setUpUserBadURL();
         UserModel resultModel = twitterService.getUser(status);
         assertEquals(testUserName, resultModel.getName());
         assertEquals(testUserScreenName, resultModel.getTwitterHandle());
@@ -98,15 +98,15 @@ public class TwitterServiceTest {
     }
 
     @Test
-    public void test_getUser_GoodURL() {
-        setUp_User_GoodURL();
+    public void testGetUserGoodURL() {
+        setUpUserGoodURL();
         UserModel resultModel = twitterService.getUser(status);
         assertEquals(testUserName, resultModel.getName());
         assertEquals(testUserScreenName, resultModel.getTwitterHandle());
         assertEquals(testURL, resultModel.getProfileImageUrl());
     }
 
-    private void setUp_Tweet() {
+    private void setUpTweet() {
         date = mock(Date.class);
         testMessage = "Test Message";
         when(status.getText()).thenReturn(testMessage);
@@ -115,8 +115,8 @@ public class TwitterServiceTest {
 
     @Test
     public void test_getTweet() {
-        setUp_User_BadURL();
-        setUp_Tweet();
+        setUpUserBadURL();
+        setUpTweet();
 
         TwitterTweetModel tweetModel = twitterService.getTweet(status);
         assertEquals(date, tweetModel.getCreatedAt());
@@ -142,10 +142,10 @@ public class TwitterServiceTest {
     }
 
     @Test
-    public void test_convertList() {
+    public void testConvertTwitterResultsToTwitterTweetModelList() {
         try {
-            setUp_User_BadURL();
-            setUp_Tweet();
+            setUpUserBadURL();
+            setUpTweet();
 
             List<TwitterTweetModel> expected = new ArrayList<TwitterTweetModel>();
             TwitterTweetModel tweetModel = createTweetModel();

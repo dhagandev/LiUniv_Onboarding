@@ -20,14 +20,14 @@ public class TwitterConfigTest {
     }
 
     @Test
-    public void test_SetDefaultUser() {
+    public void testSetDefaultUser() {
         int test = 3;
         twitterConfig.setDefaultAccountIndex(test);
         assertEquals(test, twitterConfig.getDefaultAccountIndex());
     }
 
     @Test
-    public void test_SetTwitterUsers() {
+    public void testSetTwitterUsers() {
         List<TwitterAccountConfig> test = new ArrayList<TwitterAccountConfig>();
         test.add(mock(TwitterAccountConfig.class));
         twitterConfig.setTwitterAccounts(test);

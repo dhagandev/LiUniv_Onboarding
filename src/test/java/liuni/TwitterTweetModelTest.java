@@ -19,7 +19,7 @@ public class TwitterTweetModelTest {
     }
 
     @Test
-    public void test_getUser() {
+    public void testGetUser() {
         UserModel user = mock(UserModel.class);
         tweetModel.setUser(user);
         UserModel result = tweetModel.getUser();
@@ -27,7 +27,7 @@ public class TwitterTweetModelTest {
     }
 
     @Test
-    public void test_getCreatedAt() {
+    public void testGetCreatedAt() {
         Date date = mock(Date.class);
         tweetModel.setCreatedAt(date);
         Date result = tweetModel.getCreatedAt();

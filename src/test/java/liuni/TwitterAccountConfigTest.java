@@ -14,28 +14,28 @@ public class TwitterAccountConfigTest {
     }
 
     @Test
-    public void test_SetConsumerKey() {
+    public void testSetConsumerKey() {
         String testKey = "Test Value";
         config.setConsumerKey(testKey);
         assertEquals(testKey, config.getConsumerKey());
     }
 
     @Test
-    public void test_SetConsumerSecret() {
+    public void testSetConsumerSecret() {
         String testKey = "Test Value";
         config.setConsumerSecret(testKey);
         assertEquals(testKey, config.getConsumerSecret());
     }
 
     @Test
-    public void test_SetAccessToken() {
+    public void testSetAccessToken() {
         String testKey = "Test Value";
         config.setAccessToken(testKey);
         assertEquals(testKey, config.getAccessToken());
     }
 
     @Test
-    public void test_SetAccessSecret() {
+    public void testSetAccessSecret() {
         String testKey = "Test Value";
         config.setAccessSecret(testKey);
         assertEquals(testKey, config.getAccessSecret());

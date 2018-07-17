@@ -18,7 +18,7 @@ public class UserModelTest {
     }
 
     @Test
-    public void test_getName() {
+    public void testGetName() {
         String test = "name";
         user.setName(test);
         String result = user.getName();
@@ -26,7 +26,7 @@ public class UserModelTest {
     }
 
     @Test
-    public void test_getHandle() {
+    public void testGetHandle() {
         String test = "handle";
         user.setTwitterHandle(test);
         String result = user.getTwitterHandle();
@@ -34,7 +34,7 @@ public class UserModelTest {
     }
 
     @Test
-    public void test_getURL() {
+    public void testGetURL() {
         URL test = mock(URL.class);
         user.setProfileImageUrl(test);
         URL result = user.getProfileImageUrl();
