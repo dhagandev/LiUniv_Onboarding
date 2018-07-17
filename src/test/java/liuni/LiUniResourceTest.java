@@ -117,7 +117,7 @@ public class LiUniResourceTest {
         List<TwitterTweetModel> tweetModelList = new ArrayList<TwitterTweetModel>();
         tweetModelList.add(mock(TwitterTweetModel.class));
         ErrorModel errorModel = new ErrorModel();
-        errorModel.setError("GENERAL_ERROR");
+        errorModel.setError("");
         try {
             when(twitter.getHomeTimeline()).thenThrow(new TwitterException("This is an exception test."));
 
@@ -247,7 +247,7 @@ public class LiUniResourceTest {
         try {
             when(twitter.updateStatus(testString)).thenThrow(new TwitterException("This is an exception test."));
             ErrorModel expected = new ErrorModel();
-            expected.setError("GENERAL_ERROR");
+            expected.setError("");
 
             Response resp = resource.postTweet(testString);
 

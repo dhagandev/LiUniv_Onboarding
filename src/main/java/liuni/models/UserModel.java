@@ -45,7 +45,7 @@ public class UserModel {
             UserModel object = (UserModel) obj;
             boolean isNameSame = object.getName().equals(this.name);
             boolean isTwitterHandleSame = object.getTwitterHandle().equals(this.twitterHandle);
-            boolean isProfileImageUrlSame = object.getProfileImageUrl().equals(this.profileImageUrl);
+            boolean isProfileImageUrlSame = object.getProfileImageUrl().toString().equals(this.profileImageUrl.toString());
             return isNameSame && isTwitterHandleSame && isProfileImageUrlSame;
         }
         return false;

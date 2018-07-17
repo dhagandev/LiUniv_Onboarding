@@ -27,9 +27,6 @@ public class ErrorModel {
 
     public void setError(String fault) {
         switch(fault) {
-            case "GENERAL_ERROR":
-                error = GENERAL_ERROR;
-                break;
             case "BAD_TWEET":
                 error = BAD_TWEET;
                 break;
@@ -38,6 +35,10 @@ public class ErrorModel {
                 break;
         }
         respStatus = Response.Status.INTERNAL_SERVER_ERROR;
+    }
+
+    public void setRespStatus(Response.Status status) {
+        respStatus = status;
     }
 
     @Override
