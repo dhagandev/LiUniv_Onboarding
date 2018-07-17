@@ -106,28 +106,39 @@ public final class TwitterService {
     public List<TwitterTweetModel> getTimeline() throws TwitterException {
         List<TwitterTweetModel> list = new ArrayList<TwitterTweetModel>();
         for (Status status:getTwitterTimeline()) {
-            TwitterTweetModel tweet = new TwitterTweetModel();
-            UserModel user = new UserModel();
-            User twitterUser = status.getUser();
-
-            user.setName(twitterUser.getName());
-            user.setTwitterHandle(twitterUser.getScreenName());
-            URL url = null;
-            try {
-                url = new URL(twitterUser.getProfileImageURL());
-            }
-            catch (MalformedURLException e) {
-                logger.error("Improper URL:", e);
-            }
-            user.setProfileImageUrl(url);
-
-            tweet.setMessage(status.getText());
-            tweet.setUser(user);
-            tweet.setCreatedAt(status.getCreatedAt());
+            TwitterTweetModel tweet = getTweet(status);
 
             list.add(tweet);
         }
         return list;
+    }
+
+    public TwitterTweetModel getTweet(Status status) {
+        TwitterTweetModel tweet = new TwitterTweetModel();
+        UserModel user = getUser(status);
+
+        tweet.setMessage(status.getText());
+        tweet.setUser(user);
+        tweet.setCreatedAt(status.getCreatedAt());
+
+        return tweet;
+    }
+
+    public UserModel getUser(Status status) {
+        UserModel user = new UserModel();
+        User twitterUser = status.getUser();
+
+        user.setName(twitterUser.getName());
+        user.setTwitterHandle(twitterUser.getScreenName());
+        URL url = null;
+        try {
+            url = new URL(twitterUser.getProfileImageURL());
+        }
+        catch (MalformedURLException e) {
+            logger.error("Improper URL:", e);
+        }
+        user.setProfileImageUrl(url);
+        return user;
     }
 
     // True = No errors; False = Error occurred

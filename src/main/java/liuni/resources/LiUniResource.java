@@ -1,12 +1,10 @@
 package liuni.resources;
 
 import liuni.models.ErrorModel;
-import liuni.models.TwitterTimelineModel;
 import com.codahale.metrics.annotation.Timed;
 import liuni.models.TwitterTweetModel;
 import liuni.configs.TwitterConfig;
 import liuni.services.TwitterService;
-import twitter4j.Status;
 import twitter4j.TwitterException;
 
 import javax.ws.rs.Consumes;
@@ -22,13 +20,14 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 @Path("/api/1.0/twitter")
 @Produces(MediaType.APPLICATION_JSON)
 public class LiUniResource {
     private static Logger logger = LoggerFactory.getLogger(LiUniResource.class);
     private TwitterConfig config;
     private TwitterService twitterService;
-    private TwitterTimelineModel timelineModel;
     private int defaultAccountIndex;
 
     public LiUniResource(TwitterConfig config) {
@@ -77,10 +76,6 @@ public class LiUniResource {
         twitterService = service;
     }
 
-    public void setTimelineModel(TwitterTimelineModel timelineModel) {
-        this.timelineModel = timelineModel;
-    }
-
     @Path("/timeline")
     @GET
     @Timed
@@ -89,11 +84,9 @@ public class LiUniResource {
         ResponseBuilder responseBuilder = Response.noContent();
         responseBuilder.type(MediaType.APPLICATION_JSON);
         try {
-            if (timelineModel == null) {
-                timelineModel = new TwitterTimelineModel();
-            }
+            List<TwitterTweetModel> list = twitterService.getTimeline();
             responseBuilder.status(Response.Status.OK);
-            responseBuilder.entity(timelineModel.getTimeline());
+            responseBuilder.entity(list);
         }
         catch (TwitterException e) {
             ErrorModel error = new ErrorModel();
@@ -116,6 +109,7 @@ public class LiUniResource {
             if (status != null) {
                 responseBuilder.status(Response.Status.CREATED);
                 responseBuilder.entity(status);
+                logger.info("Successfully posted: " + status.getMessage());
             }
             else {
                 ErrorModel error = new ErrorModel();
