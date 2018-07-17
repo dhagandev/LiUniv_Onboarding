@@ -107,7 +107,7 @@ public class TwitterServiceTest {
     }
 
     private void setUpTweet() {
-        date = mock(Date.class);
+        date = new Date(2323223232L);
         testMessage = "Test Message";
         when(status.getText()).thenReturn(testMessage);
         when(status.getCreatedAt()).thenReturn(date);
@@ -141,6 +141,42 @@ public class TwitterServiceTest {
         return tweetModel;
     }
 
+    private TwitterTweetModel getSpareModel() {
+        String testName = "Spare Model Name";
+        String testScreenName = "Spare Model Screen Name";
+        URL testProfileUrl = null;
+        String testTweetMessage = "Spare Model Message";
+        Date testDate = new Date(2323223232L);
+
+        TwitterTweetModel tweetModel = new TwitterTweetModel();
+        UserModel userModel = new UserModel();
+        userModel.setName(testName);
+        userModel.setTwitterHandle(testScreenName);
+        userModel.setProfileImageUrl(testProfileUrl);
+        tweetModel.setMessage(testTweetMessage);
+        tweetModel.setUser(userModel);
+        tweetModel.setCreatedAt(testDate);
+
+        return tweetModel;
+    }
+
+    private Status getSpareStatus() {
+        String testName = "Spare Model Name";
+        String testScreenName = "Spare Model Screen Name";
+        String testTweetMessage = "Spare Model Message";
+        Date testDate = new Date(2323223232L);
+
+        Status spareStatus = mock(Status.class);
+        User user = mock(User.class);
+        when(user.getName()).thenReturn(testName);
+        when(user.getScreenName()).thenReturn(testScreenName);
+        when(user.getProfileImageURL()).thenReturn("");
+        when(spareStatus.getUser()).thenReturn(user);
+        when(spareStatus.getText()).thenReturn(testTweetMessage);
+        when(spareStatus.getCreatedAt()).thenReturn(testDate);
+        return spareStatus;
+    }
+
     @Test
     public void testConvertTwitterResultsToTwitterTweetModelList() {
         try {
@@ -148,19 +184,29 @@ public class TwitterServiceTest {
             setUpTweet();
 
             List<TwitterTweetModel> expected = new ArrayList<TwitterTweetModel>();
-            TwitterTweetModel tweetModel = createTweetModel();
-            expected.add(tweetModel);
+            TwitterTweetModel tweetModel1 = createTweetModel();
+            expected.add(tweetModel1);
+            TwitterTweetModel tweetModel2 = getSpareModel();
+            expected.add(tweetModel2);
 
             ResponseList<Status> responseList = new ResponseListImpl<Status>();
             responseList.add(status);
+            Status status2 = getSpareStatus();
+            responseList.add(status2);
             when(twitter.getHomeTimeline()).thenReturn(responseList);
 
             List<TwitterTweetModel> result = twitterService.getTimeline();
-            assertEquals(date, result.get(0).getCreatedAt());
-            assertEquals(testMessage, result.get(0).getMessage());
-            assertEquals(testUserName, result.get(0).getUser().getName());
-            assertEquals(testUserScreenName, result.get(0).getUser().getTwitterHandle());
-            assertEquals(null, result.get(0).getUser().getProfileImageUrl());
+            assertEquals(expected.get(0).getCreatedAt(), result.get(0).getCreatedAt());
+            assertEquals(expected.get(0).getMessage(), result.get(0).getMessage());
+            assertEquals(expected.get(0).getUser().getName(), result.get(0).getUser().getName());
+            assertEquals(expected.get(0).getUser().getTwitterHandle(), result.get(0).getUser().getTwitterHandle());
+            assertEquals(expected.get(0).getUser().getProfileImageUrl(), result.get(0).getUser().getProfileImageUrl());
+
+            assertEquals(expected.get(1).getCreatedAt(), result.get(1).getCreatedAt());
+            assertEquals(expected.get(1).getMessage(), result.get(1).getMessage());
+            assertEquals(expected.get(1).getUser().getName(), result.get(1).getUser().getName());
+            assertEquals(expected.get(1).getUser().getTwitterHandle(), result.get(1).getUser().getTwitterHandle());
+            assertEquals(expected.get(1).getUser().getProfileImageUrl(), result.get(1).getUser().getProfileImageUrl());
 
         }
         catch (Exception e) {
