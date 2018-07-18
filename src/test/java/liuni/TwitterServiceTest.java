@@ -31,7 +31,7 @@ public class TwitterServiceTest {
         twitter = mock(Twitter.class);
         twitterService.setTwitter(twitter);
     }
-    
+
     @Test
     public void testGetUserBadURL() {
         String testName = "Model Name";

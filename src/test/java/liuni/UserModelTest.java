@@ -131,4 +131,84 @@ public class UserModelTest {
 
         assertNotEquals(user1, user2);
     }
+
+    @Test
+    public void testTwoUnequalModelsURLNullAndNot() {
+        URL url = null;
+        UserModel user1 = new UserModel();
+        user1.setName("name1");
+        user1.setTwitterHandle("handle1");
+        user1.setProfileImageUrl(url);
+        try {
+            url = new URL("https://abs.twimg.com/sticky/default_profile_images/default_profile_bigger.png");
+        }
+        catch (Exception e) {
+            Assert.fail("This exception is not expected.");
+        }
+        UserModel user2 = new UserModel();
+        user2.setName("name1");
+        user2.setTwitterHandle("handle1");
+        user2.setProfileImageUrl(url);
+
+        assertNotEquals(user1, user2);
+    }
+
+    @Test
+    public void testTwoUnequalModelsURLNullAndNotNull() {
+        URL url = null;
+        UserModel user1 = new UserModel();
+        user1.setName("name1");
+        user1.setTwitterHandle("handle1");
+        user1.setProfileImageUrl(url);
+        try {
+            url = new URL("https://abs.twimg.com/sticky/default_profile_images/default_profile_bigger.png");
+        }
+        catch (Exception e) {
+            Assert.fail("This exception is not expected.");
+        }
+        UserModel user2 = new UserModel();
+        user2.setName("name1");
+        user2.setTwitterHandle("handle1");
+        user2.setProfileImageUrl(url);
+
+        assertNotEquals(user1, user2);
+    }
+
+    @Test
+    public void testTwoUnequalModelsURLNotNullAndNull() {
+        URL url = null;
+        try {
+            url = new URL("https://abs.twimg.com/sticky/default_profile_images/default_profile_bigger.png");
+        }
+        catch (Exception e) {
+            Assert.fail("This exception is not expected.");
+        }
+        UserModel user1 = new UserModel();
+        user1.setName("name1");
+        user1.setTwitterHandle("handle1");
+        user1.setProfileImageUrl(url);
+        url = null;
+        UserModel user2 = new UserModel();
+        user2.setName("name1");
+        user2.setTwitterHandle("handle1");
+        user2.setProfileImageUrl(url);
+
+        assertNotEquals(user1, user2);
+    }
+
+    @Test
+    public void testTwoEqualModelsURLNull() {
+        URL url = null;
+        UserModel user1 = new UserModel();
+        user1.setName("name1");
+        user1.setTwitterHandle("handle1");
+        user1.setProfileImageUrl(url);
+        UserModel user2 = new UserModel();
+        user2.setName("name1");
+        user2.setTwitterHandle("handle1");
+        user2.setProfileImageUrl(url);
+
+        assertEquals(user1, user2);
+    }
+
 }
