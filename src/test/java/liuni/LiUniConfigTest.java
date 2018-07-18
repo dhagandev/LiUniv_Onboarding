@@ -21,7 +21,7 @@ public class LiUniConfigTest {
     }
 
     @Test
-    public void test_SetTwitter() {
+    public void testSetTwitter() {
         TwitterConfig twitterConfig = mock(TwitterConfig.class);
         config.setTwitter(twitterConfig);
         assertEquals(twitterConfig, config.getTwitter());

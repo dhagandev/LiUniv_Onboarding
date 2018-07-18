@@ -1,13 +1,10 @@
 package liuni.resources;
 
-import liuni.api.ErrorModel;
-import liuni.api.TwitterTimelineModel;
+import liuni.models.ErrorModel;
 import com.codahale.metrics.annotation.Timed;
-import liuni.api.TwitterTweetModel;
+import liuni.models.TwitterTweetModel;
 import liuni.configs.TwitterConfig;
 import liuni.services.TwitterService;
-import twitter4j.ResponseList;
-import twitter4j.Status;
 import twitter4j.TwitterException;
 
 import javax.ws.rs.Consumes;
@@ -22,6 +19,8 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 @Path("/api/1.0/twitter")
 @Produces(MediaType.APPLICATION_JSON)
@@ -85,14 +84,15 @@ public class LiUniResource {
         ResponseBuilder responseBuilder = Response.noContent();
         responseBuilder.type(MediaType.APPLICATION_JSON);
         try {
-            ResponseList<Status> timeline = twitterService.getTimeline();
+            List<TwitterTweetModel> list = twitterService.getTimeline();
             responseBuilder.status(Response.Status.OK);
-            responseBuilder.entity(new TwitterTimelineModel(timeline).getTimeline());
+            responseBuilder.entity(list);
         }
         catch (TwitterException e) {
             ErrorModel error = new ErrorModel();
+            error.setError(ErrorModel.ErrorType.GENERAL);
             responseBuilder.status(error.getErrorStatus());
-            responseBuilder.entity(error.getGeneralError());
+            responseBuilder.entity(error);
             logger.error("Produced an error with a " + error.getErrorStatus() + " code.", e);
         }
         return responseBuilder.build();
@@ -106,22 +106,25 @@ public class LiUniResource {
         ResponseBuilder responseBuilder = Response.noContent();
         responseBuilder.type(MediaType.APPLICATION_JSON);
         try {
-            Status status = twitterService.postStatus(message);
+            TwitterTweetModel status = twitterService.postStatus(message);
             if (status != null) {
                 responseBuilder.status(Response.Status.CREATED);
-                responseBuilder.entity(new TwitterTweetModel(message).getMessage());
+                responseBuilder.entity(status);
+                logger.info("Successfully posted: " + status.getMessage());
             }
             else {
                 ErrorModel error = new ErrorModel();
+                error.setError(ErrorModel.ErrorType.BAD_TWEET);
                 responseBuilder.status(error.getErrorStatus());
-                responseBuilder.entity(error.getBadTweetError());
+                responseBuilder.entity(error);
                 logger.warn("An error occurred. Unable to post your tweet [" + message + "]. Sorry! This may be due to the message being too long or being empty. Produced an error with a " + error.getErrorStatus() + " code.");
             }
         }
         catch (TwitterException e) {
             ErrorModel error = new ErrorModel();
+            error.setError(ErrorModel.ErrorType.GENERAL);
             responseBuilder.status(error.getErrorStatus());
-            responseBuilder.entity(error.getGeneralError());
+            responseBuilder.entity(error);
             logger.error("Produced an error with a " + error.getErrorStatus() + " code.", e);
         }
         return responseBuilder.build();
