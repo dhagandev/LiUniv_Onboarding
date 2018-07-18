@@ -24,13 +24,6 @@ import static org.mockito.Mockito.when;
 public class TwitterServiceTest {
     private TwitterService twitterService;
     private Twitter twitter;
-    private Status status;
-    private String testUserName;
-    private String testUserScreenName;
-    private String testUserProfileURL;
-    private URL testURL;
-    private String testMessage;
-    private Date date;
 
     @Before
     public void setUp() {
@@ -38,162 +31,120 @@ public class TwitterServiceTest {
         twitter = mock(Twitter.class);
         twitterService.setTwitter(twitter);
     }
-
-    private void setUpUserBadURL() {
-        testUserName = "TestUserName";
-        testUserScreenName = "TestUserScreenName";
-        testUserProfileURL = "BadURL";
-
-        status = mock(Status.class);
-        User user = mock(User.class);
-        when(user.getName()).thenReturn(testUserName);
-        when(user.getScreenName()).thenReturn(testUserScreenName);
-        when(user.getProfileImageURL()).thenReturn(testUserProfileURL);
-        when(status.getUser()).thenReturn(user);
-    }
-
-    private void setUpUserGoodURL() {
-        testUserName = "TestUserName";
-        testUserScreenName = "TestUserScreenName";
-        testUserProfileURL = "http://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png";
-
-        testURL = null;
-        try {
-            testURL = new URL(testUserProfileURL);
-        }
-        catch (Exception e) {
-            Assert.fail("This exception is not expected.");
-        }
-
-        assertTrue(testURL != null);
-
-        status = mock(Status.class);
-        User user = mock(User.class);
-        when(user.getName()).thenReturn(testUserName);
-        when(user.getScreenName()).thenReturn(testUserScreenName);
-        when(user.getProfileImageURL()).thenReturn(testUserProfileURL);
-        when(status.getUser()).thenReturn(user);
-    }
-
+    
     @Test
     public void testGetUserBadURL() {
-        setUpUserBadURL();
+        String testName = "Model Name";
+        String testScreenName = "Model Screen Name";
+        String urlString = "";
+        URL testProfileUrl = null;
+        String testTweetMessage = "Model Message";
+        Date testDate = new Date(2323223232L);
+
+        TwitterTweetModel expected = createTweetModel(testDate, testTweetMessage, testProfileUrl, testScreenName, testName);
+        Status status = createMockedStatus(testDate, testTweetMessage, urlString, testScreenName, testName);
+
         UserModel resultModel = twitterService.getUser(status);
-        assertEquals(testUserName, resultModel.getName());
-        assertEquals(testUserScreenName, resultModel.getTwitterHandle());
-        assertEquals(null, resultModel.getProfileImageUrl());
+        assertEquals(expected.getUser(), resultModel);
     }
 
     @Test
     public void testGetUserGoodURL() {
-        setUpUserGoodURL();
-        UserModel resultModel = twitterService.getUser(status);
-        assertEquals(testUserName, resultModel.getName());
-        assertEquals(testUserScreenName, resultModel.getTwitterHandle());
-        assertEquals(testURL, resultModel.getProfileImageUrl());
-    }
+        String testName = "Model Name";
+        String testScreenName = "Model Screen Name";
+        String urlString = "http://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png\"";
+        URL testProfileUrl = null;
+        try {
+            testProfileUrl = new URL(urlString);
+        }
+        catch (Exception e) {
+            Assert.fail("This exception is not expected.");
+        }
+        String testTweetMessage = "Model Message";
+        Date testDate = new Date(2323223232L);
 
-    private void setUpTweet() {
-        date = new Date(2323223232L);
-        testMessage = "Test Message";
-        when(status.getText()).thenReturn(testMessage);
-        when(status.getCreatedAt()).thenReturn(date);
+        TwitterTweetModel expected = createTweetModel(testDate, testTweetMessage, testProfileUrl, testScreenName, testName);
+        Status status = createMockedStatus(testDate, testTweetMessage, urlString, testScreenName, testName);
+        UserModel resultModel = twitterService.getUser(status);
+
+        assertEquals(expected.getUser(), resultModel);
     }
 
     @Test
     public void test_getTweet() {
-        setUpUserBadURL();
-        setUpTweet();
+        String testName = "Model Name";
+        String testScreenName = "Model Screen Name";
+        String urlString = "";
+        URL testProfileUrl = null;
+        String testTweetMessage = "Model Message";
+        Date testDate = new Date(2323223232L);
+
+        TwitterTweetModel expected = createTweetModel(testDate, testTweetMessage, testProfileUrl, testScreenName, testName);
+        Status status = createMockedStatus(testDate, testTweetMessage, urlString, testScreenName, testName);
 
         TwitterTweetModel tweetModel = twitterService.getTweet(status);
-        assertEquals(date, tweetModel.getCreatedAt());
-        assertEquals(testMessage, tweetModel.getMessage());
-        assertEquals(testUserName, tweetModel.getUser().getName());
-        assertEquals(testUserScreenName, tweetModel.getUser().getTwitterHandle());
-        assertEquals(null, tweetModel.getUser().getProfileImageUrl());
+        assertEquals(expected, tweetModel);
     }
 
-    private TwitterTweetModel createTweetModel() {
+    private TwitterTweetModel createTweetModel(Date testDate, String testMessage, URL url, String testScreenName, String testName) {
         TwitterTweetModel tweetModel = new TwitterTweetModel();
-        tweetModel.setCreatedAt(date);
+        tweetModel.setCreatedAt(testDate);
         tweetModel.setMessage(testMessage);
 
         UserModel user = new UserModel();
-        user.setProfileImageUrl(null);
-        user.setTwitterHandle(testUserScreenName);
-        user.setName(testUserName);
+        user.setProfileImageUrl(url);
+        user.setTwitterHandle(testScreenName);
+        user.setName(testName);
 
         tweetModel.setUser(user);
 
         return tweetModel;
     }
 
-    private TwitterTweetModel getSpareModel() {
-        String testName = "Spare Model Name";
-        String testScreenName = "Spare Model Screen Name";
-        URL testProfileUrl = null;
-        String testTweetMessage = "Spare Model Message";
-        Date testDate = new Date(2323223232L);
+    private Status createMockedStatus(Date testDate, String testMessage, String urlString, String testScreenName, String testName) {
+        Status status = mock(Status.class);
 
-        TwitterTweetModel tweetModel = new TwitterTweetModel();
-        UserModel userModel = new UserModel();
-        userModel.setName(testName);
-        userModel.setTwitterHandle(testScreenName);
-        userModel.setProfileImageUrl(testProfileUrl);
-        tweetModel.setMessage(testTweetMessage);
-        tweetModel.setUser(userModel);
-        tweetModel.setCreatedAt(testDate);
+        User mockUser = mock(User.class);
+        when(mockUser.getName()).thenReturn(testName);
+        when(mockUser.getScreenName()).thenReturn(testScreenName);
+        when(mockUser.getProfileImageURL()).thenReturn(urlString);
+        when(status.getUser()).thenReturn(mockUser);
+        when(status.getText()).thenReturn(testMessage);
+        when(status.getCreatedAt()).thenReturn(testDate);
 
-        return tweetModel;
-    }
-
-    private Status getSpareStatus() {
-        String testName = "Spare Model Name";
-        String testScreenName = "Spare Model Screen Name";
-        String testTweetMessage = "Spare Model Message";
-        Date testDate = new Date(2323223232L);
-
-        Status spareStatus = mock(Status.class);
-        User user = mock(User.class);
-        when(user.getName()).thenReturn(testName);
-        when(user.getScreenName()).thenReturn(testScreenName);
-        when(user.getProfileImageURL()).thenReturn("");
-        when(spareStatus.getUser()).thenReturn(user);
-        when(spareStatus.getText()).thenReturn(testTweetMessage);
-        when(spareStatus.getCreatedAt()).thenReturn(testDate);
-        return spareStatus;
+        return status;
     }
 
     @Test
     public void testConvertTwitterResultsToTwitterTweetModelList() {
+        String testName = "Model Name";
+        String testScreenName = "Model Screen Name";
+        String urlString = "";
+        URL testProfileUrl = null;
+        String testTweetMessage = "Model Message";
+        Date testDate = new Date(2323223232L);
         try {
-            setUpUserBadURL();
-            setUpTweet();
-
             List<TwitterTweetModel> expected = new ArrayList<TwitterTweetModel>();
-            TwitterTweetModel tweetModel1 = createTweetModel();
-            expected.add(tweetModel1);
-            TwitterTweetModel tweetModel2 = getSpareModel();
-            expected.add(tweetModel2);
-
             ResponseList<Status> responseList = new ResponseListImpl<Status>();
-            responseList.add(status);
-            Status status2 = getSpareStatus();
+            TwitterTweetModel tweetModel1 = createTweetModel(testDate, testTweetMessage, testProfileUrl, testScreenName, testName);
+            expected.add(tweetModel1);
+            Status status1 = createMockedStatus(testDate, testTweetMessage, urlString, testScreenName, testName);
+            responseList.add(status1);
+            TwitterTweetModel tweetModel2 = createTweetModel(testDate, testTweetMessage + " add on", testProfileUrl, testScreenName, testName);
+            expected.add(tweetModel2);
+            Status status2 = createMockedStatus(testDate, testTweetMessage + " add on", urlString, testScreenName, testName);
             responseList.add(status2);
             when(twitter.getHomeTimeline()).thenReturn(responseList);
 
             List<TwitterTweetModel> result = twitterService.getTimeline();
-            assertEquals(expected.get(0).getCreatedAt(), result.get(0).getCreatedAt());
-            assertEquals(expected.get(0).getMessage(), result.get(0).getMessage());
-            assertEquals(expected.get(0).getUser().getName(), result.get(0).getUser().getName());
-            assertEquals(expected.get(0).getUser().getTwitterHandle(), result.get(0).getUser().getTwitterHandle());
-            assertEquals(expected.get(0).getUser().getProfileImageUrl(), result.get(0).getUser().getProfileImageUrl());
-
-            assertEquals(expected.get(1).getCreatedAt(), result.get(1).getCreatedAt());
-            assertEquals(expected.get(1).getMessage(), result.get(1).getMessage());
-            assertEquals(expected.get(1).getUser().getName(), result.get(1).getUser().getName());
-            assertEquals(expected.get(1).getUser().getTwitterHandle(), result.get(1).getUser().getTwitterHandle());
-            assertEquals(expected.get(1).getUser().getProfileImageUrl(), result.get(1).getUser().getProfileImageUrl());
+            assertTrue(expected.size() > 0);
+            for (int i = 0; i < expected.size(); i++) {
+                assertEquals(expected.get(i).getCreatedAt(), result.get(i).getCreatedAt());
+                assertEquals(expected.get(i).getMessage(), result.get(i).getMessage());
+                assertEquals(expected.get(i).getUser().getName(), result.get(i).getUser().getName());
+                assertEquals(expected.get(i).getUser().getTwitterHandle(), result.get(i).getUser().getTwitterHandle());
+                assertEquals(expected.get(i).getUser().getProfileImageUrl(), result.get(i).getUser().getProfileImageUrl());
+            }
 
         }
         catch (Exception e) {
