@@ -132,6 +132,88 @@ public class LiUniResourceTest {
         }
     }
 
+    /* Test LiUniResource .filterTweets() REST method */
+    @Test
+    public void testRestFilterTweetsEmptyResult() {
+        List<TwitterTweetModel> tweetModelList = new ArrayList<TwitterTweetModel>();
+        TwitterTweetModel tweetModelMocked1 = mock(TwitterTweetModel.class);
+        when(tweetModelMocked1.getMessage()).thenReturn("old");
+
+        tweetModelList.add(tweetModelMocked1);
+
+        List<String> expected = new ArrayList<String>();
+        try {
+            TwitterService twitterService = mock(TwitterService.class);
+            when(twitterService.getTimeline()).thenReturn(tweetModelList);
+            resource.setTwitterService(twitterService);
+
+            Response resp = resource.filterTweets("New");
+
+            List<String> result = (List<String>) resp.getEntity();
+
+            assertEquals(Response.Status.OK.getStatusCode(), resp.getStatus());
+            assertEquals(expected, result);
+        }
+        catch (Exception e) {
+            Assert.fail("This exception is not expected.");
+        }
+    }
+
+    @Test
+    public void testRestFilterTweetsNotEmptyResult() {
+        List<TwitterTweetModel> tweetModelList = new ArrayList<TwitterTweetModel>();
+
+        TwitterTweetModel tweetModelMocked0 = mock(TwitterTweetModel.class);
+        when(tweetModelMocked0.getMessage()).thenReturn("Newt");
+        TwitterTweetModel tweetModelMocked1 = mock(TwitterTweetModel.class);
+        when(tweetModelMocked1.getMessage()).thenReturn("old");
+        TwitterTweetModel tweetModelMocked2 = mock(TwitterTweetModel.class);
+        when(tweetModelMocked2.getMessage()).thenReturn("This is a new thing.");
+
+        tweetModelList.add(tweetModelMocked0);
+        tweetModelList.add(tweetModelMocked1);
+        tweetModelList.add(tweetModelMocked2);
+
+        List<String> expected = new ArrayList<String>();
+        expected.add("Newt");
+        expected.add("This is a new thing.");
+        try {
+            TwitterService twitterService = mock(TwitterService.class);
+            when(twitterService.getTimeline()).thenReturn(tweetModelList);
+            resource.setTwitterService(twitterService);
+
+            Response resp = resource.filterTweets("New");
+
+            List<String> result = (List<String>) resp.getEntity();
+
+            assertEquals(Response.Status.OK.getStatusCode(), resp.getStatus());
+            assertEquals(expected, result);
+        }
+        catch (Exception e) {
+            Assert.fail("This exception is not expected.");
+        }
+    }
+
+    @Test
+    public void testRestFilterTweetsTimelineException() {
+        List<TwitterTweetModel> tweetModelList = new ArrayList<TwitterTweetModel>();
+        tweetModelList.add(mock(TwitterTweetModel.class));
+        ErrorModel errorModel = new ErrorModel();
+        errorModel.setError(ErrorModel.ErrorType.GENERAL);
+        try {
+            when(twitter.getHomeTimeline()).thenThrow(new TwitterException("This is an exception test."));
+
+            Response resp = resource.filterTweets("Thing");
+
+            ErrorModel resultError = (ErrorModel) resp.getEntity();
+
+            assertEquals(errorModel, resultError);
+        }
+        catch (Exception e) {
+            Assert.fail("This exception is not expected.");
+        }
+    }
+
     /* Test LiUniResource .postTweet() REST method */
     @Test
     public void testRestPostTweetSuccessfulPostGoodURL() {
