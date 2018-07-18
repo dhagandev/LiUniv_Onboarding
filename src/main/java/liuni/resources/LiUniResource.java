@@ -13,6 +13,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -21,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("/api/1.0/twitter")
 @Produces(MediaType.APPLICATION_JSON)
@@ -87,6 +89,28 @@ public class LiUniResource {
             List<TwitterTweetModel> list = twitterService.getTimeline();
             responseBuilder.status(Response.Status.OK);
             responseBuilder.entity(list);
+        }
+        catch (TwitterException e) {
+            ErrorModel error = new ErrorModel();
+            error.setError(ErrorModel.ErrorType.GENERAL);
+            responseBuilder.status(error.getErrorStatus());
+            responseBuilder.entity(error);
+            logger.error("Produced an error with a " + error.getErrorStatus() + " code.", e);
+        }
+        return responseBuilder.build();
+    }
+
+    @Path("/tweet/filter")
+    @GET
+    @Timed
+    public Response filterTweets(@QueryParam("key") String filterKey) {
+        ResponseBuilder responseBuilder = Response.noContent();
+        responseBuilder.type(MediaType.APPLICATION_JSON);
+        try {
+            List<TwitterTweetModel> list = twitterService.getTimeline();
+            List<TwitterTweetModel> filtered = list.stream().filter(tweet -> tweet.getMessage().toLowerCase().contains(filterKey.toLowerCase())).collect(Collectors.toList());
+            responseBuilder.status(Response.Status.OK);
+            responseBuilder.entity(filtered);
         }
         catch (TwitterException e) {
             ErrorModel error = new ErrorModel();

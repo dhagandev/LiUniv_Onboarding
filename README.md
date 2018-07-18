@@ -17,12 +17,16 @@ For future use: the first user listed is indexed as 0, the next is indexed as 1,
 5. Run ```mvn package``` to create the jar.
 
 ### Run the Program ###
-#### Hitting the GET route ####
-1. Run the following command in terminal: ```java -jar target/LiUni_Onboarding-1.0-SNAPSHOT.jar server application.yml <user-index>```
+#### Hitting the GET Timeline route ####
+1. Run the following command in terminal: ```java -jar target/LiUni_Onboarding-1.0-SNAPSHOT.jar server application.yml```
 2. In a browser, navigate to: ```http://localhost:8080/api/1.0/twitter/timeline```
 
-#### Hitting the POST route ####
-1. Run the following command in terminal: ```java -jar target/LiUni_Onboarding-1.0-SNAPSHOT.jar server application.yml <user-index>```
+#### Hitting the GET Filtered Timeline route ####
+1. Run the following command in terminal: ```java -jar target/LiUni_Onboarding-1.0-SNAPSHOT.jar server application.yml```
+2. In a browser, navigate to: ```http://localhost:8080/api/1.0/twitter/tweet/filter?key=<search-term>```
+
+#### Hitting the POST Status route ####
+1. Run the following command in terminal: ```java -jar target/LiUni_Onboarding-1.0-SNAPSHOT.jar server application.yml```
 2. Open Postman and create a POST route with ```http://localhost:8080/api/1.0/twitter/tweet``` as your route.
 3. Under "Body", select "x-www-form-urlencoded", and add at least one parameter with the key "message" and the value being the message you want to tweet.
 
