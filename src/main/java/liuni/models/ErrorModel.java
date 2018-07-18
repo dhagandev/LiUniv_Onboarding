@@ -3,6 +3,7 @@ package liuni.models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.ws.rs.core.Response;
+import java.util.Objects;
 
 public class ErrorModel {
     private final String GENERAL_ERROR = "We are sorry you are experiencing trouble with our app. Contact our administration if this error continues. In the mean time, we recommend going to https://chromedino.com/";
@@ -50,5 +51,10 @@ public class ErrorModel {
             return isStatusSame && isErrorMessageSame;
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(error, respStatus);
     }
 }

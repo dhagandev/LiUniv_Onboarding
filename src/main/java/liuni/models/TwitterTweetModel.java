@@ -2,6 +2,7 @@ package liuni.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Date;
+import java.util.Objects;
 
 public class TwitterTweetModel {
     private String message;
@@ -52,5 +53,10 @@ public class TwitterTweetModel {
             return isCreatedAtSame && isMessageSame && isUserSame;
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(message, user, createdAt);
     }
 }

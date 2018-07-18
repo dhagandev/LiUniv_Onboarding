@@ -3,6 +3,7 @@ package liuni.models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.net.URL;
+import java.util.Objects;
 
 public class UserModel {
     private String twitterHandle;
@@ -55,5 +56,10 @@ public class UserModel {
             return isNameSame && isTwitterHandleSame && isProfileImageUrlSame;
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(twitterHandle, name, profileImageUrl);
     }
 }

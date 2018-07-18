@@ -113,6 +113,14 @@ public class TwitterTweetModelTest {
     }
 
     @Test
+    public void testTwoUnequalHashCode() {
+        TwitterTweetModel tweetModel = new TwitterTweetModel();
+        ErrorModel error = new ErrorModel();
+
+        assertNotEquals(tweetModel.hashCode(), error.hashCode());
+    }
+
+    @Test
     public void testTwoOppositeModels() {
         TwitterTweetModel tweetModel = new TwitterTweetModel();
         ErrorModel error = new ErrorModel();

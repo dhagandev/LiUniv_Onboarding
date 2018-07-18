@@ -211,4 +211,12 @@ public class UserModelTest {
         assertEquals(user1, user2);
     }
 
+    @Test
+    public void testTwoUnequalHashCode() {
+        UserModel userModel = new UserModel();
+        ErrorModel error = new ErrorModel();
+
+        assertNotEquals(userModel.hashCode(), error.hashCode());
+    }
+
 }
