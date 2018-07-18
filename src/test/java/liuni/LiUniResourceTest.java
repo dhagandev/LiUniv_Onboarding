@@ -117,7 +117,7 @@ public class LiUniResourceTest {
         List<TwitterTweetModel> tweetModelList = new ArrayList<TwitterTweetModel>();
         tweetModelList.add(mock(TwitterTweetModel.class));
         ErrorModel errorModel = new ErrorModel();
-        errorModel.setError("");
+        errorModel.setError(ErrorModel.ErrorType.GENERAL);
         try {
             when(twitter.getHomeTimeline()).thenThrow(new TwitterException("This is an exception test."));
 
@@ -208,7 +208,7 @@ public class LiUniResourceTest {
             when(twitter.updateStatus(testString)).thenReturn(status);
             when(status.getText()).thenReturn(testString);
             ErrorModel expected = new ErrorModel();
-            expected.setError("BAD_TWEET");
+            expected.setError(ErrorModel.ErrorType.BAD_TWEET);
 
             Response resp = resource.postTweet(testString);
 
@@ -228,7 +228,7 @@ public class LiUniResourceTest {
             when(twitter.updateStatus(testString)).thenReturn(status);
             when(status.getText()).thenReturn(testString);
             ErrorModel expected = new ErrorModel();
-            expected.setError("BAD_TWEET");
+            expected.setError(ErrorModel.ErrorType.BAD_TWEET);
 
             Response resp = resource.postTweet(testString);
 
@@ -247,7 +247,7 @@ public class LiUniResourceTest {
         try {
             when(twitter.updateStatus(testString)).thenThrow(new TwitterException("This is an exception test."));
             ErrorModel expected = new ErrorModel();
-            expected.setError("");
+            expected.setError(ErrorModel.ErrorType.GENERAL);
 
             Response resp = resource.postTweet(testString);
 

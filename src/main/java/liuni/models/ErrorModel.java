@@ -7,7 +7,11 @@ import java.util.Objects;
 
 public class ErrorModel {
     private final String GENERAL_ERROR = "We are sorry you are experiencing trouble with our app. Contact our administration if this error continues. In the mean time, we recommend going to https://chromedino.com/";
-    private final String BAD_TWEET = "Your tweet is bad and you should feel bad. But really though, tweets need to be under 280 characters and cannot be empty.";
+    private final String BAD_TWEET_ERROR = "Your tweet is bad and you should feel bad. But really though, tweets need to be under 280 characters and cannot be empty.";
+
+    public enum ErrorType {
+        BAD_TWEET, GENERAL
+    }
 
     private String error;
     private Response.Status respStatus;
@@ -26,10 +30,10 @@ public class ErrorModel {
         return respStatus;
     }
 
-    public void setError(String fault) {
+    public void setError(ErrorType fault) {
         switch(fault) {
-            case "BAD_TWEET":
-                error = BAD_TWEET;
+            case BAD_TWEET:
+                error = BAD_TWEET_ERROR;
                 break;
             default:
                 error = GENERAL_ERROR;
