@@ -76,10 +76,7 @@ public final class TwitterService {
     public List<TwitterTweetModel> getTimeline() throws TwitterException {
         List<TwitterTweetModel> list = new ArrayList<TwitterTweetModel>();
         ResponseList<Status> statuses = twitter.getHomeTimeline();
-        for (Status status : statuses) {
-            TwitterTweetModel tweet = getTweet(status);
-            list.add(tweet);
-        }
+        statuses.stream().forEach(status -> list.add(getTweet(status)));
         return list;
     }
 
