@@ -6,8 +6,8 @@ import javax.ws.rs.core.Response;
 import java.util.Objects;
 
 public class ErrorModel {
-    private final String GENERAL_ERROR = "We are sorry you are experiencing trouble with our app. Contact our administration if this error continues. In the mean time, we recommend going to https://chromedino.com/";
-    private final String BAD_TWEET_ERROR = "Your tweet is bad and you should feel bad. But really though, tweets need to be under 280 characters and cannot be empty.";
+    private final static String GENERAL_ERROR = "We are sorry you are experiencing trouble with our app. Contact our administration if this error continues. In the mean time, we recommend going to https://chromedino.com/";
+    private final static String BAD_TWEET_ERROR = "Your tweet is bad and you should feel bad. But really though, tweets need to be under 280 characters and cannot be empty.";
 
     public enum ErrorType {
         BAD_TWEET, GENERAL

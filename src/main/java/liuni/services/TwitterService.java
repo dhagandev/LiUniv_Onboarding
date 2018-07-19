@@ -85,12 +85,13 @@ public final class TwitterService {
     }
 
     public List<String> getFiltered(String filterKey) throws TwitterException {
-        List<TwitterTweetModel> list = getTimeline();
-        List<String> filtered = list.stream()
-                                    .filter(tweet -> tweet.messageContains(filterKey))
-                                    .map(TwitterTweetModel::getMessage)
-                                    .collect(Collectors.toList());
-        return filtered;
+        List<String> list = new ArrayList<String>();
+        ResponseList<Status> statuses = twitter.getHomeTimeline();
+        statuses.stream()
+                .filter(status -> status.getText().toLowerCase().contains(filterKey.toLowerCase()))
+                .forEach(status -> list.add(status.getText()));
+
+        return list;
     }
 
     public TwitterTweetModel getTweet(Status status) {

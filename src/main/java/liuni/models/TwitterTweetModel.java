@@ -43,10 +43,6 @@ public class TwitterTweetModel {
         this.createdAt = createdAt;
     }
 
-    public boolean messageContains(String key) {
-        return getMessage().toLowerCase().contains(key.toLowerCase());
-    }
-
     @Override
     public boolean equals(Object obj) {
         if(obj.getClass() == this.getClass()) {
