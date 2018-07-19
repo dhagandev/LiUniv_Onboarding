@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class TwitterService {
     public final static int TWITTER_CHAR_MAX = 280;
@@ -66,9 +67,11 @@ public final class TwitterService {
     public TwitterTweetModel postStatus(String text) throws TwitterException {
         boolean isOkToPost = textErrorCheck(text);
         if (isOkToPost) {
-            Status status = twitter.updateStatus(text);
-            logger.info("Successfully updated status to [" + status.getText() + "].");
-            TwitterTweetModel tweet = getTweet(status);
+            TwitterTweetModel tweet = Stream.of(twitter.updateStatus(text))
+                                        .peek(status -> logger.info("Successfully updated status to [" + status.getText() + "]."))
+                                        .map(status -> getTweet(status))
+                                        .findFirst()
+                                        .get();
             return tweet;
         }
         return null;

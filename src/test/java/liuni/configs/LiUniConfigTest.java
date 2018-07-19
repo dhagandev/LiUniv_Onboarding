@@ -1,4 +1,4 @@
-package liuni;
+package liuni.configs;
 
 import liuni.configs.LiUniConfig;
 import liuni.configs.TwitterConfig;

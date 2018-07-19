@@ -1,4 +1,4 @@
-package liuni;
+package liuni.models;
 
 import liuni.models.ErrorModel;
 import liuni.models.TwitterTweetModel;
