@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -161,25 +162,40 @@ public class LiUniResourceTest {
 
     @Test
     public void testRestFilterTweetsNotEmptyResult() {
-        List<TwitterTweetModel> tweetModelList = new ArrayList<TwitterTweetModel>();
+        Date date = mock(Date.class);
+        User user = mock(User.class);
+        when(user.getName()).thenReturn("name");
+        when(user.getScreenName()).thenReturn("screenName");
+        when(user.getProfileImageURL()).thenReturn("");
 
-        TwitterTweetModel tweetModelMocked0 = mock(TwitterTweetModel.class);
-        when(tweetModelMocked0.getMessage()).thenReturn("Newt");
-        TwitterTweetModel tweetModelMocked1 = mock(TwitterTweetModel.class);
-        when(tweetModelMocked1.getMessage()).thenReturn("old");
-        TwitterTweetModel tweetModelMocked2 = mock(TwitterTweetModel.class);
-        when(tweetModelMocked2.getMessage()).thenReturn("This is a new thing.");
+        ResponseList<Status> responseList = new ResponseListImpl<Status>();
+        Status status0 = mock(Status.class);
+        when(status0.getText()).thenReturn("Newt");
+        when(status0.getCreatedAt()).thenReturn(date);
+        when(status0.getUser()).thenReturn(user);
 
-        tweetModelList.add(tweetModelMocked0);
-        tweetModelList.add(tweetModelMocked1);
-        tweetModelList.add(tweetModelMocked2);
+        Status status1 = mock(Status.class);
+        when(status1.getText()).thenReturn("old");
+        when(status1.getCreatedAt()).thenReturn(date);
+        when(status1.getUser()).thenReturn(user);
+
+        Status status2 = mock(Status.class);
+        when(status2.getText()).thenReturn("This is a new thing.");
+        when(status2.getCreatedAt()).thenReturn(date);
+        when(status2.getUser()).thenReturn(user);
+
+        responseList.add(status0);
+        responseList.add(status1);
+        responseList.add(status2);
 
         List<String> expected = new ArrayList<String>();
         expected.add("Newt");
         expected.add("This is a new thing.");
         try {
-            TwitterService twitterService = mock(TwitterService.class);
-            when(twitterService.getTimeline()).thenReturn(tweetModelList);
+            twitter = mock(Twitter.class);
+            when(twitter.getHomeTimeline()).thenReturn(responseList);
+            TwitterService twitterService = TwitterService.getInstance();
+            twitterService.setTwitter(twitter);
             resource.setTwitterService(twitterService);
 
             Response resp = resource.filterTweets("New");

@@ -17,6 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class TwitterService {
     public final static int TWITTER_CHAR_MAX = 280;
@@ -78,6 +79,15 @@ public final class TwitterService {
         ResponseList<Status> statuses = twitter.getHomeTimeline();
         statuses.stream().forEach(status -> list.add(getTweet(status)));
         return list;
+    }
+
+    public List<String> getFiltered(String filterKey) throws TwitterException {
+        List<TwitterTweetModel> list = getTimeline();
+        List<String> filtered = list.stream()
+                                    .filter(tweet -> tweet.messageContains(filterKey))
+                                    .map(TwitterTweetModel::getMessage)
+                                    .collect(Collectors.toList());
+        return filtered;
     }
 
     public TwitterTweetModel getTweet(Status status) {

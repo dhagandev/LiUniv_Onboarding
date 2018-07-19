@@ -107,8 +107,7 @@ public class LiUniResource {
         ResponseBuilder responseBuilder = Response.noContent();
         responseBuilder.type(MediaType.APPLICATION_JSON);
         try {
-            List<TwitterTweetModel> list = twitterService.getTimeline();
-            List<String> filtered = list.stream().filter(tweet -> tweet.getMessage().toLowerCase().contains(filterKey.toLowerCase())).map(TwitterTweetModel::getMessage).collect(Collectors.toList());
+            List<String> filtered = twitterService.getFiltered(filterKey);
             responseBuilder.status(Response.Status.OK);
             responseBuilder.entity(filtered);
         }
