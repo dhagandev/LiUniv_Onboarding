@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Path("/api/1.0/twitter")
 @Produces(MediaType.APPLICATION_JSON)
@@ -83,42 +84,60 @@ public class LiUniResource {
     @Timed
     @Consumes(MediaType.APPLICATION_JSON)
     public Response fetchTimeline() {
-        ResponseBuilder responseBuilder = Response.noContent();
-        responseBuilder.type(MediaType.APPLICATION_JSON);
         try {
-            List<TwitterTweetModel> list = twitterService.getTimeline();
-            responseBuilder.status(Response.Status.OK);
-            responseBuilder.entity(list);
+            return Stream.of(twitterService.getTimeline())
+                  .map(list -> Response.status(Response.Status.OK)
+                                       .entity(list)
+                                       .build())
+                  .findFirst()
+                  .get();
         }
-        catch (TwitterException e) {
-            ErrorModel error = new ErrorModel();
-            error.setError(ErrorModel.ErrorType.GENERAL);
-            responseBuilder.status(error.getErrorStatus());
-            responseBuilder.entity(error);
-            logger.error("Produced an error with a " + error.getErrorStatus() + " code.", e);
-        }
-        return responseBuilder.build();
+         catch (TwitterException e) {
+             ErrorModel error = new ErrorModel();
+             error.setError(ErrorModel.ErrorType.GENERAL);
+             logger.error("Produced an error with a " + error.getErrorStatus() + " code.", e);
+
+             return Stream.of(Response.noContent())
+                        .map(responseBuilder -> {
+                            responseBuilder.type(MediaType.APPLICATION_JSON);
+                            responseBuilder.status(error.getErrorStatus());
+                            responseBuilder.entity(error);
+                            return responseBuilder;
+                        })
+                        .findFirst()
+                        .get()
+                        .build();
+         }
     }
 
     @Path("/tweet/filter")
     @GET
     @Timed
     public Response filterTweets(@QueryParam("key") String filterKey) {
-        ResponseBuilder responseBuilder = Response.noContent();
-        responseBuilder.type(MediaType.APPLICATION_JSON);
         try {
-            List<String> filtered = twitterService.getFiltered(filterKey);
-            responseBuilder.status(Response.Status.OK);
-            responseBuilder.entity(filtered);
+            return Stream.of(twitterService.getFiltered(filterKey))
+                         .map(list -> Response.status(Response.Status.OK)
+                                              .entity(list)
+                                              .build())
+                         .findFirst()
+                         .get();
         }
         catch (TwitterException e) {
             ErrorModel error = new ErrorModel();
             error.setError(ErrorModel.ErrorType.GENERAL);
-            responseBuilder.status(error.getErrorStatus());
-            responseBuilder.entity(error);
             logger.error("Produced an error with a " + error.getErrorStatus() + " code.", e);
+
+            return Stream.of(Response.noContent())
+                         .map(responseBuilder -> {
+                             responseBuilder.type(MediaType.APPLICATION_JSON);
+                             responseBuilder.status(error.getErrorStatus());
+                             responseBuilder.entity(error);
+                             return responseBuilder;
+                         })
+                         .findFirst()
+                         .get()
+                         .build();
         }
-        return responseBuilder.build();
     }
 
     @Path("/tweet")
@@ -126,31 +145,51 @@ public class LiUniResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response postTweet(@FormParam("message") String message) {
-        ResponseBuilder responseBuilder = Response.noContent();
-        responseBuilder.type(MediaType.APPLICATION_JSON);
         try {
-            TwitterTweetModel status = twitterService.postStatus(message);
-            if (status != null) {
-                responseBuilder.status(Response.Status.CREATED);
-                responseBuilder.entity(status);
-                logger.info("Successfully posted: " + status.getMessage());
-            }
-            else {
-                ErrorModel error = new ErrorModel();
-                error.setError(ErrorModel.ErrorType.BAD_TWEET);
-                responseBuilder.status(error.getErrorStatus());
-                responseBuilder.entity(error);
-                logger.warn("An error occurred. Unable to post your tweet [" + message + "]. Sorry! This may be due to the message being too long or being empty. Produced an error with a " + error.getErrorStatus() + " code.");
-            }
+            return Stream.of(twitterService.postStatus(message))
+                         .map(status -> {
+                             if (status != null) {
+                                 logger.info("Successfully posted: " + status.getMessage());
+                                 return Response.status(Response.Status.CREATED)
+                                         .entity(status)
+                                         .build();
+                             }
+                             else {
+                                 ErrorModel error = new ErrorModel();
+                                 error.setError(ErrorModel.ErrorType.BAD_TWEET);
+                                 logger.warn("An error occurred. Unable to post your tweet [" + message + "]. Sorry! This may be due to the message being too long or being empty. Produced an error with a " + error.getErrorStatus() + " code.");
+
+                                 return Stream.of(Response.noContent())
+                                              .map(responseBuilder -> {
+                                                  responseBuilder.type(MediaType.APPLICATION_JSON);
+                                                  responseBuilder.status(error.getErrorStatus());
+                                                  responseBuilder.entity(error);
+                                                  return responseBuilder;
+                                              })
+                                              .findFirst()
+                                              .get()
+                                              .build();
+                             }
+                         })
+                         .findFirst()
+                         .get();
         }
         catch (TwitterException e) {
             ErrorModel error = new ErrorModel();
             error.setError(ErrorModel.ErrorType.GENERAL);
-            responseBuilder.status(error.getErrorStatus());
-            responseBuilder.entity(error);
             logger.error("Produced an error with a " + error.getErrorStatus() + " code.", e);
+
+            return Stream.of(Response.noContent())
+                         .map(responseBuilder -> {
+                             responseBuilder.type(MediaType.APPLICATION_JSON);
+                             responseBuilder.status(error.getErrorStatus());
+                             responseBuilder.entity(error);
+                             return responseBuilder;
+                         })
+                         .findFirst()
+                         .get()
+                         .build();
         }
-        return responseBuilder.build();
     }
 
 }
