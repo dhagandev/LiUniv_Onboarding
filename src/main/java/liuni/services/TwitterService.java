@@ -79,15 +79,14 @@ public final class TwitterService {
 
     public List<TwitterTweetModel> getTimeline() throws TwitterException {
         List<TwitterTweetModel> list = new ArrayList<TwitterTweetModel>();
-        ResponseList<Status> statuses = twitter.getHomeTimeline();
-        statuses.stream().forEach(status -> list.add(getTweet(status)));
+        twitter.getHomeTimeline().stream()
+               .forEach(status -> list.add(getTweet(status)));
         return list;
     }
 
     public List<String> getFiltered(String filterKey) throws TwitterException {
         List<String> list = new ArrayList<String>();
-        ResponseList<Status> statuses = twitter.getHomeTimeline();
-        statuses.stream()
+        twitter.getHomeTimeline().stream()
                 .filter(status -> status.getText().toLowerCase().contains(filterKey.toLowerCase()))
                 .forEach(status -> list.add(status.getText()));
 

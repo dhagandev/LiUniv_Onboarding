@@ -16,12 +16,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -86,18 +87,20 @@ public class LiUniResource {
     public Response fetchTimeline() {
         try {
             return Stream.of(twitterService.getTimeline())
-                  .map(list -> Response.status(Response.Status.OK)
-                                       .entity(list)
-                                       .build())
+                  .map(list -> Response.noContent()
+                                       .type(MediaType.APPLICATION_JSON)
+                                       .status(Response.Status.OK)
+                                       .entity(list))
                   .findFirst()
-                  .get();
+                  .get()
+                  .build();
         }
-         catch (TwitterException e) {
-             ErrorModel error = new ErrorModel();
-             error.setError(ErrorModel.ErrorType.GENERAL);
-             logger.error("Produced an error with a " + error.getErrorStatus() + " code.", e);
+        catch (TwitterException e) {
+            ErrorModel error = new ErrorModel();
+            error.setError(ErrorModel.ErrorType.GENERAL);
+            logger.error("Produced an error with a " + error.getErrorStatus() + " code.", e);
 
-             return Stream.of(Response.noContent())
+            return Stream.of(Response.noContent())
                         .map(responseBuilder -> {
                             responseBuilder.type(MediaType.APPLICATION_JSON);
                             responseBuilder.status(error.getErrorStatus());
@@ -107,7 +110,7 @@ public class LiUniResource {
                         .findFirst()
                         .get()
                         .build();
-         }
+        }
     }
 
     @Path("/tweet/filter")
@@ -116,11 +119,13 @@ public class LiUniResource {
     public Response filterTweets(@QueryParam("key") String filterKey) {
         try {
             return Stream.of(twitterService.getFiltered(filterKey))
-                         .map(list -> Response.status(Response.Status.OK)
-                                              .entity(list)
-                                              .build())
+                         .map(list -> Response.noContent()
+                                              .type(MediaType.APPLICATION_JSON)
+                                              .status(Response.Status.OK)
+                                              .entity(list))
                          .findFirst()
-                         .get();
+                         .get()
+                         .build();
         }
         catch (TwitterException e) {
             ErrorModel error = new ErrorModel();
@@ -150,9 +155,15 @@ public class LiUniResource {
                          .map(status -> {
                              if (status != null) {
                                  logger.info("Successfully posted: " + status.getMessage());
-                                 return Response.status(Response.Status.CREATED)
-                                         .entity(status)
-                                         .build();
+                                 return Stream.of(Response.noContent())
+                                              .map(responseBuilder -> {
+                                                  responseBuilder.type(MediaType.APPLICATION_JSON);
+                                                  responseBuilder.status(Response.Status.CREATED);
+                                                  responseBuilder.entity(status);
+                                                  return responseBuilder;
+                                              })
+                                              .findFirst()
+                                              .get();
                              }
                              else {
                                  ErrorModel error = new ErrorModel();
@@ -167,12 +178,12 @@ public class LiUniResource {
                                                   return responseBuilder;
                                               })
                                               .findFirst()
-                                              .get()
-                                              .build();
+                                              .get();
                              }
                          })
                          .findFirst()
-                         .get();
+                         .get()
+                         .build();
         }
         catch (TwitterException e) {
             ErrorModel error = new ErrorModel();

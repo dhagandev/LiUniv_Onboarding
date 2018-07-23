@@ -69,11 +69,12 @@ public class LiUniResourceTest {
     /* Test LiUniResource .fetchTimeline() REST method */
     @Test
     public void testRestFetchTimelineEmptyTimeline() {
+        ResponseList<Status> mockedStatuses = new ResponseListImpl<>();
         List<TwitterTweetModel> tweetModelList = new ArrayList<TwitterTweetModel>();
         try {
-            TwitterService twitterService = mock(TwitterService.class);
-            when(twitterService.getTimeline()).thenReturn(tweetModelList);
-            resource.setTwitterService(twitterService);
+            twitter = mock(Twitter.class);
+            when(twitter.getHomeTimeline()).thenReturn(mockedStatuses);
+            resource.getTwitterService().setTwitter(twitter);
 
             Response resp = resource.fetchTimeline();
 
