@@ -5,7 +5,6 @@ import liuni.models.TwitterTweetModel;
 import liuni.models.UserModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -17,7 +16,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class TwitterService {

@@ -2,7 +2,6 @@ package liuni.resources;
 
 import liuni.models.ErrorModel;
 import com.codahale.metrics.annotation.Timed;
-import liuni.models.TwitterTweetModel;
 import liuni.configs.TwitterConfig;
 import liuni.services.TwitterService;
 import twitter4j.TwitterException;
@@ -20,10 +19,6 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Path("/api/1.0/twitter")
