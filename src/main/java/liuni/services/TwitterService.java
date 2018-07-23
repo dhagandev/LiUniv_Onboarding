@@ -16,6 +16,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class TwitterService {
@@ -77,18 +78,17 @@ public final class TwitterService {
 
     public List<TwitterTweetModel> getTimeline() throws TwitterException {
         List<TwitterTweetModel> list = new ArrayList<TwitterTweetModel>();
-        twitter.getHomeTimeline().stream()
-               .forEach(status -> list.add(getTweet(status)));
-        return list;
+        return twitter.getHomeTimeline().stream()
+               .map(status -> getTweet(status))
+               .collect(Collectors.toCollection(() -> list));
     }
 
     public List<String> getFiltered(String filterKey) throws TwitterException {
         List<String> list = new ArrayList<String>();
-        twitter.getHomeTimeline().stream()
+        return twitter.getHomeTimeline().stream()
                 .filter(status -> status.getText().toLowerCase().contains(filterKey.toLowerCase()))
-                .forEach(status -> list.add(status.getText()));
-
-        return list;
+                .map(status -> status.getText())
+                .collect(Collectors.toCollection(() -> list));
     }
 
     public TwitterTweetModel getTweet(Status status) {
