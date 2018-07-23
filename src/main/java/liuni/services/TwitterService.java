@@ -77,18 +77,16 @@ public final class TwitterService {
     }
 
     public List<TwitterTweetModel> getTimeline() throws TwitterException {
-        List<TwitterTweetModel> list = new ArrayList<TwitterTweetModel>();
         return twitter.getHomeTimeline().stream()
                .map(status -> getTweet(status))
-               .collect(Collectors.toCollection(() -> list));
+               .collect(Collectors.toCollection(() -> new ArrayList<TwitterTweetModel>()));
     }
 
     public List<String> getFiltered(String filterKey) throws TwitterException {
-        List<String> list = new ArrayList<String>();
         return twitter.getHomeTimeline().stream()
                 .filter(status -> status.getText().toLowerCase().contains(filterKey.toLowerCase()))
                 .map(status -> status.getText())
-                .collect(Collectors.toCollection(() -> list));
+                .collect(Collectors.toCollection(() -> new ArrayList<String>()));
     }
 
     public TwitterTweetModel getTweet(Status status) {
