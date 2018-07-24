@@ -67,11 +67,10 @@ public final class TwitterService {
     public Optional<TwitterTweetModel> postStatus(String text) throws TwitterException {
         boolean isOkToPost = textErrorCheck(text);
         if (isOkToPost) {
-            Optional<TwitterTweetModel> tweet = Optional.of(Stream.of(twitter.updateStatus(text))
+            Optional<TwitterTweetModel> tweet = Stream.of(twitter.updateStatus(text))
                                         .peek(status -> logger.info("Successfully updated status to [" + status.getText() + "]."))
                                         .map(status -> getTweet(status))
-                                        .findFirst()
-                                        .get());
+                                        .findFirst();
             return tweet;
         }
         return Optional.empty();
