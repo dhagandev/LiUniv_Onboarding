@@ -16,6 +16,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -63,30 +64,30 @@ public final class TwitterService {
         createTwitter();
     }
 
-    public TwitterTweetModel postStatus(String text) throws TwitterException {
+    public Optional<TwitterTweetModel> postStatus(String text) throws TwitterException {
         boolean isOkToPost = textErrorCheck(text);
         if (isOkToPost) {
-            TwitterTweetModel tweet = Stream.of(twitter.updateStatus(text))
+            Optional<TwitterTweetModel> tweet = Optional.of(Stream.of(twitter.updateStatus(text))
                                         .peek(status -> logger.info("Successfully updated status to [" + status.getText() + "]."))
                                         .map(status -> getTweet(status))
                                         .findFirst()
-                                        .get();
+                                        .get());
             return tweet;
         }
-        return null;
+        return Optional.empty();
     }
 
-    public List<TwitterTweetModel> getTimeline() throws TwitterException {
-        return twitter.getHomeTimeline().stream()
+    public Optional<List<TwitterTweetModel>> getTimeline() throws TwitterException {
+        return Optional.of(twitter.getHomeTimeline().stream()
                .map(status -> getTweet(status))
-               .collect(Collectors.toCollection(() -> new ArrayList<TwitterTweetModel>()));
+               .collect(Collectors.toCollection(() -> new ArrayList<TwitterTweetModel>())));
     }
 
-    public List<String> getFiltered(String filterKey) throws TwitterException {
-        return twitter.getHomeTimeline().stream()
-                .filter(status -> status.getText().toLowerCase().contains(filterKey.toLowerCase()))
-                .map(status -> status.getText())
-                .collect(Collectors.toCollection(() -> new ArrayList<String>()));
+    public Optional<List<String>> getFiltered(String filterKey) throws TwitterException {
+        return Optional.of(twitter.getHomeTimeline().stream()
+                                  .filter(status -> status.getText().toLowerCase().contains(filterKey.toLowerCase()))
+                                  .map(status -> status.getText())
+                                  .collect(Collectors.toCollection(() -> new ArrayList<String>())));
     }
 
     public TwitterTweetModel getTweet(Status status) {

@@ -85,7 +85,7 @@ public class LiUniResource {
                   .map(list -> Response.noContent()
                                        .type(MediaType.APPLICATION_JSON)
                                        .status(Response.Status.OK)
-                                       .entity(list))
+                                       .entity(list.get()))
                   .findFirst()
                   .get()
                   .build();
@@ -117,7 +117,7 @@ public class LiUniResource {
                          .map(list -> Response.noContent()
                                               .type(MediaType.APPLICATION_JSON)
                                               .status(Response.Status.OK)
-                                              .entity(list))
+                                              .entity(list.get()))
                          .findFirst()
                          .get()
                          .build();
@@ -148,13 +148,13 @@ public class LiUniResource {
         try {
             return Stream.of(twitterService.postStatus(message))
                          .map(status -> {
-                             if (status != null) {
-                                 logger.info("Successfully posted: " + status.getMessage());
+                             if (status.isPresent()) {
+                                 logger.info("Successfully posted: " + status.get().getMessage());
                                  return Stream.of(Response.noContent())
                                               .map(responseBuilder -> {
                                                   responseBuilder.type(MediaType.APPLICATION_JSON);
                                                   responseBuilder.status(Response.Status.CREATED);
-                                                  responseBuilder.entity(status);
+                                                  responseBuilder.entity(status.get());
                                                   return responseBuilder;
                                               })
                                               .findFirst()

@@ -32,6 +32,35 @@ public class TwitterServiceTest {
         twitterService.setTwitter(twitter);
     }
 
+    public TwitterTweetModel createTweetModel(Date testDate, String testMessage, URL url, String testScreenName, String testName) {
+        TwitterTweetModel tweetModel = new TwitterTweetModel();
+        tweetModel.setCreatedAt(testDate);
+        tweetModel.setMessage(testMessage);
+
+        UserModel user = new UserModel();
+        user.setProfileImageUrl(url);
+        user.setTwitterHandle(testScreenName);
+        user.setName(testName);
+
+        tweetModel.setUser(user);
+
+        return tweetModel;
+    }
+
+    public Status createMockedStatus(Date testDate, String testMessage, String urlString, String testScreenName, String testName) {
+        Status status = mock(Status.class);
+
+        User mockUser = mock(User.class);
+        when(mockUser.getName()).thenReturn(testName);
+        when(mockUser.getScreenName()).thenReturn(testScreenName);
+        when(mockUser.getProfileImageURL()).thenReturn(urlString);
+        when(status.getUser()).thenReturn(mockUser);
+        when(status.getText()).thenReturn(testMessage);
+        when(status.getCreatedAt()).thenReturn(testDate);
+
+        return status;
+    }
+
     @Test
     public void testGetUserBadURL() {
         String testName = "Model Name";
@@ -86,35 +115,6 @@ public class TwitterServiceTest {
         assertEquals(expected, tweetModel);
     }
 
-    public TwitterTweetModel createTweetModel(Date testDate, String testMessage, URL url, String testScreenName, String testName) {
-        TwitterTweetModel tweetModel = new TwitterTweetModel();
-        tweetModel.setCreatedAt(testDate);
-        tweetModel.setMessage(testMessage);
-
-        UserModel user = new UserModel();
-        user.setProfileImageUrl(url);
-        user.setTwitterHandle(testScreenName);
-        user.setName(testName);
-
-        tweetModel.setUser(user);
-
-        return tweetModel;
-    }
-
-    public Status createMockedStatus(Date testDate, String testMessage, String urlString, String testScreenName, String testName) {
-        Status status = mock(Status.class);
-
-        User mockUser = mock(User.class);
-        when(mockUser.getName()).thenReturn(testName);
-        when(mockUser.getScreenName()).thenReturn(testScreenName);
-        when(mockUser.getProfileImageURL()).thenReturn(urlString);
-        when(status.getUser()).thenReturn(mockUser);
-        when(status.getText()).thenReturn(testMessage);
-        when(status.getCreatedAt()).thenReturn(testDate);
-
-        return status;
-    }
-
     @Test
     public void testConvertTwitterResultsToTwitterTweetModelList() {
         String testName = "Model Name";
@@ -136,7 +136,7 @@ public class TwitterServiceTest {
             responseList.add(status2);
             when(twitter.getHomeTimeline()).thenReturn(responseList);
 
-            List<TwitterTweetModel> result = twitterService.getTimeline();
+            List<TwitterTweetModel> result = twitterService.getTimeline().get();
             assertTrue(expected.size() > 0);
             for (int i = 0; i < expected.size(); i++) {
                 assertEquals(expected.get(i).getCreatedAt(), result.get(i).getCreatedAt());
