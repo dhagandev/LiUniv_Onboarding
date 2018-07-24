@@ -5,7 +5,6 @@ import liuni.models.TwitterTweetModel;
 import liuni.models.UserModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -17,6 +16,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class TwitterService {
     public final static int TWITTER_CHAR_MAX = 280;
@@ -65,22 +66,27 @@ public final class TwitterService {
     public TwitterTweetModel postStatus(String text) throws TwitterException {
         boolean isOkToPost = textErrorCheck(text);
         if (isOkToPost) {
-            Status status = twitter.updateStatus(text);
-            logger.info("Successfully updated status to [" + status.getText() + "].");
-            TwitterTweetModel tweet = getTweet(status);
+            TwitterTweetModel tweet = Stream.of(twitter.updateStatus(text))
+                                        .peek(status -> logger.info("Successfully updated status to [" + status.getText() + "]."))
+                                        .map(status -> getTweet(status))
+                                        .findFirst()
+                                        .get();
             return tweet;
         }
         return null;
     }
 
     public List<TwitterTweetModel> getTimeline() throws TwitterException {
-        List<TwitterTweetModel> list = new ArrayList<TwitterTweetModel>();
-        ResponseList<Status> statuses = twitter.getHomeTimeline();
-        for (Status status : statuses) {
-            TwitterTweetModel tweet = getTweet(status);
-            list.add(tweet);
-        }
-        return list;
+        return twitter.getHomeTimeline().stream()
+               .map(status -> getTweet(status))
+               .collect(Collectors.toCollection(() -> new ArrayList<TwitterTweetModel>()));
+    }
+
+    public List<String> getFiltered(String filterKey) throws TwitterException {
+        return twitter.getHomeTimeline().stream()
+                .filter(status -> status.getText().toLowerCase().contains(filterKey.toLowerCase()))
+                .map(status -> status.getText())
+                .collect(Collectors.toCollection(() -> new ArrayList<String>()));
     }
 
     public TwitterTweetModel getTweet(Status status) {

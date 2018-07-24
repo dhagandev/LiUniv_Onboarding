@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -68,11 +69,12 @@ public class LiUniResourceTest {
     /* Test LiUniResource .fetchTimeline() REST method */
     @Test
     public void testRestFetchTimelineEmptyTimeline() {
+        ResponseList<Status> mockedStatuses = new ResponseListImpl<>();
         List<TwitterTweetModel> tweetModelList = new ArrayList<TwitterTweetModel>();
         try {
-            TwitterService twitterService = mock(TwitterService.class);
-            when(twitterService.getTimeline()).thenReturn(tweetModelList);
-            resource.setTwitterService(twitterService);
+            twitter = mock(Twitter.class);
+            when(twitter.getHomeTimeline()).thenReturn(mockedStatuses);
+            resource.getTwitterService().setTwitter(twitter);
 
             Response resp = resource.fetchTimeline();
 
@@ -122,6 +124,103 @@ public class LiUniResourceTest {
             when(twitter.getHomeTimeline()).thenThrow(new TwitterException("This is an exception test."));
 
             Response resp = resource.fetchTimeline();
+
+            ErrorModel resultError = (ErrorModel) resp.getEntity();
+
+            assertEquals(errorModel, resultError);
+        }
+        catch (Exception e) {
+            Assert.fail("This exception is not expected.");
+        }
+    }
+
+    /* Test LiUniResource .filterTweets() REST method */
+    @Test
+    public void testRestFilterTweetsEmptyResult() {
+        List<TwitterTweetModel> tweetModelList = new ArrayList<TwitterTweetModel>();
+        TwitterTweetModel tweetModelMocked1 = mock(TwitterTweetModel.class);
+        when(tweetModelMocked1.getMessage()).thenReturn("old");
+
+        tweetModelList.add(tweetModelMocked1);
+
+        List<String> expected = new ArrayList<String>();
+        try {
+            TwitterService twitterService = mock(TwitterService.class);
+            when(twitterService.getTimeline()).thenReturn(tweetModelList);
+            resource.setTwitterService(twitterService);
+
+            Response resp = resource.filterTweets("New");
+
+            List<String> result = (List<String>) resp.getEntity();
+
+            assertEquals(Response.Status.OK.getStatusCode(), resp.getStatus());
+            assertEquals(expected, result);
+        }
+        catch (Exception e) {
+            Assert.fail("This exception is not expected.");
+        }
+    }
+
+    @Test
+    public void testRestFilterTweetsNotEmptyResult() {
+        Date date = mock(Date.class);
+        User user = mock(User.class);
+        when(user.getName()).thenReturn("name");
+        when(user.getScreenName()).thenReturn("screenName");
+        when(user.getProfileImageURL()).thenReturn("");
+
+        ResponseList<Status> responseList = new ResponseListImpl<Status>();
+        Status status0 = mock(Status.class);
+        when(status0.getText()).thenReturn("Newt");
+        when(status0.getCreatedAt()).thenReturn(date);
+        when(status0.getUser()).thenReturn(user);
+
+        Status status1 = mock(Status.class);
+        when(status1.getText()).thenReturn("old");
+        when(status1.getCreatedAt()).thenReturn(date);
+        when(status1.getUser()).thenReturn(user);
+
+        Status status2 = mock(Status.class);
+        when(status2.getText()).thenReturn("This is a new thing.");
+        when(status2.getCreatedAt()).thenReturn(date);
+        when(status2.getUser()).thenReturn(user);
+
+        responseList.add(status0);
+        responseList.add(status1);
+        responseList.add(status2);
+
+        List<String> expected = new ArrayList<String>();
+        expected.add("Newt");
+        expected.add("This is a new thing.");
+        try {
+            twitter = mock(Twitter.class);
+            when(twitter.getHomeTimeline()).thenReturn(responseList);
+            TwitterService twitterService = TwitterService.getInstance();
+            twitterService.setTwitter(twitter);
+            resource.setTwitterService(twitterService);
+
+            Response resp = resource.filterTweets("New");
+
+            List<String> result = (List<String>) resp.getEntity();
+
+            assertEquals(Response.Status.OK.getStatusCode(), resp.getStatus());
+            assertEquals(expected, result);
+        }
+        catch (Exception e) {
+            Assert.fail("This exception is not expected.");
+        }
+    }
+
+    @Test
+    public void testRestFilterTweetsTimelineException() {
+        List<TwitterTweetModel> tweetModelList = new ArrayList<TwitterTweetModel>();
+        tweetModelList.add(mock(TwitterTweetModel.class));
+        ErrorModel errorModel = new ErrorModel();
+        errorModel.setError(ErrorModel.ErrorType.GENERAL);
+        try {
+            when(twitter.getHomeTimeline()).thenThrow(new TwitterException("This is an exception test."));
+
+            Response resp = resource.filterTweets("Thing");
 
             ErrorModel resultError = (ErrorModel) resp.getEntity();
 

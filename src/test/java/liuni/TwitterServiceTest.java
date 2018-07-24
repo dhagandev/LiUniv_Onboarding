@@ -86,7 +86,7 @@ public class TwitterServiceTest {
         assertEquals(expected, tweetModel);
     }
 
-    private TwitterTweetModel createTweetModel(Date testDate, String testMessage, URL url, String testScreenName, String testName) {
+    public TwitterTweetModel createTweetModel(Date testDate, String testMessage, URL url, String testScreenName, String testName) {
         TwitterTweetModel tweetModel = new TwitterTweetModel();
         tweetModel.setCreatedAt(testDate);
         tweetModel.setMessage(testMessage);
@@ -101,7 +101,7 @@ public class TwitterServiceTest {
         return tweetModel;
     }
 
-    private Status createMockedStatus(Date testDate, String testMessage, String urlString, String testScreenName, String testName) {
+    public Status createMockedStatus(Date testDate, String testMessage, String urlString, String testScreenName, String testName) {
         Status status = mock(Status.class);
 
         User mockUser = mock(User.class);
