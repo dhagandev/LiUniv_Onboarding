@@ -28,7 +28,7 @@ public final class TwitterService {
     private TwitterAccountConfig twitterAccountConfig;
     private Twitter twitter;
 
-    private TwitterService() {
+    public TwitterService() {
         twitterAccountConfig = null;
         twitter = null;
     }
@@ -49,10 +49,6 @@ public final class TwitterService {
         cb.setOAuthAccessTokenSecret(twitterAccountConfig.getAccessSecret());
         TwitterFactory twitterFactory = new TwitterFactory(cb.build());
         twitter = twitterFactory.getInstance();
-    }
-
-    public TwitterAccountConfig getConfig() {
-        return twitterAccountConfig;
     }
 
     public void setTwitter(Twitter twitter) {

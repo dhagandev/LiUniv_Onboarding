@@ -29,17 +29,16 @@ public class LiUniResource {
 
     public LiUniResource(TwitterConfig config) {
         this.config = config;
-        twitterService = TwitterService.getInstance();
 
         boolean configNotNull = this.config != null;
         if (configNotNull) {
-            this.defaultAccountIndex = config.getDefaultAccountIndex();
-            int size = this.config.getTwitterAccounts().size();
+            defaultAccountIndex = config.getDefaultAccountIndex();
+            int size = config.getTwitterAccounts().size();
             boolean configListNotEmpty = size > 0;
             boolean indexInBounds = defaultAccountIndex >= 0 && defaultAccountIndex < size;
             if (configListNotEmpty && indexInBounds) {
+                twitterService = TwitterService.getInstance();
                 twitterService.setTwitterAccountConfig(this.config.getTwitterAccounts().get(defaultAccountIndex));
-                twitterService.createTwitter();
             }
         }
     }
@@ -56,6 +55,10 @@ public class LiUniResource {
         return twitterService;
     }
 
+    public void setTwitterService(TwitterService service) {
+        this.twitterService = service;
+    }
+
     public void setConfigIndex(int index) {
         int size = this.config.getTwitterAccounts().size();
         boolean indexInBounds = index >= 0 && index < size;
@@ -67,10 +70,6 @@ public class LiUniResource {
 
     public int getDefaultAccountIndex() {
         return defaultAccountIndex;
-    }
-
-    public void setTwitterService(TwitterService service) {
-        twitterService = service;
     }
 
     @Path("/timeline")

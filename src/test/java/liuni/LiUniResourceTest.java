@@ -26,92 +26,44 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class LiUniResourceTest {
-    @Mock private Twitter twitter;
-    @Mock private Status status;
-
+    private TwitterService mockedService;
+    private TwitterConfig mockedConfig;
     private LiUniResource resource;
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        mockedService = mock(TwitterService.class);
+        mockedConfig = mock(TwitterConfig.class);
+        when(mockedConfig.getDefaultAccountIndex()).thenReturn(0);
+        when(mockedConfig.getTwitterAccounts()).thenReturn(new ArrayList<TwitterAccountConfig>());
 
-        TwitterConfig twitterConfig = mock(TwitterConfig.class);
-        List<TwitterAccountConfig> list = new ArrayList<TwitterAccountConfig>();
-        TwitterAccountConfig twitterAccountConfig1 = mock(TwitterAccountConfig.class);
-        TwitterAccountConfig twitterAccountConfig2 = mock(TwitterAccountConfig.class);
-        when(twitterAccountConfig1.getConsumerKey()).thenReturn("TestKey1");
-        when(twitterAccountConfig2.getConsumerKey()).thenReturn("TestKey2");
-        list.add(twitterAccountConfig1);
-        list.add(twitterAccountConfig2);
-        when(twitterConfig.getTwitterAccounts()).thenReturn(list);
-        twitter = mock(Twitter.class);
-
-        resource = new LiUniResource(twitterConfig);
-        resource.getTwitterService().setTwitter(twitter);
+        resource = new LiUniResource(mockedConfig);
+        resource.setTwitterService(mockedService);
     }
 
-    @After
-    public void tearDown() {
-        reset(twitter);
-        reset(status);
-    }
-
-    public Status createMockedStatus(Date testDate, String testMessage, String urlString, String testScreenName, String testName) {
-        Status status = mock(Status.class);
-
-        User mockUser = mock(User.class);
-        when(mockUser.getName()).thenReturn(testName);
-        when(mockUser.getScreenName()).thenReturn(testScreenName);
-        when(mockUser.getProfileImageURL()).thenReturn(urlString);
-        when(status.getUser()).thenReturn(mockUser);
-        when(status.getText()).thenReturn(testMessage);
-        when(status.getCreatedAt()).thenReturn(testDate);
-
-        return status;
-    }
-
-    public TwitterTweetModel createTweetModel(Date testDate, String testMessage, URL url, String testScreenName, String testName) {
-        TwitterTweetModel tweetModel = new TwitterTweetModel();
-        tweetModel.setCreatedAt(testDate);
-        tweetModel.setMessage(testMessage);
-
-        UserModel user = new UserModel();
-        user.setProfileImageUrl(url);
-        user.setTwitterHandle(testScreenName);
-        user.setName(testName);
-
-        tweetModel.setUser(user);
-
-        return tweetModel;
-    }
-
-    /* Test LiUniResource .fetchTimeline() REST method */
     @Test
     public void testRestFetchTimelineEmptyTimeline() {
-        List<TwitterTweetModel> tweetModelList = new ArrayList<TwitterTweetModel>();
-        ResponseList<Status> mockedStatuses = new ResponseListImpl<Status>();
         try {
-            twitter = mock(Twitter.class);
-            when(twitter.getHomeTimeline()).thenReturn(mockedStatuses);
-            resource.getTwitterService().setTwitter(twitter);
-
+            List<TwitterTweetModel> expected = new ArrayList<TwitterTweetModel>();
+            when(mockedService.getTimeline()).thenReturn(Optional.of(expected));
             Response resp = resource.fetchTimeline();
-
             List<TwitterTweetModel> result = (List<TwitterTweetModel>) resp.getEntity();
-
             assertEquals(Response.Status.OK.getStatusCode(), resp.getStatus());
-            assertEquals(tweetModelList, result);
+            assertEquals(expected, result);
         }
         catch (Exception e) {
             Assert.fail("This exception is not expected.");
@@ -120,36 +72,25 @@ public class LiUniResourceTest {
 
     @Test
     public void testRestFetchTimelineUpdateTimeline() {
-        ResponseList<Status> mockedStatuses = new ResponseListImpl<>();
-        List<TwitterTweetModel> tweetModelList = new ArrayList<TwitterTweetModel>();
         try {
-            twitter = mock(Twitter.class);
-            when(twitter.getHomeTimeline()).thenReturn(mockedStatuses);
-            resource.getTwitterService().setTwitter(twitter);
+            List<TwitterTweetModel> expected = new ArrayList<TwitterTweetModel>();
+            when(mockedService.getTimeline()).thenReturn(Optional.of(expected));
 
             Response resp = resource.fetchTimeline();
-
             List<TwitterTweetModel> result = (List<TwitterTweetModel>) resp.getEntity();
 
-            assertEquals(resp.getStatus(), Response.Status.OK.getStatusCode());
-            assertEquals(tweetModelList, result);
+            assertEquals(Response.Status.OK.getStatusCode(), resp.getStatus());
+            assertEquals(expected, result);
 
+            TwitterTweetModel tweetModel = mock(TwitterTweetModel.class);
+            expected.add(tweetModel);
+            when(mockedService.getTimeline()).thenReturn(Optional.of(expected));
 
-            String testName = "Model Name";
-            String testScreenName = "Model Screen Name";
-            String urlString = "";
-            URL testProfileUrl = null;
-            String testTweetMessage = "Model Message";
-            Date testDate = new Date(2323223232L);
-
-            mockedStatuses.add(createMockedStatus(testDate, testTweetMessage, urlString, testScreenName, testName));
-            tweetModelList.add(createTweetModel(testDate, testTweetMessage, testProfileUrl, testScreenName, testName));
             resp = resource.fetchTimeline();
-
             result = (List<TwitterTweetModel>) resp.getEntity();
 
             assertEquals(Response.Status.OK.getStatusCode(), resp.getStatus());
-            assertEquals(tweetModelList, result);
+            assertEquals(expected, result);
         }
         catch (Exception e) {
             Assert.fail("This exception is not expected.");
@@ -158,44 +99,29 @@ public class LiUniResourceTest {
 
     @Test
     public void testRestFetchTimelineTimelineException() {
-        List<TwitterTweetModel> tweetModelList = new ArrayList<TwitterTweetModel>();
-        tweetModelList.add(mock(TwitterTweetModel.class));
-        ErrorModel errorModel = new ErrorModel();
-        errorModel.setError(ErrorModel.ErrorType.GENERAL);
         try {
-            when(twitter.getHomeTimeline()).thenThrow(new TwitterException("This is an exception test."));
+            ErrorModel expected = new ErrorModel();
+            expected.setError(ErrorModel.ErrorType.GENERAL);
+            when(mockedService.getTimeline()).thenThrow(new TwitterException("This is an exception test."));
 
             Response resp = resource.fetchTimeline();
+            ErrorModel result = (ErrorModel) resp.getEntity();
 
-            ErrorModel resultError = (ErrorModel) resp.getEntity();
-
-            assertEquals(errorModel, resultError);
+            assertEquals(expected, result);
         }
         catch (Exception e) {
             Assert.fail("This exception is not expected.");
         }
     }
 
-    /* Test LiUniResource .filterTweets() REST method */
     @Test
     public void testRestFilterTweetsEmptyResult() {
-        ResponseList<Status> mockedStatuses = new ResponseListImpl<>();
-        String testName = "Model Name";
-        String testScreenName = "Model Screen Name";
-        String urlString = "";
-        String testTweetMessage = "Old";
-        Date testDate = new Date(2323223232L);
-
-        mockedStatuses.add(createMockedStatus(testDate, testTweetMessage, urlString, testScreenName, testName));
-
-        List<String> expected = new ArrayList<String>();
         try {
-            twitter = mock(Twitter.class);
-            when(twitter.getHomeTimeline()).thenReturn(mockedStatuses);
-            resource.getTwitterService().setTwitter(twitter);
+            String filterKey = "New";
+            List<String> expected = new ArrayList<String>();
+            when(mockedService.getFiltered(filterKey)).thenReturn(Optional.of(expected));
 
-            Response resp = resource.filterTweets("New");
-
+            Response resp = resource.filterTweets(filterKey);
             List<String> result = (List<String>) resp.getEntity();
 
             assertEquals(Response.Status.OK.getStatusCode(), resp.getStatus());
@@ -208,27 +134,14 @@ public class LiUniResourceTest {
 
     @Test
     public void testRestFilterTweetsNotEmptyResult() {
-        ResponseList<Status> mockedStatuses = new ResponseListImpl<>();
-        String testName = "Model Name";
-        String testScreenName = "Model Screen Name";
-        String urlString = "";
-        String testTweetMessage = "Test Tweet";
-        Date testDate = new Date(2323223232L);
-
-        mockedStatuses.add(createMockedStatus(testDate, testTweetMessage + " new", urlString, testScreenName, testName));
-        mockedStatuses.add(createMockedStatus(testDate, testTweetMessage + " old", urlString, testScreenName, testName));
-        mockedStatuses.add(createMockedStatus(testDate, testTweetMessage + " Newt", urlString, testScreenName, testName));
-
-        List<String> expected = new ArrayList<String>();
-        expected.add("Test Tweet new");
-        expected.add("Test Tweet Newt");
         try {
-            twitter = mock(Twitter.class);
-            when(twitter.getHomeTimeline()).thenReturn(mockedStatuses);
-            resource.getTwitterService().setTwitter(twitter);
+            String filterKey = "New";
+            List<String> expected = new ArrayList<String>();
+            expected.add("Test Tweet new");
+            expected.add("Test Tweet Newt");
+            when(mockedService.getFiltered(filterKey)).thenReturn(Optional.of(expected));
 
-            Response resp = resource.filterTweets("New");
-
+            Response resp = resource.filterTweets(filterKey);
             List<String> result = (List<String>) resp.getEntity();
 
             assertEquals(Response.Status.OK.getStatusCode(), resp.getStatus());
@@ -240,132 +153,14 @@ public class LiUniResourceTest {
     }
 
     @Test
-    public void testRestFilterTweetsTimelineException() {
-        List<TwitterTweetModel> tweetModelList = new ArrayList<TwitterTweetModel>();
-        tweetModelList.add(mock(TwitterTweetModel.class));
-        ErrorModel errorModel = new ErrorModel();
-        errorModel.setError(ErrorModel.ErrorType.GENERAL);
+    public void testRestFilterTweetsException() {
         try {
-            when(twitter.getHomeTimeline()).thenThrow(new TwitterException("This is an exception test."));
-
-            Response resp = resource.filterTweets("Thing");
-
-            ErrorModel resultError = (ErrorModel) resp.getEntity();
-
-            assertEquals(errorModel, resultError);
-        }
-        catch (Exception e) {
-            Assert.fail("This exception is not expected.");
-        }
-    }
-
-    /* Test LiUniResource .postTweet() REST method */
-    @Test
-    public void testRestPostTweetSuccessfulPostGoodURL() {
-        String testName = "Model Name";
-        String testScreenName = "Model Screen Name";
-        String urlString = "http://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png";
-        String testTweetMessage = "test message";
-        Date testDate = new Date(2323223232L);
-        try {
-            URL testAsURL = new URL(urlString);
-            Status mockedStatus = createMockedStatus(testDate,testTweetMessage,urlString,testScreenName,testName);
-            TwitterTweetModel expected = createTweetModel(testDate,testTweetMessage,testAsURL,testScreenName,testName);
-
-            twitter = mock(Twitter.class);
-            when(twitter.updateStatus(testTweetMessage)).thenReturn(mockedStatus);
-            resource.getTwitterService().setTwitter(twitter);
-
-            Response resp = resource.postTweet(testTweetMessage);
-
-            TwitterTweetModel result = (TwitterTweetModel) resp.getEntity();
-
-            assertEquals(Response.Status.CREATED.getStatusCode(), resp.getStatus());
-            assertEquals(expected, result);
-        }
-        catch (Exception e) {
-            Assert.fail("This exception is not expected.");
-        }
-    }
-
-    @Test
-    public void testRestPostTweetSuccessfulPostBadURL() {
-        String testName = "Model Name";
-        String testScreenName = "Model Screen Name";
-        String urlString = "";
-        String testTweetMessage = "test message";
-        Date testDate = new Date(2323223232L);
-        try {
-            URL testAsURL = null;
-            Status mockedStatus = createMockedStatus(testDate,testTweetMessage,urlString,testScreenName,testName);
-            TwitterTweetModel expected = createTweetModel(testDate,testTweetMessage,testAsURL,testScreenName,testName);
-
-            twitter = mock(Twitter.class);
-            when(twitter.updateStatus(testTweetMessage)).thenReturn(mockedStatus);
-            resource.getTwitterService().setTwitter(twitter);
-
-            Response resp = resource.postTweet(testTweetMessage);
-
-            TwitterTweetModel result = (TwitterTweetModel) resp.getEntity();
-
-            assertEquals(Response.Status.CREATED.getStatusCode(), resp.getStatus());
-            assertEquals(expected, result);
-        }
-        catch (Exception e) {
-            Assert.fail("This exception is not expected.");
-        }
-    }
-
-    @Test
-    public void testRestPostTweetBadPostBadTweet() {
-        String testString = StringUtils.repeat("*", TwitterService.TWITTER_CHAR_MAX + 1);
-        try {
-            when(twitter.updateStatus(testString)).thenReturn(status);
-            when(status.getText()).thenReturn(testString);
-            ErrorModel expected = new ErrorModel();
-            expected.setError(ErrorModel.ErrorType.BAD_TWEET);
-
-            Response resp = resource.postTweet(testString);
-
-            ErrorModel result = (ErrorModel) resp.getEntity();
-
-            assertEquals(expected, result);
-        }
-        catch (Exception e) {
-            Assert.fail("This exception is not expected.");
-        }
-    }
-
-    @Test
-    public void testRestPostTweetBadPostEmptyTweet() {
-        String testString = "";
-        try {
-            when(twitter.updateStatus(testString)).thenReturn(status);
-            when(status.getText()).thenReturn(testString);
-            ErrorModel expected = new ErrorModel();
-            expected.setError(ErrorModel.ErrorType.BAD_TWEET);
-
-            Response resp = resource.postTweet(testString);
-
-            ErrorModel result = (ErrorModel) resp.getEntity();
-
-            assertEquals(expected, result);
-        }
-        catch (Exception e) {
-            Assert.fail("This exception is not expected.");
-        }
-    }
-
-    @Test
-    public void testRestPostTweetBadPostGeneralError() {
-        String testString = "Bad Message; Exception testing.";
-        try {
-            when(twitter.updateStatus(testString)).thenThrow(new TwitterException("This is an exception test."));
+            String filterKey = "New";
             ErrorModel expected = new ErrorModel();
             expected.setError(ErrorModel.ErrorType.GENERAL);
+            when(mockedService.getFiltered(filterKey)).thenThrow(new TwitterException("This is an exception test."));
 
-            Response resp = resource.postTweet(testString);
-
+            Response resp = resource.filterTweets(filterKey);
             ErrorModel result = (ErrorModel) resp.getEntity();
 
             assertEquals(expected, result);
@@ -376,90 +171,164 @@ public class LiUniResourceTest {
     }
 
     @Test
-    public void testRestPostTweetPostDifferentUsers() {
-        TwitterConfig twitterConfig = resource.getConfig();
-        assertTrue(twitterConfig.getTwitterAccounts().size() > 1);
+    public void testRestPostTweetSuccessfulPost() {
+        try {
+            String message = "Test tweet";
+            TwitterTweetModel expected = mock(TwitterTweetModel.class);
+            when(mockedService.postStatus(message)).thenReturn(Optional.of(expected));
 
-        String conKey1 = resource.getTwitterService().getConfig().getConsumerKey();
+            Response resp = resource.postTweet(message);
+            TwitterTweetModel result = (TwitterTweetModel) resp.getEntity();
 
-        resource.setConfigIndex(1);
-        String conKey2 = resource.getTwitterService().getConfig().getConsumerKey();
-        assertNotEquals(conKey1, conKey2);
+            assertEquals(Response.Status.CREATED.getStatusCode(), resp.getStatus());
+            assertEquals(expected, result);
+        }
+        catch (Exception e) {
+            Assert.fail("This exception is not expected.");
+        }
     }
 
     @Test
-    public void testRestTwitterValConfigSize() {
-        TwitterConfig config = mock(TwitterConfig.class);
-        List<TwitterAccountConfig> twitterConfigList = new ArrayList<TwitterAccountConfig>();
-        when(config.getTwitterAccounts()).thenReturn(twitterConfigList);
-        assertEquals(0, twitterConfigList.size());
+    public void testRestPostTweetException() {
+        try {
+            String message = StringUtils.repeat("*", TwitterService.TWITTER_CHAR_MAX + 1);
+            ErrorModel expected = new ErrorModel();
+            expected.setError(ErrorModel.ErrorType.GENERAL);
+            when(mockedService.postStatus(message)).thenThrow(new TwitterException("This is an exception test."));
 
-        resource = new LiUniResource(config);
-        TwitterService service = mock(TwitterService.class);
-        resource.setTwitterService(service);
-        TwitterService res = resource.getTwitterService();
-        verify(res, never()).createTwitter();
-        assertNotEquals(null, resource.getConfig());
+            Response resp = resource.postTweet(message);
+            ErrorModel result = (ErrorModel) resp.getEntity();
+
+            assertEquals(expected, result);
+        }
+        catch (Exception e) {
+            Assert.fail("This exception is not expected.");
+        }
     }
 
     @Test
-    public void testRestTwitterValIndexOutOfBounds() {
-        TwitterConfig config = mock(TwitterConfig.class);
-        TwitterAccountConfig twitterConfig = mock(TwitterAccountConfig.class);
-        List<TwitterAccountConfig> twitterConfigList = new ArrayList<TwitterAccountConfig>();
-        twitterConfigList.add(twitterConfig);
-        when(config.getTwitterAccounts()).thenReturn(twitterConfigList);
-        when(config.getDefaultAccountIndex()).thenReturn(-1);
+    public void testRestPostTweetBadTweet() {
+        try {
+            String message = StringUtils.repeat("*", TwitterService.TWITTER_CHAR_MAX + 1);
+            ErrorModel expected = new ErrorModel();
+            expected.setError(ErrorModel.ErrorType.BAD_TWEET);
+            when(mockedService.postStatus(message)).thenReturn(Optional.empty());
 
-        resource = new LiUniResource(config);
-        TwitterService service = mock(TwitterService.class);
-        resource.setTwitterService(service);
-        TwitterService res = resource.getTwitterService();
-        verify(res, never()).createTwitter();
-        assertNotEquals(null, resource.getConfig());
+            Response resp = resource.postTweet(message);
+            ErrorModel result = (ErrorModel) resp.getEntity();
 
-        when(config.getDefaultAccountIndex()).thenReturn(twitterConfigList.size()+1);
-        resource = new LiUniResource(config);
-        resource.setTwitterService(service);
-        res = resource.getTwitterService();
-        verify(res, never()).createTwitter();
-        assertNotEquals(null, resource.getConfig());
+            assertEquals(expected, result);
+        }
+        catch (Exception e) {
+            Assert.fail("This exception is not expected.");
+        }
     }
 
     @Test
-    public void testRestTwitterValConfigNull() {
+    public void testGetSetConfig() {
+        TwitterConfig retrievedConfig = resource.getConfig();
+        TwitterConfig mockedTwitterConfig = mock(TwitterConfig.class);
+        resource.setConfig(mockedTwitterConfig);
+        assertNotEquals(retrievedConfig, mockedTwitterConfig);
+    }
+
+    @Test
+    public void testSetConfigIndex() {
+        int newIndex = 1;
+
+        assertNotEquals(newIndex, resource.getDefaultAccountIndex());
+
+        List<TwitterAccountConfig> accConfigList = new ArrayList<TwitterAccountConfig>();
+        accConfigList.add(mock(TwitterAccountConfig.class));
+        accConfigList.add(mock(TwitterAccountConfig.class));
+        when(mockedConfig.getTwitterAccounts()).thenReturn(accConfigList);
+
+        resource.setConfig(mockedConfig);
+        resource.setConfigIndex(newIndex);
+
+        assertEquals(newIndex, resource.getDefaultAccountIndex());
+    }
+
+    @Test
+    public void testSetConfigIndexOutofBoundsHigh() {
+        int newIndex = 1;
+
+        assertNotEquals(newIndex, resource.getDefaultAccountIndex());
+
+        List<TwitterAccountConfig> accConfigList = new ArrayList<TwitterAccountConfig>();
+        accConfigList.add(mock(TwitterAccountConfig.class));
+        when(mockedConfig.getTwitterAccounts()).thenReturn(accConfigList);
+
+        resource.setConfig(mockedConfig);
+        resource.setConfigIndex(newIndex);
+
+        assertNotEquals(newIndex, resource.getDefaultAccountIndex());
+    }
+
+    @Test
+    public void testSetConfigIndexOutofBoundLow() {
+        int newIndex = -1;
+
+        assertNotEquals(newIndex, resource.getDefaultAccountIndex());
+
+        List<TwitterAccountConfig> accConfigList = new ArrayList<TwitterAccountConfig>();
+        accConfigList.add(mock(TwitterAccountConfig.class));
+        when(mockedConfig.getTwitterAccounts()).thenReturn(accConfigList);
+
+        resource.setConfig(mockedConfig);
+        resource.setConfigIndex(newIndex);
+
+        assertNotEquals(newIndex, resource.getDefaultAccountIndex());
+    }
+
+    @Test
+    public void testConfigNull() {
         resource = new LiUniResource(null);
-        TwitterService service = mock(TwitterService.class);
-        resource.setTwitterService(service);
-        TwitterService res = resource.getTwitterService();
-        verify(res, never()).createTwitter();
         assertEquals(null, resource.getConfig());
+        assertEquals(null, resource.getTwitterService());
     }
 
     @Test
-    public void testSetConfigSuccess() {
-        TwitterConfig mock = resource.getConfig();
-        resource.setConfig(mock);
-        assertEquals(mock, resource.getConfig());
+    public void testConfigListNotEmptyIndexHigh() {
+        List<TwitterAccountConfig> mockedAccConfigs = new ArrayList<TwitterAccountConfig>();
+        mockedAccConfigs.add(mock(TwitterAccountConfig.class));
+        mockedAccConfigs.add(mock(TwitterAccountConfig.class));
+        when(mockedConfig.getTwitterAccounts()).thenReturn(mockedAccConfigs);
+        when(mockedConfig.getDefaultAccountIndex()).thenReturn(mockedAccConfigs.size()+1);
+
+        resource = new LiUniResource(mockedConfig);
+
+        assert(resource.getDefaultAccountIndex() >= mockedAccConfigs.size());
+        assertEquals(null, resource.getTwitterService());
     }
 
     @Test
-    public void testSetConfigIndexFailIndexLow() {
-        TwitterConfig twitterService = resource.getConfig();
-        List<TwitterAccountConfig> list = new ArrayList<TwitterAccountConfig>();
-        when(twitterService.getTwitterAccounts()).thenReturn(list);
-        resource.setConfigIndex(-1);
+    public void testConfigListNotEmptyIndexLow() {
+        List<TwitterAccountConfig> mockedAccConfigs = new ArrayList<TwitterAccountConfig>();
+        mockedAccConfigs.add(mock(TwitterAccountConfig.class));
+        mockedAccConfigs.add(mock(TwitterAccountConfig.class));
+        when(mockedConfig.getTwitterAccounts()).thenReturn(mockedAccConfigs);
+        when(mockedConfig.getDefaultAccountIndex()).thenReturn(-1);
 
-        assertNotEquals(-1, resource.getDefaultAccountIndex());
+        resource = new LiUniResource(mockedConfig);
+
+        assert(resource.getDefaultAccountIndex() < 0);
+        assertEquals(null, resource.getTwitterService());
     }
 
     @Test
-    public void testSetConfigIndexFailIndexHigh() {
-        TwitterConfig twitterService = resource.getConfig();
-        List<TwitterAccountConfig> list = new ArrayList<TwitterAccountConfig>();
-        when(twitterService.getTwitterAccounts()).thenReturn(list);
-        resource.setConfigIndex(list.size()+1);
+    public void testConfigListNotEmptyIndexAppropriate() {
+        List<TwitterAccountConfig> mockedAccConfigs = new ArrayList<TwitterAccountConfig>();
+        mockedAccConfigs.add(mock(TwitterAccountConfig.class));
+        mockedAccConfigs.add(mock(TwitterAccountConfig.class));
+        when(mockedConfig.getTwitterAccounts()).thenReturn(mockedAccConfigs);
+        when(mockedConfig.getDefaultAccountIndex()).thenReturn(0);
 
-        assertNotEquals(list.size()+1, resource.getDefaultAccountIndex());
+        resource = new LiUniResource(mockedConfig);
+
+        assert(resource.getDefaultAccountIndex() >= 0);
+        assert(resource.getDefaultAccountIndex() < mockedAccConfigs.size());
+        assertNotEquals(null, resource.getTwitterService());
     }
+
 }
