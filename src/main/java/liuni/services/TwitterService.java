@@ -75,7 +75,7 @@ public final class TwitterService {
     public Optional<List<TwitterTweetModel>> getTimeline() throws TwitterException {
         return Optional.of(twitter.getHomeTimeline().stream()
                .map(status -> getTweet(status))
-               .collect(Collectors.toList()));C
+               .collect(Collectors.toList()));
     }
 
     public Optional<List<String>> getFiltered(String filterKey) throws TwitterException {
