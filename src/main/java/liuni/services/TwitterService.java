@@ -75,14 +75,14 @@ public final class TwitterService {
     public Optional<List<TwitterTweetModel>> getTimeline() throws TwitterException {
         return Optional.of(twitter.getHomeTimeline().stream()
                .map(status -> getTweet(status))
-               .collect(Collectors.toCollection(() -> new ArrayList<TwitterTweetModel>())));
+               .collect(Collectors.toList()));C
     }
 
     public Optional<List<String>> getFiltered(String filterKey) throws TwitterException {
         return Optional.of(twitter.getHomeTimeline().stream()
                                   .filter(status -> status.getText().toLowerCase().contains(filterKey.toLowerCase()))
                                   .map(status -> status.getText())
-                                  .collect(Collectors.toCollection(() -> new ArrayList<String>())));
+                                  .collect(Collectors.toList()));
     }
 
     public TwitterTweetModel getTweet(Status status) {
