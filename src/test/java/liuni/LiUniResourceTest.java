@@ -4,39 +4,23 @@ import liuni.models.ErrorModel;
 import liuni.configs.TwitterConfig;
 import liuni.configs.TwitterAccountConfig;
 import liuni.models.TwitterTweetModel;
-import liuni.models.UserModel;
 import liuni.resources.LiUniResource;
 import liuni.services.TwitterService;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import twitter4j.ResponseList;
-import twitter4j.Status;
-import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.User;
 
 import javax.ws.rs.core.Response;
 
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class LiUniResourceTest {

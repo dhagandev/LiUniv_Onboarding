@@ -102,7 +102,7 @@ public class LiUniResource {
     @Path("/tweet/filter")
     @GET
     @Timed
-    public Response filterTweets(@QueryParam("key") String filterKey) {
+    public Response filterTweets(@QueryParam("filterMessage") String filterKey) {
         try {
             return twitterService.getFiltered(filterKey)
                           .map(list -> Response.noContent()

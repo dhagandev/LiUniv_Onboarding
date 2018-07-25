@@ -14,7 +14,6 @@ import twitter4j.conf.ConfigurationBuilder;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,7 +27,7 @@ public final class TwitterService {
     private TwitterAccountConfig twitterAccountConfig;
     private Twitter twitter;
 
-    public TwitterService() {
+    private TwitterService() {
         twitterAccountConfig = null;
         twitter = null;
     }
