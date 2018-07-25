@@ -102,7 +102,7 @@ public class LiUniResourceTest {
     public void testRestFilterTweetsEmptyResult() {
         try {
             String filterKey = "New";
-            List<String> expected = new ArrayList<String>();
+            List<TwitterTweetModel> expected = new ArrayList<TwitterTweetModel>();
             when(mockedService.getFiltered(filterKey)).thenReturn(Optional.of(expected));
 
             Response resp = resource.filterTweets(filterKey);
@@ -120,9 +120,9 @@ public class LiUniResourceTest {
     public void testRestFilterTweetsNotEmptyResult() {
         try {
             String filterKey = "New";
-            List<String> expected = new ArrayList<String>();
-            expected.add("Test Tweet new");
-            expected.add("Test Tweet Newt");
+            List<TwitterTweetModel> expected = new ArrayList<TwitterTweetModel>();
+            expected.add(mock(TwitterTweetModel.class));
+            expected.add(mock(TwitterTweetModel.class));
             when(mockedService.getFiltered(filterKey)).thenReturn(Optional.of(expected));
 
             Response resp = resource.filterTweets(filterKey);

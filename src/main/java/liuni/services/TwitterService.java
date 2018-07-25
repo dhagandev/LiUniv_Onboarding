@@ -77,10 +77,10 @@ public final class TwitterService {
                .collect(Collectors.toList()));
     }
 
-    public Optional<List<String>> getFiltered(String filterKey) throws TwitterException {
+    public Optional<List<TwitterTweetModel>> getFiltered(String filterKey) throws TwitterException {
         return Optional.of(twitter.getHomeTimeline().stream()
                                   .filter(status -> status.getText().toLowerCase().contains(filterKey.toLowerCase()))
-                                  .map(status -> status.getText())
+                                  .map(status -> getTweet(status))
                                   .collect(Collectors.toList()));
     }
 

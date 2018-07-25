@@ -174,24 +174,27 @@ public class TwitterServiceTest {
             String testTweetMessage = "Model Message";
             Date testDate = new Date(2323223232L);
             String urlString = "";
+            URL testProfileUrl = null;
 
-            List<String> expected = new ArrayList<String>();
+            List<TwitterTweetModel> expected = new ArrayList<TwitterTweetModel>();
             ResponseList<Status> responseList = new ResponseListImpl<Status>();
 
+            TwitterTweetModel tweetModel1 = createTweetModel(testDate, testTweetMessage + " NEWNEWNEW", testProfileUrl, testScreenName, testName);
+            expected.add(tweetModel1);
             Status status1 = createMockedStatus(testDate, testTweetMessage + " NEWNEWNEW", urlString, testScreenName, testName);
             responseList.add(status1);
-            expected.add(testTweetMessage + " NEWNEWNEW");
 
             Status status2 = createMockedStatus(testDate, testTweetMessage, urlString, testScreenName, testName);
             responseList.add(status2);
 
+            TwitterTweetModel tweetModel3 = createTweetModel(testDate, testTweetMessage + " new", testProfileUrl, testScreenName, testName);
+            expected.add(tweetModel3);
             Status status3 = createMockedStatus(testDate, testTweetMessage + " new", urlString, testScreenName, testName);
             responseList.add(status3);
-            expected.add(testTweetMessage + " new");
 
             when(twitter.getHomeTimeline()).thenReturn(responseList);
 
-            List<String> result = twitterService.getFiltered(filterKey).get();
+            List<TwitterTweetModel> result = twitterService.getFiltered(filterKey).get();
             assertTrue(expected.size() > 0);
             assertEquals(expected.size(), result.size());
             for (int i = 0; i < expected.size(); i++) {
