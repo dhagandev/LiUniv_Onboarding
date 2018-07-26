@@ -59,6 +59,10 @@ public final class TwitterService {
         createTwitter();
     }
 
+    public Twitter getTwitter() {
+        return twitter;
+    }
+
     public Optional<TwitterTweetModel> postStatus(String text) throws TwitterException {
         boolean isOkToPost = textErrorCheck(text);
         if (isOkToPost) {

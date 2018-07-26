@@ -1,5 +1,6 @@
 package liuni;
 
+import liuni.configs.TwitterAccountConfig;
 import liuni.models.TwitterTweetModel;
 import liuni.models.UserModel;
 import liuni.services.TwitterService;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -256,6 +258,20 @@ public class TwitterServiceTest {
         catch (Exception e) {
             Assert.fail("This exception is not expected.");
         }
+    }
+
+    @Test
+    public void testCreateTwitterAndAccountConfig() {
+        String mockedStrVal = "Mocked Test Field ";
+
+        TwitterAccountConfig mockedTwitterAccConfig = mock(TwitterAccountConfig.class);
+        when(mockedTwitterAccConfig.getConsumerKey()).thenReturn(mockedStrVal + "1");
+        when(mockedTwitterAccConfig.getConsumerSecret()).thenReturn(mockedStrVal + "2");
+        when(mockedTwitterAccConfig.getAccessToken()).thenReturn(mockedStrVal + "3");
+        when(mockedTwitterAccConfig.getAccessSecret()).thenReturn(mockedStrVal + "4");
+
+        twitterService.setTwitterAccountConfig(mockedTwitterAccConfig);
+        assertNotEquals(null, twitterService.getTwitter());
     }
 
 }

@@ -20,7 +20,11 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class LiUniResourceTest {
@@ -35,8 +39,8 @@ public class LiUniResourceTest {
         when(mockedConfig.getDefaultAccountIndex()).thenReturn(0);
         when(mockedConfig.getTwitterAccounts()).thenReturn(new ArrayList<TwitterAccountConfig>());
 
-        resource = new LiUniResource(mockedConfig);
-        resource.setTwitterService(mockedService);
+        resource = new LiUniResource(mockedService);
+        resource.setUpConfiguration(mockedConfig);
     }
 
     @Test
@@ -267,11 +271,13 @@ public class LiUniResourceTest {
 
     @Test
     public void testConfigNull() {
-        resource = new LiUniResource(null);
+        resource = new LiUniResource(mockedService);
+        resource.setUpConfiguration(null);
         assertEquals(null, resource.getConfig());
-        assertEquals(null, resource.getTwitterService());
+        assertEquals(mockedService, resource.getTwitterService());
     }
 
+    //Review tests from here to below, are they still valid?
     @Test
     public void testConfigListNotEmptyIndexHigh() {
         List<TwitterAccountConfig> mockedAccConfigs = new ArrayList<TwitterAccountConfig>();
@@ -280,10 +286,12 @@ public class LiUniResourceTest {
         when(mockedConfig.getTwitterAccounts()).thenReturn(mockedAccConfigs);
         when(mockedConfig.getDefaultAccountIndex()).thenReturn(mockedAccConfigs.size()+1);
 
-        resource = new LiUniResource(mockedConfig);
+        resource = new LiUniResource(mockedService);
+        resource.setUpConfiguration(mockedConfig);
 
         assert(resource.getDefaultAccountIndex() >= mockedAccConfigs.size());
-        assertEquals(null, resource.getTwitterService());
+        assertEquals(mockedService, resource.getTwitterService());
+        verify(mockedService, never()).setTwitterAccountConfig(isA(TwitterAccountConfig.class));
     }
 
     @Test
@@ -294,10 +302,12 @@ public class LiUniResourceTest {
         when(mockedConfig.getTwitterAccounts()).thenReturn(mockedAccConfigs);
         when(mockedConfig.getDefaultAccountIndex()).thenReturn(-1);
 
-        resource = new LiUniResource(mockedConfig);
+        resource = new LiUniResource(mockedService);
+        resource.setUpConfiguration(mockedConfig);
 
         assert(resource.getDefaultAccountIndex() < 0);
-        assertEquals(null, resource.getTwitterService());
+        assertEquals(mockedService, resource.getTwitterService());
+        verify(mockedService, never()).setTwitterAccountConfig(isA(TwitterAccountConfig.class));
     }
 
     @Test
@@ -308,11 +318,13 @@ public class LiUniResourceTest {
         when(mockedConfig.getTwitterAccounts()).thenReturn(mockedAccConfigs);
         when(mockedConfig.getDefaultAccountIndex()).thenReturn(0);
 
-        resource = new LiUniResource(mockedConfig);
+        resource = new LiUniResource(mockedService);
+        resource.setUpConfiguration(mockedConfig);
 
         assert(resource.getDefaultAccountIndex() >= 0);
         assert(resource.getDefaultAccountIndex() < mockedAccConfigs.size());
-        assertNotEquals(null, resource.getTwitterService());
+        assertEquals(mockedService, resource.getTwitterService());
+        verify(mockedService, times(1)).setTwitterAccountConfig(isA(TwitterAccountConfig.class));
     }
 
 }

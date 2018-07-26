@@ -5,6 +5,7 @@ import liuni.health.LiUniHealthCheck;
 import liuni.resources.LiUniResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
+import liuni.services.TwitterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +23,8 @@ public class LiUniApplication extends Application<LiUniConfig> {
 
     @Override
     public void run(LiUniConfig config, Environment env) {
-        final LiUniResource resource = new LiUniResource(config.getTwitter());
+        final LiUniResource resource = new LiUniResource(TwitterService.getInstance());
+        resource.setUpConfiguration(config.getTwitter());
 
         final LiUniHealthCheck healthCheck = new LiUniHealthCheck();
         env.healthChecks().register("TwitterHealth", healthCheck);

@@ -27,7 +27,11 @@ public class LiUniResource {
     private TwitterService twitterService;
     private int defaultAccountIndex;
 
-    public LiUniResource(TwitterConfig config) {
+    public LiUniResource(TwitterService service) {
+        this.twitterService = service;
+    }
+
+    public void setUpConfiguration(TwitterConfig config) {
         this.config = config;
 
         boolean configNotNull = this.config != null;
@@ -37,7 +41,6 @@ public class LiUniResource {
             boolean configListNotEmpty = size > 0;
             boolean indexInBounds = defaultAccountIndex >= 0 && defaultAccountIndex < size;
             if (configListNotEmpty && indexInBounds) {
-                twitterService = TwitterService.getInstance();
                 twitterService.setTwitterAccountConfig(this.config.getTwitterAccounts().get(defaultAccountIndex));
             }
         }
@@ -53,10 +56,6 @@ public class LiUniResource {
 
     public TwitterService getTwitterService() {
         return twitterService;
-    }
-
-    public void setTwitterService(TwitterService service) {
-        this.twitterService = service;
     }
 
     public void setConfigIndex(int index) {
