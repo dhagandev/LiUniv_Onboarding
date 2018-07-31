@@ -1,6 +1,7 @@
 package liuni.services;
 
 import liuni.configs.TwitterAccountConfig;
+import liuni.configs.TwitterConfig;
 import liuni.models.TwitterTweetModel;
 import liuni.models.UserModel;
 import org.slf4j.Logger;
@@ -25,6 +26,8 @@ public final class TwitterService {
     private static TwitterService INSTANCE = null;
 
     private TwitterAccountConfig twitterAccountConfig;
+    private TwitterConfig config;
+    private int defaultAccountIndex;
     private Twitter twitter;
 
     private TwitterService() {
@@ -37,6 +40,42 @@ public final class TwitterService {
             INSTANCE = new TwitterService();
         }
         return INSTANCE;
+    }
+
+    public void setUpConfiguration(TwitterConfig config) {
+        this.config = config;
+
+        boolean configNotNull = this.config != null;
+        if (configNotNull) {
+            defaultAccountIndex = config.getDefaultAccountIndex();
+            int size = config.getTwitterAccounts().size();
+            boolean configListNotEmpty = size > 0;
+            boolean indexInBounds = defaultAccountIndex >= 0 && defaultAccountIndex < size;
+            if (configListNotEmpty && indexInBounds) {
+                setTwitterAccountConfig(this.config.getTwitterAccounts().get(defaultAccountIndex));
+            }
+        }
+    }
+
+    public TwitterConfig getConfig() {
+        return config;
+    }
+
+    public void setConfig(TwitterConfig config) {
+        this.config = config;
+    }
+
+    public void setConfigIndex(int index) {
+        int size = this.config.getTwitterAccounts().size();
+        boolean indexInBounds = index >= 0 && index < size;
+        if (indexInBounds) {
+            defaultAccountIndex = index;
+            setTwitterAccountConfig(this.config.getTwitterAccounts().get(index));
+        }
+    }
+
+    public int getDefaultAccountIndex() {
+        return defaultAccountIndex;
     }
 
     public void createTwitter() {
@@ -57,6 +96,10 @@ public final class TwitterService {
     public void setTwitterAccountConfig(TwitterAccountConfig config) {
         this.twitterAccountConfig = config;
         createTwitter();
+    }
+
+    public TwitterAccountConfig getTwitterAccountConfig() {
+        return twitterAccountConfig;
     }
 
     public Twitter getTwitter() {

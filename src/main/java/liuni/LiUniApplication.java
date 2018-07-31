@@ -24,17 +24,17 @@ public class LiUniApplication extends Application<LiUniConfig> {
 
     @Override
     public void run(LiUniConfig config, Environment env) {
-        final LiUniResource resource = createResource();
-        resource.setUpConfiguration(config.getTwitter());
+        final LiUniResource resource = createResource(config);
+//        resource.setUpConfiguration(config.getTwitter());
 
         final LiUniHealthCheck healthCheck = new LiUniHealthCheck();
         env.healthChecks().register("TwitterHealth", healthCheck);
         env.jersey().register(resource);
     }
 
-    public LiUniResource createResource() {
+    public LiUniResource createResource(LiUniConfig config) {
         return DaggerResourceComponent.builder()
-                                      .serviceInjectionModule(new ServiceInjectionModule())
+                                      .serviceInjectionModule(new ServiceInjectionModule(config))
                                       .build()
                                       .injectResource();
     }

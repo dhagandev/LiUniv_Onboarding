@@ -2,7 +2,6 @@ package liuni.resources;
 
 import liuni.models.ErrorModel;
 import com.codahale.metrics.annotation.Timed;
-import liuni.configs.TwitterConfig;
 import liuni.services.TwitterService;
 import twitter4j.TwitterException;
 
@@ -24,53 +23,11 @@ import org.slf4j.LoggerFactory;
 @Produces(MediaType.APPLICATION_JSON)
 public class LiUniResource {
     private static Logger logger = LoggerFactory.getLogger(LiUniResource.class);
-    private TwitterConfig config;
-    private int defaultAccountIndex;
     public TwitterService twitterService;
 
     @Inject
     public LiUniResource(TwitterService twitterService) {
         this.twitterService = twitterService;
-    }
-
-    public void setUpConfiguration(TwitterConfig config) {
-        this.config = config;
-
-        boolean configNotNull = this.config != null;
-        if (configNotNull) {
-            defaultAccountIndex = config.getDefaultAccountIndex();
-            int size = config.getTwitterAccounts().size();
-            boolean configListNotEmpty = size > 0;
-            boolean indexInBounds = defaultAccountIndex >= 0 && defaultAccountIndex < size;
-            if (configListNotEmpty && indexInBounds) {
-                twitterService.setTwitterAccountConfig(this.config.getTwitterAccounts().get(defaultAccountIndex));
-            }
-        }
-    }
-
-    public TwitterConfig getConfig() {
-        return config;
-    }
-
-    public void setConfig(TwitterConfig config) {
-        this.config = config;
-    }
-
-    public TwitterService getTwitterService() {
-        return twitterService;
-    }
-
-    public void setConfigIndex(int index) {
-        int size = this.config.getTwitterAccounts().size();
-        boolean indexInBounds = index >= 0 && index < size;
-        if (indexInBounds) {
-            defaultAccountIndex = index;
-            twitterService.setTwitterAccountConfig(this.config.getTwitterAccounts().get(index));
-        }
-    }
-
-    public int getDefaultAccountIndex() {
-        return defaultAccountIndex;
     }
 
     @Path("/timeline")
