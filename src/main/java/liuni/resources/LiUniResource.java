@@ -6,6 +6,7 @@ import liuni.configs.TwitterConfig;
 import liuni.services.TwitterService;
 import twitter4j.TwitterException;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -24,11 +25,12 @@ import org.slf4j.LoggerFactory;
 public class LiUniResource {
     private static Logger logger = LoggerFactory.getLogger(LiUniResource.class);
     private TwitterConfig config;
-    private TwitterService twitterService;
     private int defaultAccountIndex;
+    public TwitterService twitterService;
 
-    public LiUniResource(TwitterService service) {
-        this.twitterService = service;
+    @Inject
+    public LiUniResource(TwitterService twitterService) {
+        this.twitterService = twitterService;
     }
 
     public void setUpConfiguration(TwitterConfig config) {

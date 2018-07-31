@@ -1,11 +1,12 @@
 package liuni;
 
 import liuni.configs.LiUniConfig;
+import liuni.dagger.DaggerResourceComponent;
+import liuni.dagger.ServiceInjectionModule;
 import liuni.health.LiUniHealthCheck;
 import liuni.resources.LiUniResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
-import liuni.services.TwitterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,11 +24,18 @@ public class LiUniApplication extends Application<LiUniConfig> {
 
     @Override
     public void run(LiUniConfig config, Environment env) {
-        final LiUniResource resource = new LiUniResource(TwitterService.getInstance());
+        final LiUniResource resource = createResource();
         resource.setUpConfiguration(config.getTwitter());
 
         final LiUniHealthCheck healthCheck = new LiUniHealthCheck();
         env.healthChecks().register("TwitterHealth", healthCheck);
         env.jersey().register(resource);
+    }
+
+    public LiUniResource createResource() {
+        return DaggerResourceComponent.builder()
+                                      .serviceInjectionModule(new ServiceInjectionModule())
+                                      .build()
+                                      .injectResource();
     }
 }
