@@ -1,7 +1,5 @@
 package liuni.services;
 
-import liuni.configs.TwitterAccountConfig;
-import liuni.configs.TwitterConfig;
 import liuni.models.TwitterTweetModel;
 import liuni.models.UserModel;
 import org.slf4j.Logger;
@@ -9,10 +7,9 @@ import org.slf4j.LoggerFactory;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
 import twitter4j.User;
-import twitter4j.conf.ConfigurationBuilder;
 
+import javax.inject.Inject;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -25,14 +22,11 @@ public final class TwitterService {
     private final static Logger logger = LoggerFactory.getLogger(TwitterService.class);
     private static TwitterService INSTANCE = null;
 
-    private TwitterAccountConfig twitterAccountConfig;
-    private TwitterConfig config;
-    private int defaultAccountIndex;
-    private Twitter twitter;
 
-    private TwitterService() {
-        twitterAccountConfig = null;
-        twitter = null;
+    public Twitter twitter;
+
+    @Inject
+    public TwitterService() {
     }
 
     public static TwitterService getInstance() {
@@ -42,64 +36,8 @@ public final class TwitterService {
         return INSTANCE;
     }
 
-    public void setUpConfiguration(TwitterConfig config) {
-        this.config = config;
-
-        boolean configNotNull = this.config != null;
-        if (configNotNull) {
-            defaultAccountIndex = config.getDefaultAccountIndex();
-            int size = config.getTwitterAccounts().size();
-            boolean configListNotEmpty = size > 0;
-            boolean indexInBounds = defaultAccountIndex >= 0 && defaultAccountIndex < size;
-            if (configListNotEmpty && indexInBounds) {
-                setTwitterAccountConfig(this.config.getTwitterAccounts().get(defaultAccountIndex));
-            }
-        }
-    }
-
-    public TwitterConfig getConfig() {
-        return config;
-    }
-
-    public void setConfig(TwitterConfig config) {
-        this.config = config;
-    }
-
-    public void setConfigIndex(int index) {
-        int size = this.config.getTwitterAccounts().size();
-        boolean indexInBounds = index >= 0 && index < size;
-        if (indexInBounds) {
-            defaultAccountIndex = index;
-            setTwitterAccountConfig(this.config.getTwitterAccounts().get(index));
-        }
-    }
-
-    public int getDefaultAccountIndex() {
-        return defaultAccountIndex;
-    }
-
-    public void createTwitter() {
-        ConfigurationBuilder cb = new ConfigurationBuilder();
-        cb.setDebugEnabled(false);
-        cb.setOAuthConsumerKey(twitterAccountConfig.getConsumerKey());
-        cb.setOAuthConsumerSecret(twitterAccountConfig.getConsumerSecret());
-        cb.setOAuthAccessToken(twitterAccountConfig.getAccessToken());
-        cb.setOAuthAccessTokenSecret(twitterAccountConfig.getAccessSecret());
-        TwitterFactory twitterFactory = new TwitterFactory(cb.build());
-        twitter = twitterFactory.getInstance();
-    }
-
     public void setTwitter(Twitter twitter) {
         this.twitter = twitter;
-    }
-
-    public void setTwitterAccountConfig(TwitterAccountConfig config) {
-        this.twitterAccountConfig = config;
-        createTwitter();
-    }
-
-    public TwitterAccountConfig getTwitterAccountConfig() {
-        return twitterAccountConfig;
     }
 
     public Twitter getTwitter() {
@@ -107,28 +45,36 @@ public final class TwitterService {
     }
 
     public Optional<TwitterTweetModel> postStatus(String text) throws TwitterException {
-        boolean isOkToPost = textErrorCheck(text);
-        if (isOkToPost) {
-            Optional<TwitterTweetModel> tweet = Stream.of(twitter.updateStatus(text))
-                                        .peek(status -> logger.info("Successfully updated status to [" + status.getText() + "]."))
-                                        .map(status -> getTweet(status))
-                                        .findFirst();
-            return tweet;
+        if (twitter != null) {
+            boolean isOkToPost = textErrorCheck(text);
+            if (isOkToPost) {
+                Optional<TwitterTweetModel> tweet = Stream.of(twitter.updateStatus(text))
+                                                          .peek(status -> logger.info("Successfully updated status to [" + status.getText() + "]."))
+                                                          .map(status -> getTweet(status))
+                                                          .findFirst();
+                return tweet;
+            }
         }
         return Optional.empty();
     }
 
     public Optional<List<TwitterTweetModel>> getTimeline() throws TwitterException {
-        return Optional.of(twitter.getHomeTimeline().stream()
-               .map(status -> getTweet(status))
-               .collect(Collectors.toList()));
+        if (twitter != null) {
+            return Optional.of(twitter.getHomeTimeline().stream()
+                                      .map(status -> getTweet(status))
+                                      .collect(Collectors.toList()));
+        }
+        return Optional.empty();
     }
 
     public Optional<List<TwitterTweetModel>> getFiltered(String filterKey) throws TwitterException {
-        return Optional.of(twitter.getHomeTimeline().stream()
-                                  .filter(status -> status.getText().toLowerCase().contains(filterKey.toLowerCase()))
-                                  .map(status -> getTweet(status))
-                                  .collect(Collectors.toList()));
+        if (twitter != null) {
+            return Optional.of(twitter.getHomeTimeline().stream()
+                                      .filter(status -> status.getText().toLowerCase().contains(filterKey.toLowerCase()))
+                                      .map(status -> getTweet(status))
+                                      .collect(Collectors.toList()));
+        }
+        return Optional.empty();
     }
 
     public TwitterTweetModel getTweet(Status status) {

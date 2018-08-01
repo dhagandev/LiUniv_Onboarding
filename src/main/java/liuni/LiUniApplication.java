@@ -25,8 +25,6 @@ public class LiUniApplication extends Application<LiUniConfig> {
     @Override
     public void run(LiUniConfig config, Environment env) {
         final LiUniResource resource = createResource(config);
-//        resource.setUpConfiguration(config.getTwitter());
-
         final LiUniHealthCheck healthCheck = new LiUniHealthCheck();
         env.healthChecks().register("TwitterHealth", healthCheck);
         env.jersey().register(resource);
