@@ -26,7 +26,12 @@ public final class TwitterService {
     public Twitter twitter;
 
     @Inject
-    public TwitterService() {
+    public TwitterService(Twitter twitter) {
+        this.twitter = twitter;
+        getInstance();
+    }
+
+    private TwitterService() {
     }
 
     public static TwitterService getInstance() {

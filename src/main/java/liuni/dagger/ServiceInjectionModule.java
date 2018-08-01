@@ -4,7 +4,6 @@ import dagger.Module;
 import dagger.Provides;
 import liuni.configs.LiUniConfig;
 import liuni.services.TwitterService;
-import twitter4j.Twitter;
 
 import javax.inject.Singleton;
 
@@ -20,15 +19,12 @@ public class ServiceInjectionModule {
     @Provides
     @Singleton
     TwitterService provideTwitterService() {
-        if (twitterService != null) {
-            return twitterService;
+        if (twitterService == null) {
+            twitterService = DaggerTwitterComponent.builder()
+                                                   .twitterInjectionModule(new TwitterInjectionModule(config))
+                                                   .build()
+                                                   .injectTwitter();
         }
-        twitterService = TwitterService.getInstance();
-        Twitter twitter = DaggerTwitterComponent.builder()
-                                                .twitterInjectionModule(new TwitterInjectionModule(config))
-                                                .build()
-                                                .injectTwitter();
-        twitterService.setTwitter(twitter);
         return twitterService;
     }
 }

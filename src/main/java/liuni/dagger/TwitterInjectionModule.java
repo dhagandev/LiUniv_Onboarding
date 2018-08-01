@@ -5,6 +5,8 @@ import dagger.Provides;
 import liuni.configs.LiUniConfig;
 import liuni.configs.TwitterAccountConfig;
 import liuni.configs.TwitterConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;

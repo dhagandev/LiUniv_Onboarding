@@ -1,9 +1,9 @@
 package liuni.dagger;
 
 import dagger.Component;
-import twitter4j.Twitter;
+import liuni.services.TwitterService;
 
 @Component(modules = TwitterInjectionModule.class)
 public interface TwitterComponent {
-    Twitter injectTwitter();
+    TwitterService injectTwitter();
 }
