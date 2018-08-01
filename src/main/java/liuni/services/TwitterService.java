@@ -50,36 +50,28 @@ public final class TwitterService {
     }
 
     public Optional<TwitterTweetModel> postStatus(String text) throws TwitterException {
-        if (twitter != null) {
-            boolean isOkToPost = textErrorCheck(text);
-            if (isOkToPost) {
-                Optional<TwitterTweetModel> tweet = Stream.of(twitter.updateStatus(text))
-                                                          .peek(status -> logger.info("Successfully updated status to [" + status.getText() + "]."))
-                                                          .map(status -> getTweet(status))
-                                                          .findFirst();
-                return tweet;
-            }
+        boolean isOkToPost = textErrorCheck(text);
+        if (isOkToPost) {
+            Optional<TwitterTweetModel> tweet = Stream.of(twitter.updateStatus(text))
+                                                      .peek(status -> logger.info("Successfully updated status to [" + status.getText() + "]."))
+                                                      .map(status -> getTweet(status))
+                                                      .findFirst();
+            return tweet;
         }
         return Optional.empty();
     }
 
     public Optional<List<TwitterTweetModel>> getTimeline() throws TwitterException {
-        if (twitter != null) {
-            return Optional.of(twitter.getHomeTimeline().stream()
-                                      .map(status -> getTweet(status))
-                                      .collect(Collectors.toList()));
-        }
-        return Optional.empty();
+        return Optional.of(twitter.getHomeTimeline().stream()
+                                  .map(status -> getTweet(status))
+                                  .collect(Collectors.toList()));
     }
 
     public Optional<List<TwitterTweetModel>> getFiltered(String filterKey) throws TwitterException {
-        if (twitter != null) {
-            return Optional.of(twitter.getHomeTimeline().stream()
-                                      .filter(status -> status.getText().toLowerCase().contains(filterKey.toLowerCase()))
-                                      .map(status -> getTweet(status))
-                                      .collect(Collectors.toList()));
-        }
-        return Optional.empty();
+        return Optional.of(twitter.getHomeTimeline().stream()
+                                  .filter(status -> status.getText().toLowerCase().contains(filterKey.toLowerCase()))
+                                  .map(status -> getTweet(status))
+                                  .collect(Collectors.toList()));
     }
 
     public TwitterTweetModel getTweet(Status status) {

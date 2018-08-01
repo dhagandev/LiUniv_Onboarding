@@ -266,6 +266,15 @@ public class TwitterServiceTest {
         }
     }
 
+    @Test
+    public void testPublicConstructor() {
+        twitterService = new TwitterService(null);
+        assertEquals(null, twitterService.getTwitter());
+        assertNotEquals(null, TwitterService.getInstance());
+    }
+
+    //Tests related to configuration that have been moved to TwitterInjectionModule
+
 //    @Test
 //    public void testCreateTwitterAndAccountConfig() {
 //        String mockedStrVal = "Mocked Test Field ";
