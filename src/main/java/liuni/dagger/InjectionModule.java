@@ -5,21 +5,19 @@ import dagger.Provides;
 import liuni.configs.LiUniConfig;
 import liuni.configs.TwitterAccountConfig;
 import liuni.configs.TwitterConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
 
 @Module
-public class TwitterInjectionModule {
-    private static Twitter twitter;
+public class InjectionModule {
+    private Twitter twitter;
     LiUniConfig liUniConfig;
     private TwitterAccountConfig twitterAccountConfig;
     private TwitterConfig twitterConfig;
     private int defaultAccountIndex;
 
-    public TwitterInjectionModule(LiUniConfig config) {
+    public InjectionModule(LiUniConfig config) {
         liUniConfig = config;
     }
 
@@ -32,7 +30,7 @@ public class TwitterInjectionModule {
         return null;
     }
 
-    public void setUpConfiguration(TwitterConfig config) {
+    private void setUpConfiguration(TwitterConfig config) {
         this.twitterConfig = config;
 
         boolean configNotNull = this.twitterConfig != null;
@@ -42,33 +40,13 @@ public class TwitterInjectionModule {
             boolean configListNotEmpty = size > 0;
             boolean indexInBounds = defaultAccountIndex >= 0 && defaultAccountIndex < size;
             if (configListNotEmpty && indexInBounds) {
-                setTwitterAccountConfig(this.twitterConfig.getTwitterAccounts().get(defaultAccountIndex));
+                this.twitterAccountConfig = this.twitterConfig.getTwitterAccounts().get(defaultAccountIndex);
+                createTwitter();
             }
         }
     }
 
-    public TwitterConfig getTwitterConfig() {
-        return twitterConfig;
-    }
-
-    public void setTwitterConfig(TwitterConfig config) {
-        this.twitterConfig = config;
-    }
-
-    public void setConfigIndex(int index) {
-        int size = this.twitterConfig.getTwitterAccounts().size();
-        boolean indexInBounds = index >= 0 && index < size;
-        if (indexInBounds) {
-            defaultAccountIndex = index;
-            setTwitterAccountConfig(this.twitterConfig.getTwitterAccounts().get(index));
-        }
-    }
-
-    public int getDefaultAccountIndex() {
-        return defaultAccountIndex;
-    }
-
-    public void createTwitter() {
+    private void createTwitter() {
         ConfigurationBuilder cb = new ConfigurationBuilder();
         cb.setDebugEnabled(false);
         cb.setOAuthConsumerKey(twitterAccountConfig.getConsumerKey());
@@ -77,14 +55,5 @@ public class TwitterInjectionModule {
         cb.setOAuthAccessTokenSecret(twitterAccountConfig.getAccessSecret());
         TwitterFactory twitterFactory = new TwitterFactory(cb.build());
         twitter = twitterFactory.getInstance();
-    }
-
-    public void setTwitterAccountConfig(TwitterAccountConfig config) {
-        this.twitterAccountConfig = config;
-        createTwitter();
-    }
-
-    public TwitterAccountConfig getTwitterAccountConfig() {
-        return twitterAccountConfig;
     }
 }

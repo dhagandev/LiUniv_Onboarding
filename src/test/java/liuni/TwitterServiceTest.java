@@ -1,7 +1,5 @@
 package liuni;
 
-import liuni.configs.TwitterAccountConfig;
-import liuni.configs.TwitterConfig;
 import liuni.models.TwitterTweetModel;
 import liuni.models.UserModel;
 import liuni.services.TwitterService;
@@ -23,22 +21,17 @@ import java.util.Optional;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class TwitterServiceTest {
     private TwitterService twitterService;
     private Twitter twitter;
-//    private TwitterConfig mockedConfig;
 
     @Before
     public void setUp() {
         twitterService = TwitterService.getInstance();
         twitter = mock(Twitter.class);
-//        mockedConfig = mock(TwitterConfig.class);
         twitterService.setTwitter(twitter);
     }
 
@@ -272,145 +265,4 @@ public class TwitterServiceTest {
         assertEquals(null, twitterService.getTwitter());
         assertNotEquals(null, TwitterService.getInstance());
     }
-
-    //Tests related to configuration that have been moved to TwitterInjectionModule
-
-//    @Test
-//    public void testCreateTwitterAndAccountConfig() {
-//        String mockedStrVal = "Mocked Test Field ";
-//
-//        TwitterAccountConfig mockedTwitterAccConfig = mock(TwitterAccountConfig.class);
-//        when(mockedTwitterAccConfig.getConsumerKey()).thenReturn(mockedStrVal + "1");
-//        when(mockedTwitterAccConfig.getConsumerSecret()).thenReturn(mockedStrVal + "2");
-//        when(mockedTwitterAccConfig.getAccessToken()).thenReturn(mockedStrVal + "3");
-//        when(mockedTwitterAccConfig.getAccessSecret()).thenReturn(mockedStrVal + "4");
-//
-//        twitterService.setTwitterAccountConfig(mockedTwitterAccConfig);
-//        assertNotEquals(null, twitterService.getTwitter());
-//    }
-//
-//    @Test
-//    public void testGetSetConfig() {
-//        TwitterConfig retrievedConfig = twitterService.getConfig();
-//        TwitterConfig mockedTwitterConfig = mock(TwitterConfig.class);
-//        twitterService.setConfig(mockedTwitterConfig);
-//        assertNotEquals(retrievedConfig, mockedTwitterConfig);
-//    }
-//
-//    @Test
-//    public void testSetConfigIndex() {
-//        int newIndex = 1;
-//
-//        assertNotEquals(newIndex, twitterService.getDefaultAccountIndex());
-//
-//        List<TwitterAccountConfig> accConfigList = new ArrayList<TwitterAccountConfig>();
-//        accConfigList.add(mock(TwitterAccountConfig.class));
-//        accConfigList.add(mock(TwitterAccountConfig.class));
-//        when(mockedConfig.getTwitterAccounts()).thenReturn(accConfigList);
-//
-//        twitterService.setConfig(mockedConfig);
-//        twitterService.setConfigIndex(newIndex);
-//
-//        assertEquals(newIndex, twitterService.getDefaultAccountIndex());
-//    }
-//
-//    @Test
-//    public void testSetConfigIndexOutofBoundsHigh() {
-//        int newIndex = 1;
-//
-//        assertNotEquals(newIndex, twitterService.getDefaultAccountIndex());
-//
-//        List<TwitterAccountConfig> accConfigList = new ArrayList<TwitterAccountConfig>();
-//        accConfigList.add(mock(TwitterAccountConfig.class));
-//        when(mockedConfig.getTwitterAccounts()).thenReturn(accConfigList);
-//
-//        twitterService.setConfig(mockedConfig);
-//        twitterService.setConfigIndex(newIndex);
-//
-//        assertNotEquals(newIndex, twitterService.getDefaultAccountIndex());
-//    }
-//
-//    @Test
-//    public void testSetConfigIndexOutofBoundLow() {
-//        int newIndex = -1;
-//
-//        assertNotEquals(newIndex, twitterService.getDefaultAccountIndex());
-//
-//        List<TwitterAccountConfig> accConfigList = new ArrayList<TwitterAccountConfig>();
-//        accConfigList.add(mock(TwitterAccountConfig.class));
-//        when(mockedConfig.getTwitterAccounts()).thenReturn(accConfigList);
-//
-//        twitterService.setConfig(mockedConfig);
-//        twitterService.setConfigIndex(newIndex);
-//
-//        assertNotEquals(newIndex, twitterService.getDefaultAccountIndex());
-//    }
-//
-//    @Test
-//    public void testConfigNull() {
-//        twitterService.setUpConfiguration(null);
-//        assertEquals(null, twitterService.getConfig());
-//    }
-//
-//    @Test
-//    public void testConfigListNotEmptyIndexHigh() {
-//        List<TwitterAccountConfig> mockedAccConfigs = new ArrayList<TwitterAccountConfig>();
-//        mockedAccConfigs.add(mock(TwitterAccountConfig.class));
-//        mockedAccConfigs.add(mock(TwitterAccountConfig.class));
-//        when(mockedConfig.getTwitterAccounts()).thenReturn(mockedAccConfigs);
-//        when(mockedConfig.getDefaultAccountIndex()).thenReturn(mockedAccConfigs.size()+1);
-//
-//        TwitterAccountConfig expected = twitterService.getTwitterAccountConfig();
-//        twitterService.setUpConfiguration(mockedConfig);
-//        TwitterAccountConfig result = twitterService.getTwitterAccountConfig();
-//
-//        assert(twitterService.getDefaultAccountIndex() >= mockedAccConfigs.size());
-//        assertEquals(expected, result);
-//    }
-//
-//    @Test
-//    public void testConfigListNotEmptyIndexLow() {
-//        List<TwitterAccountConfig> mockedAccConfigs = new ArrayList<TwitterAccountConfig>();
-//        mockedAccConfigs.add(mock(TwitterAccountConfig.class));
-//        mockedAccConfigs.add(mock(TwitterAccountConfig.class));
-//        when(mockedConfig.getTwitterAccounts()).thenReturn(mockedAccConfigs);
-//        when(mockedConfig.getDefaultAccountIndex()).thenReturn(-1);
-//
-//        TwitterAccountConfig expected = twitterService.getTwitterAccountConfig();
-//        twitterService.setUpConfiguration(mockedConfig);
-//        TwitterAccountConfig result = twitterService.getTwitterAccountConfig();
-//
-//        assert(twitterService.getDefaultAccountIndex() < 0);
-//        assertEquals(expected, result);
-//    }
-//
-//    @Test
-//    public void testConfigListNotEmptyIndexAppropriate() {
-//        List<TwitterAccountConfig> mockedAccConfigs = new ArrayList<TwitterAccountConfig>();
-//        mockedAccConfigs.add(mock(TwitterAccountConfig.class));
-//        mockedAccConfigs.add(mock(TwitterAccountConfig.class));
-//        when(mockedConfig.getTwitterAccounts()).thenReturn(mockedAccConfigs);
-//        when(mockedConfig.getDefaultAccountIndex()).thenReturn(0);
-//
-//        TwitterAccountConfig expected = twitterService.getTwitterAccountConfig();
-//        twitterService.setUpConfiguration(mockedConfig);
-//        TwitterAccountConfig result = twitterService.getTwitterAccountConfig();
-//
-//        assert(twitterService.getDefaultAccountIndex() >= 0);
-//        assert(twitterService.getDefaultAccountIndex() < mockedAccConfigs.size());
-//        assertNotEquals(expected, result);
-//    }
-//
-//    @Test
-//    public void testConfigListEmpty() {
-//        List<TwitterAccountConfig> mockedAccConfigs = new ArrayList<TwitterAccountConfig>();
-//        when(mockedConfig.getTwitterAccounts()).thenReturn(mockedAccConfigs);
-//        when(mockedConfig.getDefaultAccountIndex()).thenReturn(0);
-//
-//        TwitterAccountConfig expected = twitterService.getTwitterAccountConfig();
-//        twitterService.setUpConfiguration(mockedConfig);
-//        TwitterAccountConfig result = twitterService.getTwitterAccountConfig();
-//
-//        assertEquals(expected, result);
-//    }
 }

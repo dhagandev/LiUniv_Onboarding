@@ -1,8 +1,8 @@
 package liuni;
 
 import liuni.configs.LiUniConfig;
-import liuni.dagger.DaggerResourceComponent;
-import liuni.dagger.ServiceInjectionModule;
+import liuni.dagger.DaggerLiUniComponent;
+import liuni.dagger.InjectionModule;
 import liuni.health.LiUniHealthCheck;
 import liuni.resources.LiUniResource;
 import io.dropwizard.Application;
@@ -31,9 +31,9 @@ public class LiUniApplication extends Application<LiUniConfig> {
     }
 
     public LiUniResource createResource(LiUniConfig config) {
-        return DaggerResourceComponent.builder()
-                                      .serviceInjectionModule(new ServiceInjectionModule(config))
-                                      .build()
-                                      .injectResource();
+        return DaggerLiUniComponent.builder()
+                                   .injectionModule(new InjectionModule(config))
+                                   .build()
+                                   .injectResource();
     }
 }
