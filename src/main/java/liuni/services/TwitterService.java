@@ -20,25 +20,12 @@ import java.util.stream.Stream;
 public final class TwitterService {
     public final static int TWITTER_CHAR_MAX = 280;
     private final static Logger logger = LoggerFactory.getLogger(TwitterService.class);
-    private static TwitterService INSTANCE = null;
-
 
     public Twitter twitter;
 
     @Inject
     public TwitterService(Twitter twitter) {
         this.twitter = twitter;
-        getInstance();
-    }
-
-    private TwitterService() {
-    }
-
-    public static TwitterService getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new TwitterService();
-        }
-        return INSTANCE;
     }
 
     public void setTwitter(Twitter twitter) {

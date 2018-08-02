@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -30,9 +29,8 @@ public class TwitterServiceTest {
 
     @Before
     public void setUp() {
-        twitterService = TwitterService.getInstance();
         twitter = mock(Twitter.class);
-        twitterService.setTwitter(twitter);
+        twitterService = new TwitterService(twitter);
     }
 
     public TwitterTweetModel createTweetModel(Date testDate, String testMessage, URL url, String testScreenName, String testName) {
@@ -263,6 +261,5 @@ public class TwitterServiceTest {
     public void testPublicConstructor() {
         twitterService = new TwitterService(null);
         assertEquals(null, twitterService.getTwitter());
-        assertNotEquals(null, TwitterService.getInstance());
     }
 }
