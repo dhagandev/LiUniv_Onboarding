@@ -1,6 +1,5 @@
 package liuni.services;
 
-import liuni.configs.TwitterAccountConfig;
 import liuni.models.TwitterTweetModel;
 import liuni.models.UserModel;
 import org.slf4j.Logger;
@@ -8,10 +7,9 @@ import org.slf4j.LoggerFactory;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
 import twitter4j.User;
-import twitter4j.conf.ConfigurationBuilder;
 
+import javax.inject.Inject;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -22,50 +20,29 @@ import java.util.stream.Stream;
 public final class TwitterService {
     public final static int TWITTER_CHAR_MAX = 280;
     private final static Logger logger = LoggerFactory.getLogger(TwitterService.class);
-    private static TwitterService INSTANCE = null;
 
-    private TwitterAccountConfig twitterAccountConfig;
-    private Twitter twitter;
+    public Twitter twitter;
 
-    private TwitterService() {
-        twitterAccountConfig = null;
-        twitter = null;
-    }
-
-    public static TwitterService getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new TwitterService();
-        }
-        return INSTANCE;
-    }
-
-    public void createTwitter() {
-        ConfigurationBuilder cb = new ConfigurationBuilder();
-        cb.setDebugEnabled(false);
-        cb.setOAuthConsumerKey(twitterAccountConfig.getConsumerKey());
-        cb.setOAuthConsumerSecret(twitterAccountConfig.getConsumerSecret());
-        cb.setOAuthAccessToken(twitterAccountConfig.getAccessToken());
-        cb.setOAuthAccessTokenSecret(twitterAccountConfig.getAccessSecret());
-        TwitterFactory twitterFactory = new TwitterFactory(cb.build());
-        twitter = twitterFactory.getInstance();
+    @Inject
+    public TwitterService(Twitter twitter) {
+        this.twitter = twitter;
     }
 
     public void setTwitter(Twitter twitter) {
         this.twitter = twitter;
     }
 
-    public void setTwitterAccountConfig(TwitterAccountConfig config) {
-        this.twitterAccountConfig = config;
-        createTwitter();
+    public Twitter getTwitter() {
+        return twitter;
     }
 
     public Optional<TwitterTweetModel> postStatus(String text) throws TwitterException {
         boolean isOkToPost = textErrorCheck(text);
         if (isOkToPost) {
             Optional<TwitterTweetModel> tweet = Stream.of(twitter.updateStatus(text))
-                                        .peek(status -> logger.info("Successfully updated status to [" + status.getText() + "]."))
-                                        .map(status -> getTweet(status))
-                                        .findFirst();
+                                                      .peek(status -> logger.info("Successfully updated status to [" + status.getText() + "]."))
+                                                      .map(status -> getTweet(status))
+                                                      .findFirst();
             return tweet;
         }
         return Optional.empty();
@@ -73,8 +50,8 @@ public final class TwitterService {
 
     public Optional<List<TwitterTweetModel>> getTimeline() throws TwitterException {
         return Optional.of(twitter.getHomeTimeline().stream()
-               .map(status -> getTweet(status))
-               .collect(Collectors.toList()));
+                                  .map(status -> getTweet(status))
+                                  .collect(Collectors.toList()));
     }
 
     public Optional<List<TwitterTweetModel>> getFiltered(String filterKey) throws TwitterException {

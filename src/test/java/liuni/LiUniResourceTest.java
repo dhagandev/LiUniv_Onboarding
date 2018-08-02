@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -35,8 +34,7 @@ public class LiUniResourceTest {
         when(mockedConfig.getDefaultAccountIndex()).thenReturn(0);
         when(mockedConfig.getTwitterAccounts()).thenReturn(new ArrayList<TwitterAccountConfig>());
 
-        resource = new LiUniResource(mockedConfig);
-        resource.setTwitterService(mockedService);
+        resource = new LiUniResource(mockedService);
     }
 
     @Test
@@ -206,113 +204,6 @@ public class LiUniResourceTest {
         catch (Exception e) {
             Assert.fail("This exception is not expected.");
         }
-    }
-
-    @Test
-    public void testGetSetConfig() {
-        TwitterConfig retrievedConfig = resource.getConfig();
-        TwitterConfig mockedTwitterConfig = mock(TwitterConfig.class);
-        resource.setConfig(mockedTwitterConfig);
-        assertNotEquals(retrievedConfig, mockedTwitterConfig);
-    }
-
-    @Test
-    public void testSetConfigIndex() {
-        int newIndex = 1;
-
-        assertNotEquals(newIndex, resource.getDefaultAccountIndex());
-
-        List<TwitterAccountConfig> accConfigList = new ArrayList<TwitterAccountConfig>();
-        accConfigList.add(mock(TwitterAccountConfig.class));
-        accConfigList.add(mock(TwitterAccountConfig.class));
-        when(mockedConfig.getTwitterAccounts()).thenReturn(accConfigList);
-
-        resource.setConfig(mockedConfig);
-        resource.setConfigIndex(newIndex);
-
-        assertEquals(newIndex, resource.getDefaultAccountIndex());
-    }
-
-    @Test
-    public void testSetConfigIndexOutofBoundsHigh() {
-        int newIndex = 1;
-
-        assertNotEquals(newIndex, resource.getDefaultAccountIndex());
-
-        List<TwitterAccountConfig> accConfigList = new ArrayList<TwitterAccountConfig>();
-        accConfigList.add(mock(TwitterAccountConfig.class));
-        when(mockedConfig.getTwitterAccounts()).thenReturn(accConfigList);
-
-        resource.setConfig(mockedConfig);
-        resource.setConfigIndex(newIndex);
-
-        assertNotEquals(newIndex, resource.getDefaultAccountIndex());
-    }
-
-    @Test
-    public void testSetConfigIndexOutofBoundLow() {
-        int newIndex = -1;
-
-        assertNotEquals(newIndex, resource.getDefaultAccountIndex());
-
-        List<TwitterAccountConfig> accConfigList = new ArrayList<TwitterAccountConfig>();
-        accConfigList.add(mock(TwitterAccountConfig.class));
-        when(mockedConfig.getTwitterAccounts()).thenReturn(accConfigList);
-
-        resource.setConfig(mockedConfig);
-        resource.setConfigIndex(newIndex);
-
-        assertNotEquals(newIndex, resource.getDefaultAccountIndex());
-    }
-
-    @Test
-    public void testConfigNull() {
-        resource = new LiUniResource(null);
-        assertEquals(null, resource.getConfig());
-        assertEquals(null, resource.getTwitterService());
-    }
-
-    @Test
-    public void testConfigListNotEmptyIndexHigh() {
-        List<TwitterAccountConfig> mockedAccConfigs = new ArrayList<TwitterAccountConfig>();
-        mockedAccConfigs.add(mock(TwitterAccountConfig.class));
-        mockedAccConfigs.add(mock(TwitterAccountConfig.class));
-        when(mockedConfig.getTwitterAccounts()).thenReturn(mockedAccConfigs);
-        when(mockedConfig.getDefaultAccountIndex()).thenReturn(mockedAccConfigs.size()+1);
-
-        resource = new LiUniResource(mockedConfig);
-
-        assert(resource.getDefaultAccountIndex() >= mockedAccConfigs.size());
-        assertEquals(null, resource.getTwitterService());
-    }
-
-    @Test
-    public void testConfigListNotEmptyIndexLow() {
-        List<TwitterAccountConfig> mockedAccConfigs = new ArrayList<TwitterAccountConfig>();
-        mockedAccConfigs.add(mock(TwitterAccountConfig.class));
-        mockedAccConfigs.add(mock(TwitterAccountConfig.class));
-        when(mockedConfig.getTwitterAccounts()).thenReturn(mockedAccConfigs);
-        when(mockedConfig.getDefaultAccountIndex()).thenReturn(-1);
-
-        resource = new LiUniResource(mockedConfig);
-
-        assert(resource.getDefaultAccountIndex() < 0);
-        assertEquals(null, resource.getTwitterService());
-    }
-
-    @Test
-    public void testConfigListNotEmptyIndexAppropriate() {
-        List<TwitterAccountConfig> mockedAccConfigs = new ArrayList<TwitterAccountConfig>();
-        mockedAccConfigs.add(mock(TwitterAccountConfig.class));
-        mockedAccConfigs.add(mock(TwitterAccountConfig.class));
-        when(mockedConfig.getTwitterAccounts()).thenReturn(mockedAccConfigs);
-        when(mockedConfig.getDefaultAccountIndex()).thenReturn(0);
-
-        resource = new LiUniResource(mockedConfig);
-
-        assert(resource.getDefaultAccountIndex() >= 0);
-        assert(resource.getDefaultAccountIndex() < mockedAccConfigs.size());
-        assertNotEquals(null, resource.getTwitterService());
     }
 
 }

@@ -29,9 +29,8 @@ public class TwitterServiceTest {
 
     @Before
     public void setUp() {
-        twitterService = TwitterService.getInstance();
         twitter = mock(Twitter.class);
-        twitterService.setTwitter(twitter);
+        twitterService = new TwitterService(twitter);
     }
 
     public TwitterTweetModel createTweetModel(Date testDate, String testMessage, URL url, String testScreenName, String testName) {
@@ -258,4 +257,9 @@ public class TwitterServiceTest {
         }
     }
 
+    @Test
+    public void testPublicConstructor() {
+        twitterService = new TwitterService(null);
+        assertEquals(null, twitterService.getTwitter());
+    }
 }
