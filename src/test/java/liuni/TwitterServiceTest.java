@@ -20,17 +20,23 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class TwitterServiceTest {
     private TwitterService twitterService;
     private Twitter twitter;
+    private TimeCache mockedCache;
 
     @Before
     public void setUp() {
         twitter = mock(Twitter.class);
+        mockedCache = mock(TimeCache.class);
+        when(mockedCache.getEntry(isA(String.class))).thenReturn(null);
         twitterService = new TwitterService(twitter);
+        twitterService.setFilterCache(mockedCache);
+        twitterService.setTimelineCache(mockedCache);
     }
 
     public TwitterTweetModel createTweetModel(Date testDate, String testMessage, URL url, String testScreenName, String testName) {
@@ -164,6 +170,39 @@ public class TwitterServiceTest {
     }
 
     @Test
+    public void testGetTimelineCached() {
+        try {
+            String testName = "Model Name";
+            String testScreenName = "Model Screen Name";
+            String testTweetMessage = "Model Message";
+            Date testDate = new Date(2323223232L);
+            URL testProfileUrl = null;
+
+            List<TwitterTweetModel> expected = new ArrayList<TwitterTweetModel>();
+
+            TwitterTweetModel tweetModel1 = createTweetModel(testDate, testTweetMessage, testProfileUrl, testScreenName, testName);
+            expected.add(tweetModel1);
+
+            TwitterTweetModel tweetModel2 = createTweetModel(testDate, testTweetMessage + " add on", testProfileUrl, testScreenName, testName);
+            expected.add(tweetModel2);
+
+            when(mockedCache.getEntry(isA(String.class))).thenReturn(expected);
+            twitterService.setTimelineCache(mockedCache);
+
+            List<TwitterTweetModel> result = twitterService.getTimeline().get();
+            assertTrue(expected.size() > 0);
+            assertEquals(expected.size(), result.size());
+            for (int i = 0; i < expected.size(); i++) {
+                assertEquals(expected.get(i), result.get(i));
+            }
+
+        }
+        catch (Exception e) {
+            Assert.fail("This exception is not expected.");
+        }
+    }
+
+    @Test
     public void testGetFiltered() {
         try {
             String filterKey = "new";
@@ -192,6 +231,42 @@ public class TwitterServiceTest {
             responseList.add(status3);
 
             when(twitter.getHomeTimeline()).thenReturn(responseList);
+
+            List<TwitterTweetModel> result = twitterService.getFiltered(filterKey).get();
+            assertTrue(expected.size() > 0);
+            assertEquals(expected.size(), result.size());
+            for (int i = 0; i < expected.size(); i++) {
+                assertEquals(expected.get(i), result.get(i));
+            }
+
+        }
+        catch (Exception e) {
+            Assert.fail("This exception is not expected.");
+        }
+    }
+
+    @Test
+    public void testGetFilteredCache() {
+        try {
+            String filterKey = "new";
+
+            String testName = "Model Name";
+            String testScreenName = "Model Screen Name";
+            String testTweetMessage = "Model Message";
+            Date testDate = new Date(2323223232L);
+            String urlString = "";
+            URL testProfileUrl = null;
+
+            List<TwitterTweetModel> expected = new ArrayList<TwitterTweetModel>();
+
+            TwitterTweetModel tweetModel1 = createTweetModel(testDate, testTweetMessage + " NEWNEWNEW", testProfileUrl, testScreenName, testName);
+            expected.add(tweetModel1);
+
+            TwitterTweetModel tweetModel3 = createTweetModel(testDate, testTweetMessage + " new", testProfileUrl, testScreenName, testName);
+            expected.add(tweetModel3);
+
+            when(mockedCache.getEntry(isA(String.class))).thenReturn(expected);
+            twitterService.setFilterCache(mockedCache);
 
             List<TwitterTweetModel> result = twitterService.getFiltered(filterKey).get();
             assertTrue(expected.size() > 0);

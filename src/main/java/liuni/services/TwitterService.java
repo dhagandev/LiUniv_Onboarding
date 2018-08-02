@@ -1,5 +1,6 @@
 package liuni.services;
 
+import liuni.TimeCache;
 import liuni.models.TwitterTweetModel;
 import liuni.models.UserModel;
 import org.slf4j.Logger;
@@ -20,16 +21,25 @@ import java.util.stream.Stream;
 public final class TwitterService {
     public final static int TWITTER_CHAR_MAX = 280;
     private final static Logger logger = LoggerFactory.getLogger(TwitterService.class);
+    private TimeCache filterCache;
+    private TimeCache timelineCache;
 
     public Twitter twitter;
+
 
     @Inject
     public TwitterService(Twitter twitter) {
         this.twitter = twitter;
+        timelineCache = new TimeCache(1, 60);
+        filterCache = new TimeCache(3, 30);
     }
 
-    public void setTwitter(Twitter twitter) {
-        this.twitter = twitter;
+    public void setTimelineCache(TimeCache cache) {
+        timelineCache = cache;
+    }
+
+    public void setFilterCache(TimeCache cache) {
+        filterCache = cache;
     }
 
     public Twitter getTwitter() {
@@ -49,16 +59,27 @@ public final class TwitterService {
     }
 
     public Optional<List<TwitterTweetModel>> getTimeline() throws TwitterException {
-        return Optional.of(twitter.getHomeTimeline().stream()
+        String timelineKey = "timeline";
+        List<TwitterTweetModel> timelineList = timelineCache.getEntry(timelineKey);
+        if (timelineList == null) {
+            timelineList = twitter.getHomeTimeline().stream()
                                   .map(status -> getTweet(status))
-                                  .collect(Collectors.toList()));
+                                  .collect(Collectors.toList());
+            timelineCache.putEntry(timelineKey, timelineList);
+        }
+        return Optional.of(timelineList);
     }
 
     public Optional<List<TwitterTweetModel>> getFiltered(String filterKey) throws TwitterException {
-        return Optional.of(twitter.getHomeTimeline().stream()
+        List<TwitterTweetModel> filteredList = filterCache.getEntry(filterKey);
+        if (filteredList == null) {
+            filteredList = twitter.getHomeTimeline().stream()
                                   .filter(status -> status.getText().toLowerCase().contains(filterKey.toLowerCase()))
                                   .map(status -> getTweet(status))
-                                  .collect(Collectors.toList()));
+                                  .collect(Collectors.toList());
+            filterCache.putEntry(filterKey, filteredList);
+        }
+        return Optional.of(filteredList);
     }
 
     public TwitterTweetModel getTweet(Status status) {
