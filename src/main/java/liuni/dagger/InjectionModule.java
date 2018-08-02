@@ -12,7 +12,7 @@ import twitter4j.conf.ConfigurationBuilder;
 @Module
 public class InjectionModule {
     private Twitter twitter;
-    LiUniConfig liUniConfig;
+    private LiUniConfig liUniConfig;
     private TwitterAccountConfig twitterAccountConfig;
     private TwitterConfig twitterConfig;
     private int defaultAccountIndex;
