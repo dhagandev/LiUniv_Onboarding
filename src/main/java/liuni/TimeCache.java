@@ -9,7 +9,8 @@ import java.util.Map;
 
 public class TimeCache {
     private long timeToLive;
-    Map<String, TimedList> cache;
+    private int maxEntries;
+    private Map<String, TimedList> cache;
 
     protected class TimedList {
         private Date creationDate;
@@ -28,6 +29,7 @@ public class TimeCache {
     }
 
     public TimeCache(int maxItems, long maxTimeSec) {
+        maxEntries = maxItems;
         timeToLive = maxTimeSec * 1000;
         cache = new LinkedHashMap(maxItems + 1, 0.75F, true) {
             @Override
@@ -56,5 +58,20 @@ public class TimeCache {
 
     public boolean isEntry(String key) {
         return cache.containsKey(key);
+    }
+
+    public List<TwitterTweetModel> removeEntry(String key) {
+        TimedList removed = cache.remove(key);
+        return removed.data;
+    }
+
+    public void clearCache() {
+        cache = new LinkedHashMap(maxEntries + 1, 0.75F, true) {
+            @Override
+            protected boolean removeEldestEntry(Map.Entry eldest) {
+                removeOldEntries();
+                return size() > maxEntries;
+            }
+        };
     }
 }
