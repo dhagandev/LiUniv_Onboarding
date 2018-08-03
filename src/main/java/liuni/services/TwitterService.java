@@ -53,6 +53,8 @@ public final class TwitterService {
                                                       .peek(status -> logger.info("Successfully updated status to [" + status.getText() + "]."))
                                                       .map(status -> getTweet(status))
                                                       .findFirst();
+            timelineCache.clearCache();
+            filterCache.clearCache();
             return tweet;
         }
         return Optional.empty();
