@@ -1,5 +1,6 @@
 package liuni.services;
 
+import liuni.TimeCache;
 import liuni.models.TwitterTweetModel;
 import liuni.models.UserModel;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import twitter4j.User;
 import javax.inject.Inject;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,17 +21,21 @@ import java.util.stream.Stream;
 
 public final class TwitterService {
     public final static int TWITTER_CHAR_MAX = 280;
+    private final static String TIMELINE_CACHE_KEY = "timeline";
+    private final static String FILTER_CACHE_KEY = "filter_";
     private final static Logger logger = LoggerFactory.getLogger(TwitterService.class);
+    private TimeCache cache;
 
     public Twitter twitter;
+
 
     @Inject
     public TwitterService(Twitter twitter) {
         this.twitter = twitter;
+        cache = new TimeCache(60, 20);
     }
-
-    public void setTwitter(Twitter twitter) {
-        this.twitter = twitter;
+    public void setCache(TimeCache cache) {
+        this.cache = cache;
     }
 
     public Twitter getTwitter() {
@@ -39,26 +45,29 @@ public final class TwitterService {
     public Optional<TwitterTweetModel> postStatus(String text) throws TwitterException {
         boolean isOkToPost = textErrorCheck(text);
         if (isOkToPost) {
-            Optional<TwitterTweetModel> tweet = Stream.of(twitter.updateStatus(text))
-                                                      .peek(status -> logger.info("Successfully updated status to [" + status.getText() + "]."))
-                                                      .map(status -> getTweet(status))
-                                                      .findFirst();
-            return tweet;
+            return Stream.of(twitter.updateStatus(text))
+                         .peek(status -> {
+                             logger.info("Successfully updated status to [" + status.getText() + "].");
+                             cache.clearCache();
+                         })
+                         .map(status -> getTweet(status))
+                         .findFirst();
         }
         return Optional.empty();
     }
 
     public Optional<List<TwitterTweetModel>> getTimeline() throws TwitterException {
-        return Optional.of(twitter.getHomeTimeline().stream()
-                                  .map(status -> getTweet(status))
-                                  .collect(Collectors.toList()));
+        return (cache.getEntry(TIMELINE_CACHE_KEY) != null) ? Optional.of(cache.getEntry(TIMELINE_CACHE_KEY)) : Optional.of(cache.putEntry(TIMELINE_CACHE_KEY, twitter.getHomeTimeline().stream()
+                                                                                                                                                                      .map(status -> getTweet(status))
+                                                                                                                                                                      .collect(Collectors.toList())));
     }
 
     public Optional<List<TwitterTweetModel>> getFiltered(String filterKey) throws TwitterException {
-        return Optional.of(twitter.getHomeTimeline().stream()
-                                  .filter(status -> status.getText().toLowerCase().contains(filterKey.toLowerCase()))
-                                  .map(status -> getTweet(status))
-                                  .collect(Collectors.toList()));
+        String cacheKey = FILTER_CACHE_KEY + filterKey;
+        return (cache.getEntry(cacheKey) != null) ? Optional.of(cache.getEntry(cacheKey)) : Optional.of(cache.putEntry(cacheKey, twitter.getHomeTimeline().stream()
+                                                                                                                                        .filter(status -> status.getText().toLowerCase().contains(filterKey.toLowerCase()))
+                                                                                                                                        .map(status -> getTweet(status))
+                                                                                                                                        .collect(Collectors.toList())));
     }
 
     public TwitterTweetModel getTweet(Status status) {
