@@ -19,10 +19,9 @@ public class TimeCache {
         private List<TwitterTweetModel> data;
         private boolean important;
 
-        public TimedList(Date date, List<TwitterTweetModel> list, boolean imp) {
+        public TimedList(Date date, List<TwitterTweetModel> list) {
             creationDate = date;
             data = list;
-            important = imp;
         }
 
         public boolean outOfDate() {
@@ -43,7 +42,7 @@ public class TimeCache {
             @Override
             protected boolean removeEldestEntry(Map.Entry eldest) {
                 removeOldEntries();
-                return size() > maxEntries && !((TimedList) eldest.getValue()).important;
+                return size() > maxEntries;
             }
         };
     }
@@ -61,12 +60,7 @@ public class TimeCache {
     }
 
     public List<TwitterTweetModel> putEntry(String key, List<TwitterTweetModel> value) {
-        if (key.equals(TIMELINE_CACHE_KEY)) {
-            cache.put(key, new TimedList(new Date(), value, true));
-        }
-        else {
-            cache.put(key, new TimedList(new Date(), value, false));
-        }
+        cache.put(key, new TimedList(new Date(), value));
         return value;
     }
 
