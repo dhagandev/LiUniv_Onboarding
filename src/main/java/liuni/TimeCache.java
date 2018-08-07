@@ -9,6 +9,7 @@ import java.util.Map;
 
 public class TimeCache {
     private final int TIME_CONVERSION = 1000;
+    private final static String TIMELINE_CACHE_KEY = "timeline";
     private long timeToLive;
     private int maxEntries;
     private Map<String, TimedList> cache;
@@ -60,7 +61,7 @@ public class TimeCache {
     }
 
     public List<TwitterTweetModel> putEntry(String key, List<TwitterTweetModel> value) {
-        if (key.equals("timeline")) {
+        if (key.equals(TIMELINE_CACHE_KEY)) {
             cache.put(key, new TimedList(new Date(), value, true));
         }
         else {
