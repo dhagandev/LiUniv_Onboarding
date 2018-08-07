@@ -21,6 +21,8 @@ import java.util.stream.Stream;
 
 public final class TwitterService {
     public final static int TWITTER_CHAR_MAX = 280;
+    private final static String TIMELINE_CACHE_KEY = "timeline";
+    private final static String FILTER_CACHE_KEY = "filter_";
     private final static Logger logger = LoggerFactory.getLogger(TwitterService.class);
     private TimeCache cache;
 
@@ -55,14 +57,13 @@ public final class TwitterService {
     }
 
     public Optional<List<TwitterTweetModel>> getTimeline() throws TwitterException {
-        String cacheKey = "timeline";
-        return (cache.getEntry(cacheKey) != null) ? Optional.of(cache.getEntry(cacheKey)) : Optional.of(cache.putEntry(cacheKey, twitter.getHomeTimeline().stream()
-                                                                                                                                        .map(status -> getTweet(status))
-                                                                                                                                        .collect(Collectors.toList())));
+        return (cache.getEntry(TIMELINE_CACHE_KEY) != null) ? Optional.of(cache.getEntry(TIMELINE_CACHE_KEY)) : Optional.of(cache.putEntry(TIMELINE_CACHE_KEY, twitter.getHomeTimeline().stream()
+                                                                                                                                                                      .map(status -> getTweet(status))
+                                                                                                                                                                      .collect(Collectors.toList())));
     }
 
     public Optional<List<TwitterTweetModel>> getFiltered(String filterKey) throws TwitterException {
-        String cacheKey = "filter_" + filterKey;
+        String cacheKey = FILTER_CACHE_KEY + filterKey;
         return (cache.getEntry(cacheKey) != null) ? Optional.of(cache.getEntry(cacheKey)) : Optional.of(cache.putEntry(cacheKey, twitter.getHomeTimeline().stream()
                                                                                                                                         .filter(status -> status.getText().toLowerCase().contains(filterKey.toLowerCase()))
                                                                                                                                         .map(status -> getTweet(status))
