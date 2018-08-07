@@ -60,7 +60,7 @@ public class TimeCache {
     }
 
     public List<TwitterTweetModel> putEntry(String key, List<TwitterTweetModel> value) {
-        if (key.contains("timeline_")) {
+        if (key.equals("timeline")) {
             cache.put(key, new TimedList(new Date(), value, true));
         }
         else {

@@ -55,7 +55,7 @@ public final class TwitterService {
     }
 
     public Optional<List<TwitterTweetModel>> getTimeline() throws TwitterException {
-        String cacheKey = "timeline_" + new Date();
+        String cacheKey = "timeline";
         return (cache.getEntry(cacheKey) != null) ? Optional.of(cache.getEntry(cacheKey)) : Optional.of(cache.putEntry(cacheKey, twitter.getHomeTimeline().stream()
                                                                                                                                         .map(status -> getTweet(status))
                                                                                                                                         .collect(Collectors.toList())));
