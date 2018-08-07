@@ -15,10 +15,12 @@ public class TimeCache {
     protected class TimedList {
         private Date creationDate;
         private List<TwitterTweetModel> data;
+        private boolean important;
 
-        public TimedList(Date date, List<TwitterTweetModel> list) {
+        public TimedList(Date date, List<TwitterTweetModel> list, boolean imp) {
             creationDate = date;
             data = list;
+            important = imp;
         }
 
         public boolean outOfDate() {
@@ -28,14 +30,18 @@ public class TimeCache {
         }
     }
 
-    public TimeCache(int maxItems, long maxTimeSec) {
+    public TimeCache(long maxTimeSec, int maxItems) {
         maxEntries = maxItems;
         timeToLive = maxTimeSec * 1000;
-        cache = new LinkedHashMap(maxItems + 1, 0.75F, true) {
+        createNewCache();
+    }
+
+    public void createNewCache() {
+        cache = new LinkedHashMap(maxEntries + 1, 0.75F, true) {
             @Override
             protected boolean removeEldestEntry(Map.Entry eldest) {
                 removeOldEntries();
-                return size() > maxItems;
+                return size() > maxEntries && !((TimedList) eldest.getValue()).important;
             }
         };
     }
@@ -52,8 +58,14 @@ public class TimeCache {
         return null;
     }
 
-    public void putEntry(String key, List<TwitterTweetModel> value) {
-        cache.put(key, new TimedList(new Date(), value));
+    public List<TwitterTweetModel> putEntry(String key, List<TwitterTweetModel> value) {
+        if (key.contains("timeline_")) {
+            cache.put(key, new TimedList(new Date(), value, true));
+        }
+        else {
+            cache.put(key, new TimedList(new Date(), value, false));
+        }
+        return value;
     }
 
     public boolean isEntry(String key) {
@@ -66,12 +78,6 @@ public class TimeCache {
     }
 
     public void clearCache() {
-        cache = new LinkedHashMap(maxEntries + 1, 0.75F, true) {
-            @Override
-            protected boolean removeEldestEntry(Map.Entry eldest) {
-                removeOldEntries();
-                return size() > maxEntries;
-            }
-        };
+        createNewCache();
     }
 }

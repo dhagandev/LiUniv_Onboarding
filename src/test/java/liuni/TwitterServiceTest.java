@@ -35,8 +35,7 @@ public class TwitterServiceTest {
         mockedCache = mock(TimeCache.class);
         when(mockedCache.getEntry(isA(String.class))).thenReturn(null);
         twitterService = new TwitterService(twitter);
-        twitterService.setFilterCache(mockedCache);
-        twitterService.setTimelineCache(mockedCache);
+        twitterService.setCache(mockedCache);
     }
 
     public TwitterTweetModel createTweetModel(Date testDate, String testMessage, URL url, String testScreenName, String testName) {
@@ -155,6 +154,7 @@ public class TwitterServiceTest {
             responseList.add(status2);
 
             when(twitter.getHomeTimeline()).thenReturn(responseList);
+            when(mockedCache.putEntry(isA(String.class), isA(List.class))).thenReturn(expected);
 
             List<TwitterTweetModel> result = twitterService.getTimeline().get();
             assertTrue(expected.size() > 0);
@@ -187,7 +187,7 @@ public class TwitterServiceTest {
             expected.add(tweetModel2);
 
             when(mockedCache.getEntry(isA(String.class))).thenReturn(expected);
-            twitterService.setTimelineCache(mockedCache);
+            twitterService.setCache(mockedCache);
 
             List<TwitterTweetModel> result = twitterService.getTimeline().get();
             assertTrue(expected.size() > 0);
@@ -231,6 +231,7 @@ public class TwitterServiceTest {
             responseList.add(status3);
 
             when(twitter.getHomeTimeline()).thenReturn(responseList);
+            when(mockedCache.putEntry(isA(String.class), isA(List.class))).thenReturn(expected);
 
             List<TwitterTweetModel> result = twitterService.getFiltered(filterKey).get();
             assertTrue(expected.size() > 0);
@@ -266,7 +267,7 @@ public class TwitterServiceTest {
             expected.add(tweetModel3);
 
             when(mockedCache.getEntry(isA(String.class))).thenReturn(expected);
-            twitterService.setFilterCache(mockedCache);
+            twitterService.setCache(mockedCache);
 
             List<TwitterTweetModel> result = twitterService.getFiltered(filterKey).get();
             assertTrue(expected.size() > 0);
