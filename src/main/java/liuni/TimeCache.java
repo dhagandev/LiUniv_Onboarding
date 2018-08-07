@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class TimeCache {
+    private final int TIME_CONVERSION = 1000;
     private long timeToLive;
     private int maxEntries;
     private Map<String, TimedList> cache;
@@ -32,7 +33,7 @@ public class TimeCache {
 
     public TimeCache(long maxTimeSec, int maxItems) {
         maxEntries = maxItems;
-        timeToLive = maxTimeSec * 1000;
+        timeToLive = maxTimeSec * TIME_CONVERSION;
         createNewCache();
     }
 
