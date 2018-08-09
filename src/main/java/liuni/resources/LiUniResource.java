@@ -40,6 +40,9 @@ public class LiUniResource {
                           .map(list -> Response.noContent()
                                              .type(MediaType.APPLICATION_JSON)
                                              .status(Response.Status.OK)
+                                             .header("Access-Control-Allow-Origin", "*")
+                                             .header("Access-Control-Allow-Methods", "GET")
+                                             .allow("OPTIONS")
                                              .entity(list))
                           .get()
                           .build();
@@ -52,6 +55,9 @@ public class LiUniResource {
             return Response.noContent()
                         .type(MediaType.APPLICATION_JSON)
                         .status(error.getErrorStatus())
+                        .header("Access-Control-Allow-Origin", "*")
+                        .header("Access-Control-Allow-Methods", "GET")
+                        .allow("OPTIONS")
                         .entity(error)
                         .build();
         }
@@ -66,6 +72,9 @@ public class LiUniResource {
                           .map(list -> Response.noContent()
                                               .type(MediaType.APPLICATION_JSON)
                                               .status(Response.Status.OK)
+                                              .header("Access-Control-Allow-Origin", "*")
+                                              .header("Access-Control-Allow-Methods", "GET")
+                                              .allow("OPTIONS")
                                               .entity(list))
                           .get()
                           .build();
@@ -78,6 +87,9 @@ public class LiUniResource {
             return Response.noContent()
                            .type(MediaType.APPLICATION_JSON)
                            .status(error.getErrorStatus())
+                           .header("Access-Control-Allow-Origin", "*")
+                           .header("Access-Control-Allow-Methods", "GET")
+                           .allow("OPTIONS")
                            .entity(error)
                            .build();
         }
@@ -95,6 +107,9 @@ public class LiUniResource {
                                      return Response.noContent()
                                                     .type(MediaType.APPLICATION_JSON)
                                                     .status(Response.Status.CREATED)
+                                                    .header("Access-Control-Allow-Origin", "*")
+                                                    .header("Access-Control-Allow-Methods", "POST")
+                                                    .allow("OPTIONS")
                                                     .entity(status);
                                  })
                                  .orElseGet(() -> {
@@ -105,6 +120,9 @@ public class LiUniResource {
                                      return Response.noContent()
                                                     .type(MediaType.APPLICATION_JSON)
                                                     .status(error.getErrorStatus())
+                                                    .header("Access-Control-Allow-Origin", "*")
+                                                    .header("Access-Control-Allow-Methods", "POST")
+                                                    .allow("OPTIONS")
                                                     .entity(error);
                                  })
                                  .build();
@@ -117,6 +135,9 @@ public class LiUniResource {
             return Response.noContent()
                            .type(MediaType.APPLICATION_JSON)
                            .status(error.getErrorStatus())
+                           .header("Access-Control-Allow-Origin", "*")
+                           .header("Access-Control-Allow-Methods", "POST")
+                           .allow("OPTIONS")
                            .entity(error)
                            .build();
         }
