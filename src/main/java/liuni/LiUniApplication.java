@@ -29,16 +29,10 @@ public class LiUniApplication extends Application<LiUniConfig> {
 
     @Override
     public void run(LiUniConfig config, Environment env) {
-        // Enable CORS headers
-        final FilterRegistration.Dynamic cors =
-                env.servlets().addFilter("CORS", CrossOriginFilter.class);
-
-        // Configure CORS parameters
+        final FilterRegistration.Dynamic cors = env.servlets().addFilter("CORS", CrossOriginFilter.class);
         cors.setInitParameter("allowedOrigins", "*");
         cors.setInitParameter("allowedHeaders", "X-Requested-With,Content-Type,Accept,Origin");
         cors.setInitParameter("allowedMethods", "OPTIONS,GET,PUT,POST,DELETE,HEAD");
-
-        // Add URL mapping
         cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
 
         final LiUniResource resource = createResource(config);
