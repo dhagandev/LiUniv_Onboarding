@@ -35,13 +35,6 @@ public class LiUniResource implements ContainerResponseFilter {
         this.twitterService = twitterService;
     }
 
-    private Response.ResponseBuilder buildResponse() {
-        return Response.noContent();
-//                       .header("Access-Control-Allow-Origin", "*")
-//                       .header("Access-Control-Allow-Methods", "GET")
-//                       .allow("OPTIONS");
-    }
-
     @Path("/timeline")
     @GET
     @Timed
