@@ -19,6 +19,7 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 @Path("/api/1.0/twitter")
 @Produces(MediaType.APPLICATION_JSON)
 public class LiUniResource {
@@ -38,9 +39,9 @@ public class LiUniResource {
         try {
             return twitterService.getTimeline()
                           .map(list -> Response.noContent()
-                                             .type(MediaType.APPLICATION_JSON)
-                                             .status(Response.Status.OK)
-                                             .entity(list))
+                                               .type(MediaType.APPLICATION_JSON)
+                                               .status(Response.Status.OK)
+                                               .entity(list))
                           .get()
                           .build();
         }
@@ -50,10 +51,10 @@ public class LiUniResource {
             logger.error("Produced an error with a " + error.getErrorStatus() + " code.", e);
 
             return Response.noContent()
-                        .type(MediaType.APPLICATION_JSON)
-                        .status(error.getErrorStatus())
-                        .entity(error)
-                        .build();
+                           .type(MediaType.APPLICATION_JSON)
+                           .status(error.getErrorStatus())
+                           .entity(error)
+                           .build();
         }
     }
 
@@ -64,9 +65,9 @@ public class LiUniResource {
         try {
             return twitterService.getFiltered(filterKey)
                           .map(list -> Response.noContent()
-                                              .type(MediaType.APPLICATION_JSON)
-                                              .status(Response.Status.OK)
-                                              .entity(list))
+                                               .type(MediaType.APPLICATION_JSON)
+                                               .status(Response.Status.OK)
+                                               .entity(list))
                           .get()
                           .build();
         }
@@ -121,5 +122,4 @@ public class LiUniResource {
                            .build();
         }
     }
-
 }
