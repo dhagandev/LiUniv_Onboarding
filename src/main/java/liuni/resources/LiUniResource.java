@@ -30,6 +30,14 @@ public class LiUniResource {
         this.twitterService = twitterService;
     }
 
+    private Response.ResponseBuilder buildResponse() {
+        return Response.noContent()
+                       .type(MediaType.APPLICATION_JSON)
+                       .header("Access-Control-Allow-Origin", "*")
+                       .header("Access-Control-Allow-Methods", "GET")
+                       .allow("OPTIONS");
+    }
+
     @Path("/timeline")
     @GET
     @Timed
@@ -37,13 +45,8 @@ public class LiUniResource {
     public Response fetchTimeline() {
         try {
             return twitterService.getTimeline()
-                          .map(list -> Response.noContent()
-                                             .type(MediaType.APPLICATION_JSON)
-                                             .status(Response.Status.OK)
-                                             .header("Access-Control-Allow-Origin", "*")
-                                             .header("Access-Control-Allow-Methods", "GET")
-                                             .allow("OPTIONS")
-                                             .entity(list))
+                          .map(list -> buildResponse().status(Response.Status.OK)
+                                                      .entity(list))
                           .get()
                           .build();
         }
@@ -52,14 +55,9 @@ public class LiUniResource {
             error.setError(ErrorModel.ErrorType.GENERAL);
             logger.error("Produced an error with a " + error.getErrorStatus() + " code.", e);
 
-            return Response.noContent()
-                        .type(MediaType.APPLICATION_JSON)
-                        .status(error.getErrorStatus())
-                        .header("Access-Control-Allow-Origin", "*")
-                        .header("Access-Control-Allow-Methods", "GET")
-                        .allow("OPTIONS")
-                        .entity(error)
-                        .build();
+            return buildResponse().status(error.getErrorStatus())
+                                  .entity(error)
+                                  .build();
         }
     }
 
@@ -69,13 +67,8 @@ public class LiUniResource {
     public Response filterTweets(@QueryParam("filterMessage") String filterKey) {
         try {
             return twitterService.getFiltered(filterKey)
-                          .map(list -> Response.noContent()
-                                              .type(MediaType.APPLICATION_JSON)
-                                              .status(Response.Status.OK)
-                                              .header("Access-Control-Allow-Origin", "*")
-                                              .header("Access-Control-Allow-Methods", "GET")
-                                              .allow("OPTIONS")
-                                              .entity(list))
+                          .map(list -> buildResponse().status(Response.Status.OK)
+                                                      .entity(list))
                           .get()
                           .build();
         }
@@ -84,14 +77,9 @@ public class LiUniResource {
             error.setError(ErrorModel.ErrorType.GENERAL);
             logger.error("Produced an error with a " + error.getErrorStatus() + " code.", e);
 
-            return Response.noContent()
-                           .type(MediaType.APPLICATION_JSON)
-                           .status(error.getErrorStatus())
-                           .header("Access-Control-Allow-Origin", "*")
-                           .header("Access-Control-Allow-Methods", "GET")
-                           .allow("OPTIONS")
-                           .entity(error)
-                           .build();
+            return buildResponse().status(error.getErrorStatus())
+                                  .entity(error)
+                                  .build();
         }
     }
 
@@ -104,26 +92,16 @@ public class LiUniResource {
             return twitterService.postStatus(message)
                                  .map(status -> {
                                      logger.info("Successfully posted: " + status.getMessage());
-                                     return Response.noContent()
-                                                    .type(MediaType.APPLICATION_JSON)
-                                                    .status(Response.Status.CREATED)
-                                                    .header("Access-Control-Allow-Origin", "*")
-                                                    .header("Access-Control-Allow-Methods", "POST")
-                                                    .allow("OPTIONS")
-                                                    .entity(status);
+                                     return buildResponse().status(Response.Status.CREATED)
+                                                           .entity(status);
                                  })
                                  .orElseGet(() -> {
                                      ErrorModel error = new ErrorModel();
                                      error.setError(ErrorModel.ErrorType.BAD_TWEET);
                                      logger.warn("An error occurred. Unable to post your tweet [" + message + "]. Sorry! This may be due to the message being too long or being empty. Produced an error with a " + error.getErrorStatus() + " code.");
 
-                                     return Response.noContent()
-                                                    .type(MediaType.APPLICATION_JSON)
-                                                    .status(error.getErrorStatus())
-                                                    .header("Access-Control-Allow-Origin", "*")
-                                                    .header("Access-Control-Allow-Methods", "POST")
-                                                    .allow("OPTIONS")
-                                                    .entity(error);
+                                     return buildResponse().status(error.getErrorStatus())
+                                                           .entity(error);
                                  })
                                  .build();
         }
@@ -132,14 +110,9 @@ public class LiUniResource {
             error.setError(ErrorModel.ErrorType.GENERAL);
             logger.error("Produced an error with a " + error.getErrorStatus() + " code.", e);
 
-            return Response.noContent()
-                           .type(MediaType.APPLICATION_JSON)
-                           .status(error.getErrorStatus())
-                           .header("Access-Control-Allow-Origin", "*")
-                           .header("Access-Control-Allow-Methods", "POST")
-                           .allow("OPTIONS")
-                           .entity(error)
-                           .build();
+            return buildResponse().status(error.getErrorStatus())
+                                  .entity(error)
+                                  .build();
         }
     }
 
