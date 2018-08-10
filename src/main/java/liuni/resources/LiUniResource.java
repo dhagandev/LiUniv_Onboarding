@@ -13,15 +13,20 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerResponseContext;
+import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+
 @Path("/api/1.0/twitter")
 @Produces(MediaType.APPLICATION_JSON)
-public class LiUniResource {
+public class LiUniResource implements ContainerResponseFilter {
     private static Logger logger = LoggerFactory.getLogger(LiUniResource.class);
     public TwitterService twitterService;
 
@@ -31,11 +36,10 @@ public class LiUniResource {
     }
 
     private Response.ResponseBuilder buildResponse() {
-        return Response.noContent()
-                       .type(MediaType.APPLICATION_JSON)
-                       .header("Access-Control-Allow-Origin", "*")
-                       .header("Access-Control-Allow-Methods", "GET")
-                       .allow("OPTIONS");
+        return Response.noContent();
+//                       .header("Access-Control-Allow-Origin", "*")
+//                       .header("Access-Control-Allow-Methods", "GET")
+//                       .allow("OPTIONS");
     }
 
     @Path("/timeline")
@@ -45,8 +49,9 @@ public class LiUniResource {
     public Response fetchTimeline() {
         try {
             return twitterService.getTimeline()
-                          .map(list -> buildResponse().status(Response.Status.OK)
-                                                      .entity(list))
+                          .map(list -> Response.noContent()
+                                               .status(Response.Status.OK)
+                                               .entity(list))
                           .get()
                           .build();
         }
@@ -55,9 +60,10 @@ public class LiUniResource {
             error.setError(ErrorModel.ErrorType.GENERAL);
             logger.error("Produced an error with a " + error.getErrorStatus() + " code.", e);
 
-            return buildResponse().status(error.getErrorStatus())
-                                  .entity(error)
-                                  .build();
+            return Response.noContent()
+                           .status(error.getErrorStatus())
+                           .entity(error)
+                           .build();
         }
     }
 
@@ -67,8 +73,9 @@ public class LiUniResource {
     public Response filterTweets(@QueryParam("filterMessage") String filterKey) {
         try {
             return twitterService.getFiltered(filterKey)
-                          .map(list -> buildResponse().status(Response.Status.OK)
-                                                      .entity(list))
+                          .map(list -> Response.noContent()
+                                               .status(Response.Status.OK)
+                                               .entity(list))
                           .get()
                           .build();
         }
@@ -77,9 +84,10 @@ public class LiUniResource {
             error.setError(ErrorModel.ErrorType.GENERAL);
             logger.error("Produced an error with a " + error.getErrorStatus() + " code.", e);
 
-            return buildResponse().status(error.getErrorStatus())
-                                  .entity(error)
-                                  .build();
+            return Response.noContent()
+                           .status(error.getErrorStatus())
+                           .entity(error)
+                           .build();
         }
     }
 
@@ -92,16 +100,18 @@ public class LiUniResource {
             return twitterService.postStatus(message)
                                  .map(status -> {
                                      logger.info("Successfully posted: " + status.getMessage());
-                                     return buildResponse().status(Response.Status.CREATED)
-                                                           .entity(status);
+                                     return Response.noContent()
+                                                    .status(Response.Status.CREATED)
+                                                    .entity(status);
                                  })
                                  .orElseGet(() -> {
                                      ErrorModel error = new ErrorModel();
                                      error.setError(ErrorModel.ErrorType.BAD_TWEET);
                                      logger.warn("An error occurred. Unable to post your tweet [" + message + "]. Sorry! This may be due to the message being too long or being empty. Produced an error with a " + error.getErrorStatus() + " code.");
 
-                                     return buildResponse().status(error.getErrorStatus())
-                                                           .entity(error);
+                                     return Response.noContent()
+                                                    .status(error.getErrorStatus())
+                                                    .entity(error);
                                  })
                                  .build();
         }
@@ -110,10 +120,20 @@ public class LiUniResource {
             error.setError(ErrorModel.ErrorType.GENERAL);
             logger.error("Produced an error with a " + error.getErrorStatus() + " code.", e);
 
-            return buildResponse().status(error.getErrorStatus())
-                                  .entity(error)
-                                  .build();
+            return Response.noContent()
+                           .status(error.getErrorStatus())
+                           .entity(error)
+                           .build();
         }
     }
 
+    @Override
+    public void filter(ContainerRequestContext request, ContainerResponseContext response) throws IOException {
+        response.getHeaders().add("Access-Control-Allow-Origin", "*");
+        response.getHeaders().add("Access-Control-Allow-Headers",
+                                  "origin, content-type, accept, authorization");
+        response.getHeaders().add("Access-Control-Allow-Credentials", "true");
+        response.getHeaders().add("Access-Control-Allow-Methods",
+                                  "GET, POST");
+    }
 }
