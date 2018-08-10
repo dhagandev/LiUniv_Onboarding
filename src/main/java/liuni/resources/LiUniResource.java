@@ -43,6 +43,7 @@ public class LiUniResource implements ContainerResponseFilter {
         try {
             return twitterService.getTimeline()
                           .map(list -> Response.noContent()
+                                               .type(MediaType.APPLICATION_JSON)
                                                .status(Response.Status.OK)
                                                .entity(list))
                           .get()
@@ -54,6 +55,7 @@ public class LiUniResource implements ContainerResponseFilter {
             logger.error("Produced an error with a " + error.getErrorStatus() + " code.", e);
 
             return Response.noContent()
+                           .type(MediaType.APPLICATION_JSON)
                            .status(error.getErrorStatus())
                            .entity(error)
                            .build();
@@ -67,6 +69,7 @@ public class LiUniResource implements ContainerResponseFilter {
         try {
             return twitterService.getFiltered(filterKey)
                           .map(list -> Response.noContent()
+                                               .type(MediaType.APPLICATION_JSON)
                                                .status(Response.Status.OK)
                                                .entity(list))
                           .get()
@@ -78,6 +81,7 @@ public class LiUniResource implements ContainerResponseFilter {
             logger.error("Produced an error with a " + error.getErrorStatus() + " code.", e);
 
             return Response.noContent()
+                           .type(MediaType.APPLICATION_JSON)
                            .status(error.getErrorStatus())
                            .entity(error)
                            .build();
@@ -94,6 +98,7 @@ public class LiUniResource implements ContainerResponseFilter {
                                  .map(status -> {
                                      logger.info("Successfully posted: " + status.getMessage());
                                      return Response.noContent()
+                                                    .type(MediaType.APPLICATION_JSON)
                                                     .status(Response.Status.CREATED)
                                                     .entity(status);
                                  })
@@ -103,6 +108,7 @@ public class LiUniResource implements ContainerResponseFilter {
                                      logger.warn("An error occurred. Unable to post your tweet [" + message + "]. Sorry! This may be due to the message being too long or being empty. Produced an error with a " + error.getErrorStatus() + " code.");
 
                                      return Response.noContent()
+                                                    .type(MediaType.APPLICATION_JSON)
                                                     .status(error.getErrorStatus())
                                                     .entity(error);
                                  })
@@ -114,6 +120,7 @@ public class LiUniResource implements ContainerResponseFilter {
             logger.error("Produced an error with a " + error.getErrorStatus() + " code.", e);
 
             return Response.noContent()
+                           .type(MediaType.APPLICATION_JSON)
                            .status(error.getErrorStatus())
                            .entity(error)
                            .build();
