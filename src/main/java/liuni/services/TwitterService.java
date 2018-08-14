@@ -74,6 +74,7 @@ public final class TwitterService {
         TwitterTweetModel tweet = new TwitterTweetModel();
         UserModel user = getUser(status);
 
+        tweet.setId(status.getId());
         tweet.setMessage(status.getText());
         tweet.setUser(user);
         tweet.setCreatedAt(status.getCreatedAt());

@@ -8,6 +8,7 @@ public class TwitterTweetModel {
     private String message;
     private UserModel user;
     private Date createdAt;
+    private long id;
 
     public TwitterTweetModel() {
 
@@ -29,6 +30,11 @@ public class TwitterTweetModel {
     }
 
     @JsonProperty
+    public long getId() {
+        return id;
+    }
+
+    @JsonProperty
     public void setMessage(String message) {
         this.message = message;
     }
@@ -41,6 +47,11 @@ public class TwitterTweetModel {
     @JsonProperty
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    @JsonProperty
+    public void setId(long id) {
+        this.id = id;
     }
 
     @Override
