@@ -13,7 +13,6 @@ import twitter4j.User;
 import javax.inject.Inject;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,6 +23,8 @@ public final class TwitterService {
     private final static String TIMELINE_CACHE_KEY = "timeline";
     private final static String FILTER_CACHE_KEY = "filter_";
     private final static Logger logger = LoggerFactory.getLogger(TwitterService.class);
+    private String url = "http://twitter.com/";
+    private String path = "/status/";
     private TimeCache cache;
 
     public Twitter twitter;
@@ -70,13 +71,21 @@ public final class TwitterService {
                                                                                                                                         .collect(Collectors.toList())));
     }
 
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getTweetLinkStr(UserModel user, Status status) {
+        return url + user.getTwitterHandle() + path + status.getId();
+    }
+
     public TwitterTweetModel getTweet(Status status) {
         TwitterTweetModel tweet = new TwitterTweetModel();
         UserModel user = getUser(status);
 
         URL url = null;
         try {
-            url = new URL("http://twitter.com/" + user.getTwitterHandle() + "/status/" + status.getId());
+            url = new URL(getTweetLinkStr(user, status));
         }
         catch (MalformedURLException e) {
             logger.error("Improper URL:", e);
