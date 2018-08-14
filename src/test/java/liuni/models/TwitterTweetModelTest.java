@@ -6,6 +6,7 @@ import liuni.models.UserModel;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.net.URL;
 import java.util.Date;
 
 import static org.junit.Assert.assertNotEquals;
@@ -35,6 +36,14 @@ public class TwitterTweetModelTest {
         tweetModel.setCreatedAt(date);
         Date result = tweetModel.getCreatedAt();
         assertEquals(date, result);
+    }
+
+    @Test
+    public void testGetLink() {
+        URL link = mock(URL.class);
+        tweetModel.setLink(link);
+        URL result = tweetModel.getLink();
+        assertEquals(link, result);
     }
 
     @Test

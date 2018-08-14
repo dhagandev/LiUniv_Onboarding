@@ -12,6 +12,7 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.User;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,12 +39,13 @@ public class TwitterServiceTest {
         twitterService.setCache(mockedCache);
     }
 
-    public TwitterTweetModel createTweetModel(Date testDate, String testMessage, URL url, String testScreenName, String testName) {
+    public TwitterTweetModel createTweetModel(Date testDate, String testMessage, URL url, String testScreenName, String testName, URL link) {
         TwitterTweetModel tweetModel = new TwitterTweetModel();
         UserModel user = createUserModel(url, testScreenName, testName);
         tweetModel.setUser(user);
         tweetModel.setCreatedAt(testDate);
         tweetModel.setMessage(testMessage);
+        tweetModel.setLink(link);
 
         return tweetModel;
     }
@@ -57,12 +59,13 @@ public class TwitterServiceTest {
         return user;
     }
 
-    public Status createMockedStatus(Date testDate, String testMessage, String urlString, String testScreenName, String testName) {
+    public Status createMockedStatus(Date testDate, String testMessage, String urlString, String testScreenName, String testName, long id) {
         Status status = mock(Status.class);
         User user = createdMockedUser(urlString, testScreenName, testName);
         when(status.getUser()).thenReturn(user);
         when(status.getText()).thenReturn(testMessage);
         when(status.getCreatedAt()).thenReturn(testDate);
+        when(status.getId()).thenReturn(id);
 
         return status;
     }
@@ -85,9 +88,26 @@ public class TwitterServiceTest {
         String urlString = "";
         URL testProfileUrl = null;
 
-        TwitterTweetModel expected = createTweetModel(testDate, testTweetMessage, testProfileUrl, testScreenName, testName);
-        Status status = createMockedStatus(testDate, testTweetMessage, urlString, testScreenName, testName);
+        TwitterTweetModel expected = createTweetModel(testDate, testTweetMessage, testProfileUrl, testScreenName, testName, null);
+        Status status = createMockedStatus(testDate, testTweetMessage, urlString, testScreenName, testName, 0);
 
+        TwitterTweetModel result = twitterService.getTweet(status);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetTweetBadURL() {
+        String testName = "";
+        String testScreenName = "";
+        String testTweetMessage = "Model Message";
+        Date testDate = new Date(2323223232L);
+        String urlString = "";
+        URL testProfileUrl = null;
+
+        TwitterTweetModel expected = createTweetModel(testDate, testTweetMessage, testProfileUrl, testScreenName, testName, null);
+        Status status = createMockedStatus(testDate, testTweetMessage, urlString, testScreenName, testName, 0);
+
+        twitterService.setUrl("");
         TwitterTweetModel result = twitterService.getTweet(status);
         assertEquals(expected, result);
     }
@@ -102,7 +122,7 @@ public class TwitterServiceTest {
         URL testProfileUrl = null;
 
         UserModel expected = createUserModel(testProfileUrl, testScreenName, testName);
-        Status status = createMockedStatus(testDate, testTweetMessage, urlString, testScreenName, testName);
+        Status status = createMockedStatus(testDate, testTweetMessage, urlString, testScreenName, testName, 0);
 
         UserModel result = twitterService.getUser(status);
         assertEquals(expected, result);
@@ -124,7 +144,7 @@ public class TwitterServiceTest {
         }
 
         UserModel expected = createUserModel(testProfileUrl, testScreenName, testName);
-        Status status = createMockedStatus(testDate, testTweetMessage, urlString, testScreenName, testName);
+        Status status = createMockedStatus(testDate, testTweetMessage, urlString, testScreenName, testName, 0);
 
         UserModel result = twitterService.getUser(status);
         assertEquals(expected, result);
@@ -143,14 +163,14 @@ public class TwitterServiceTest {
             List<TwitterTweetModel> expected = new ArrayList<TwitterTweetModel>();
             ResponseList<Status> responseList = new ResponseListImpl<Status>();
 
-            TwitterTweetModel tweetModel1 = createTweetModel(testDate, testTweetMessage, testProfileUrl, testScreenName, testName);
+            TwitterTweetModel tweetModel1 = createTweetModel(testDate, testTweetMessage, testProfileUrl, testScreenName, testName, null);
             expected.add(tweetModel1);
-            Status status1 = createMockedStatus(testDate, testTweetMessage, urlString, testScreenName, testName);
+            Status status1 = createMockedStatus(testDate, testTweetMessage, urlString, testScreenName, testName, 0);
             responseList.add(status1);
 
-            TwitterTweetModel tweetModel2 = createTweetModel(testDate, testTweetMessage + " add on", testProfileUrl, testScreenName, testName);
+            TwitterTweetModel tweetModel2 = createTweetModel(testDate, testTweetMessage + " add on", testProfileUrl, testScreenName, testName, null);
             expected.add(tweetModel2);
-            Status status2 = createMockedStatus(testDate, testTweetMessage + " add on", urlString, testScreenName, testName);
+            Status status2 = createMockedStatus(testDate, testTweetMessage + " add on", urlString, testScreenName, testName, 0);
             responseList.add(status2);
 
             when(twitter.getHomeTimeline()).thenReturn(responseList);
@@ -180,10 +200,10 @@ public class TwitterServiceTest {
 
             List<TwitterTweetModel> expected = new ArrayList<TwitterTweetModel>();
 
-            TwitterTweetModel tweetModel1 = createTweetModel(testDate, testTweetMessage, testProfileUrl, testScreenName, testName);
+            TwitterTweetModel tweetModel1 = createTweetModel(testDate, testTweetMessage, testProfileUrl, testScreenName, testName, null);
             expected.add(tweetModel1);
 
-            TwitterTweetModel tweetModel2 = createTweetModel(testDate, testTweetMessage + " add on", testProfileUrl, testScreenName, testName);
+            TwitterTweetModel tweetModel2 = createTweetModel(testDate, testTweetMessage + " add on", testProfileUrl, testScreenName, testName, null);
             expected.add(tweetModel2);
 
             when(mockedCache.getEntry(isA(String.class))).thenReturn(expected);
@@ -217,17 +237,17 @@ public class TwitterServiceTest {
             List<TwitterTweetModel> expected = new ArrayList<TwitterTweetModel>();
             ResponseList<Status> responseList = new ResponseListImpl<Status>();
 
-            TwitterTweetModel tweetModel1 = createTweetModel(testDate, testTweetMessage + " NEWNEWNEW", testProfileUrl, testScreenName, testName);
+            TwitterTweetModel tweetModel1 = createTweetModel(testDate, testTweetMessage + " NEWNEWNEW", testProfileUrl, testScreenName, testName, null);
             expected.add(tweetModel1);
-            Status status1 = createMockedStatus(testDate, testTweetMessage + " NEWNEWNEW", urlString, testScreenName, testName);
+            Status status1 = createMockedStatus(testDate, testTweetMessage + " NEWNEWNEW", urlString, testScreenName, testName, 0);
             responseList.add(status1);
 
-            Status status2 = createMockedStatus(testDate, testTweetMessage, urlString, testScreenName, testName);
+            Status status2 = createMockedStatus(testDate, testTweetMessage, urlString, testScreenName, testName, 0);
             responseList.add(status2);
 
-            TwitterTweetModel tweetModel3 = createTweetModel(testDate, testTweetMessage + " new", testProfileUrl, testScreenName, testName);
+            TwitterTweetModel tweetModel3 = createTweetModel(testDate, testTweetMessage + " new", testProfileUrl, testScreenName, testName, null);
             expected.add(tweetModel3);
-            Status status3 = createMockedStatus(testDate, testTweetMessage + " new", urlString, testScreenName, testName);
+            Status status3 = createMockedStatus(testDate, testTweetMessage + " new", urlString, testScreenName, testName, 0);
             responseList.add(status3);
 
             when(twitter.getHomeTimeline()).thenReturn(responseList);
@@ -260,10 +280,10 @@ public class TwitterServiceTest {
 
             List<TwitterTweetModel> expected = new ArrayList<TwitterTweetModel>();
 
-            TwitterTweetModel tweetModel1 = createTweetModel(testDate, testTweetMessage + " NEWNEWNEW", testProfileUrl, testScreenName, testName);
+            TwitterTweetModel tweetModel1 = createTweetModel(testDate, testTweetMessage + " NEWNEWNEW", testProfileUrl, testScreenName, testName, null);
             expected.add(tweetModel1);
 
-            TwitterTweetModel tweetModel3 = createTweetModel(testDate, testTweetMessage + " new", testProfileUrl, testScreenName, testName);
+            TwitterTweetModel tweetModel3 = createTweetModel(testDate, testTweetMessage + " new", testProfileUrl, testScreenName, testName, null);
             expected.add(tweetModel3);
 
             when(mockedCache.getEntry(isA(String.class))).thenReturn(expected);
@@ -294,8 +314,8 @@ public class TwitterServiceTest {
             String urlString = "";
             URL testProfileUrl = null;
 
-            TwitterTweetModel expected = createTweetModel(testDate, testTweetMessage, testProfileUrl, testScreenName, testName);
-            Status status = createMockedStatus(testDate, testTweetMessage, urlString, testScreenName, testName);
+            TwitterTweetModel expected = createTweetModel(testDate, testTweetMessage, testProfileUrl, testScreenName, testName, null);
+            Status status = createMockedStatus(testDate, testTweetMessage, urlString, testScreenName, testName, 0);
 
             when(twitter.updateStatus(message)).thenReturn(status);
 

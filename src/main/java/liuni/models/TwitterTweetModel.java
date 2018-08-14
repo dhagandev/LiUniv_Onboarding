@@ -1,6 +1,8 @@
 package liuni.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.net.URL;
 import java.util.Date;
 import java.util.Objects;
 
@@ -8,6 +10,7 @@ public class TwitterTweetModel {
     private String message;
     private UserModel user;
     private Date createdAt;
+    private URL link;
 
     public TwitterTweetModel() {
 
@@ -29,6 +32,11 @@ public class TwitterTweetModel {
     }
 
     @JsonProperty
+    public URL getLink() {
+        return link;
+    }
+
+    @JsonProperty
     public void setMessage(String message) {
         this.message = message;
     }
@@ -41,6 +49,11 @@ public class TwitterTweetModel {
     @JsonProperty
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    @JsonProperty
+    public void setLink(URL link) {
+        this.link = link;
     }
 
     @Override
