@@ -74,7 +74,14 @@ public final class TwitterService {
         TwitterTweetModel tweet = new TwitterTweetModel();
         UserModel user = getUser(status);
 
-        tweet.setId(status.getId());
+        URL url = null;
+        try {
+            url = new URL("http://twitter.com/" + user.getTwitterHandle() + "/status/" + status.getId());
+        }
+        catch (MalformedURLException e) {
+            logger.error("Improper URL:", e);
+        }
+        tweet.setLink(url);
         tweet.setMessage(status.getText());
         tweet.setUser(user);
         tweet.setCreatedAt(status.getCreatedAt());
