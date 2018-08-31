@@ -9,7 +9,6 @@ import java.util.Map;
 
 public class TimeCache {
     private final int TIME_CONVERSION = 1000;
-    private final static String TIMELINE_CACHE_KEY = "timeline";
     private long timeToLive;
     private int maxEntries;
     private Map<String, TimedList> cache;
@@ -17,7 +16,6 @@ public class TimeCache {
     protected class TimedList {
         private Date creationDate;
         private List<TwitterTweetModel> data;
-        private boolean important;
 
         public TimedList(Date date, List<TwitterTweetModel> list) {
             creationDate = date;

@@ -12,7 +12,6 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.User;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -210,6 +209,78 @@ public class TwitterServiceTest {
             twitterService.setCache(mockedCache);
 
             List<TwitterTweetModel> result = twitterService.getTimeline().get();
+            assertTrue(expected.size() > 0);
+            assertEquals(expected.size(), result.size());
+            for (int i = 0; i < expected.size(); i++) {
+                assertEquals(expected.get(i), result.get(i));
+            }
+
+        }
+        catch (Exception e) {
+            Assert.fail("This exception is not expected.");
+        }
+    }
+
+    @Test
+    public void testGetUserTimeline() {
+        try {
+            String testName = "Model Name";
+            String testScreenName = "Model Screen Name";
+            String testTweetMessage = "Model Message";
+            Date testDate = new Date(2323223232L);
+            String urlString = "";
+            URL testProfileUrl = null;
+
+            List<TwitterTweetModel> expected = new ArrayList<TwitterTweetModel>();
+            ResponseList<Status> responseList = new ResponseListImpl<Status>();
+
+            TwitterTweetModel tweetModel1 = createTweetModel(testDate, testTweetMessage, testProfileUrl, testScreenName, testName, null);
+            expected.add(tweetModel1);
+            Status status1 = createMockedStatus(testDate, testTweetMessage, urlString, testScreenName, testName, 0);
+            responseList.add(status1);
+
+            TwitterTweetModel tweetModel2 = createTweetModel(testDate, testTweetMessage + " add on", testProfileUrl, testScreenName, testName, null);
+            expected.add(tweetModel2);
+            Status status2 = createMockedStatus(testDate, testTweetMessage + " add on", urlString, testScreenName, testName, 0);
+            responseList.add(status2);
+
+            when(twitter.getUserTimeline()).thenReturn(responseList);
+            when(mockedCache.putEntry(isA(String.class), isA(List.class))).thenReturn(expected);
+
+            List<TwitterTweetModel> result = twitterService.getUserTimeline().get();
+            assertTrue(expected.size() > 0);
+            assertEquals(expected.size(), result.size());
+            for (int i = 0; i < expected.size(); i++) {
+                assertEquals(expected.get(i), result.get(i));
+            }
+
+        }
+        catch (Exception e) {
+            Assert.fail("This exception is not expected.");
+        }
+    }
+
+    @Test
+    public void testGetUserTimelineCached() {
+        try {
+            String testName = "Model Name";
+            String testScreenName = "Model Screen Name";
+            String testTweetMessage = "Model Message";
+            Date testDate = new Date(2323223232L);
+            URL testProfileUrl = null;
+
+            List<TwitterTweetModel> expected = new ArrayList<TwitterTweetModel>();
+
+            TwitterTweetModel tweetModel1 = createTweetModel(testDate, testTweetMessage, testProfileUrl, testScreenName, testName, null);
+            expected.add(tweetModel1);
+
+            TwitterTweetModel tweetModel2 = createTweetModel(testDate, testTweetMessage + " add on", testProfileUrl, testScreenName, testName, null);
+            expected.add(tweetModel2);
+
+            when(mockedCache.getEntry(isA(String.class))).thenReturn(expected);
+            twitterService.setCache(mockedCache);
+
+            List<TwitterTweetModel> result = twitterService.getUserTimeline().get();
             assertTrue(expected.size() > 0);
             assertEquals(expected.size(), result.size());
             for (int i = 0; i < expected.size(); i++) {

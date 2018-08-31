@@ -21,6 +21,10 @@ For future use: the first user listed is indexed as 0, the next is indexed as 1,
 1. Run the following command in terminal: ```java -jar target/LiUni_Onboarding-1.0-SNAPSHOT.jar server application.yml```
 2. In a browser, navigate to: ```http://localhost:8080/api/1.0/twitter/timeline```
 
+#### Hitting the GET User Timeline route ####
+1. Run the following command in terminal: ```java -jar target/LiUni_Onboarding-1.0-SNAPSHOT.jar server application.yml```
+2. In a browser, navigate to: ```http://localhost:8080/api/1.0/twitter/usertimeline```
+
 #### Hitting the GET Filtered Timeline route ####
 1. Run the following command in terminal: ```java -jar target/LiUni_Onboarding-1.0-SNAPSHOT.jar server application.yml```
 2. In a browser, navigate to: ```http://localhost:8080/api/1.0/twitter/tweet/filter?filterMessage=<search-term>```
