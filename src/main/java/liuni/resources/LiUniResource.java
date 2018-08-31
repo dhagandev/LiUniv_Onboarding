@@ -58,6 +58,33 @@ public class LiUniResource {
         }
     }
 
+    @Path("/usertimeline")
+    @GET
+    @Timed
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response fetchUserTimeline() {
+        try {
+            return twitterService.getUserTimeline()
+                                 .map(list -> Response.noContent()
+                                                      .type(MediaType.APPLICATION_JSON)
+                                                      .status(Response.Status.OK)
+                                                      .entity(list))
+                                 .get()
+                                 .build();
+        }
+        catch (TwitterException e) {
+            ErrorModel error = new ErrorModel();
+            error.setError(ErrorModel.ErrorType.GENERAL);
+            logger.error("Produced an error with a " + error.getErrorStatus() + " code.", e);
+
+            return Response.noContent()
+                           .type(MediaType.APPLICATION_JSON)
+                           .status(error.getErrorStatus())
+                           .entity(error)
+                           .build();
+        }
+    }
+
     @Path("/tweet/filter")
     @GET
     @Timed

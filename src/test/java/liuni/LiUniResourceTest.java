@@ -97,6 +97,65 @@ public class LiUniResourceTest {
     }
 
     @Test
+    public void testRestFetchUserTimelineEmptyTimeline() {
+        try {
+            List<TwitterTweetModel> expected = new ArrayList<TwitterTweetModel>();
+            when(mockedService.getUserTimeline()).thenReturn(Optional.of(expected));
+            Response resp = resource.fetchUserTimeline();
+            List<TwitterTweetModel> result = (List<TwitterTweetModel>) resp.getEntity();
+            assertEquals(Response.Status.OK.getStatusCode(), resp.getStatus());
+            assertEquals(expected, result);
+        }
+        catch (Exception e) {
+            Assert.fail("This exception is not expected.");
+        }
+    }
+
+    @Test
+    public void testRestFetchUserTimelineUpdateTimeline() {
+        try {
+            List<TwitterTweetModel> expected = new ArrayList<TwitterTweetModel>();
+            when(mockedService.getUserTimeline()).thenReturn(Optional.of(expected));
+
+            Response resp = resource.fetchUserTimeline();
+            List<TwitterTweetModel> result = (List<TwitterTweetModel>) resp.getEntity();
+
+            assertEquals(Response.Status.OK.getStatusCode(), resp.getStatus());
+            assertEquals(expected, result);
+
+            TwitterTweetModel tweetModel = mock(TwitterTweetModel.class);
+            expected.add(tweetModel);
+            when(mockedService.getTimeline()).thenReturn(Optional.of(expected));
+
+            resp = resource.fetchUserTimeline();
+            result = (List<TwitterTweetModel>) resp.getEntity();
+
+            assertEquals(Response.Status.OK.getStatusCode(), resp.getStatus());
+            assertEquals(expected, result);
+        }
+        catch (Exception e) {
+            Assert.fail("This exception is not expected.");
+        }
+    }
+
+    @Test
+    public void testRestFetchUserTimelineTimelineException() {
+        try {
+            ErrorModel expected = new ErrorModel();
+            expected.setError(ErrorModel.ErrorType.GENERAL);
+            when(mockedService.getUserTimeline()).thenThrow(new TwitterException("This is an exception test."));
+
+            Response resp = resource.fetchUserTimeline();
+            ErrorModel result = (ErrorModel) resp.getEntity();
+
+            assertEquals(expected, result);
+        }
+        catch (Exception e) {
+            Assert.fail("This exception is not expected.");
+        }
+    }
+
+    @Test
     public void testRestFilterTweetsEmptyResult() {
         try {
             String filterKey = "New";

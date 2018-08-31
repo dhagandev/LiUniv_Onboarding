@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 public final class TwitterService {
     public final static int TWITTER_CHAR_MAX = 280;
     private final static String TIMELINE_CACHE_KEY = "timeline";
+    private final static String USER_TIMELINE_CACHE_KEY = "usertimeline";
     private final static String FILTER_CACHE_KEY = "filter_";
     private final static Logger logger = LoggerFactory.getLogger(TwitterService.class);
     private String url = "http://twitter.com/";
@@ -59,6 +60,12 @@ public final class TwitterService {
 
     public Optional<List<TwitterTweetModel>> getTimeline() throws TwitterException {
         return (cache.getEntry(TIMELINE_CACHE_KEY) != null) ? Optional.of(cache.getEntry(TIMELINE_CACHE_KEY)) : Optional.of(cache.putEntry(TIMELINE_CACHE_KEY, twitter.getHomeTimeline().stream()
+                                                                                                                                                                      .map(status -> getTweet(status))
+                                                                                                                                                                      .collect(Collectors.toList())));
+    }
+
+    public Optional<List<TwitterTweetModel>> getUserTimeline() throws TwitterException {
+        return (cache.getEntry(USER_TIMELINE_CACHE_KEY) != null) ? Optional.of(cache.getEntry(USER_TIMELINE_CACHE_KEY)) : Optional.of(cache.putEntry(USER_TIMELINE_CACHE_KEY, twitter.getUserTimeline().stream()
                                                                                                                                                                       .map(status -> getTweet(status))
                                                                                                                                                                       .collect(Collectors.toList())));
     }
